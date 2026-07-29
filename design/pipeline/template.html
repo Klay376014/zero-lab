@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHAMPIONS DEX — 寶可夢圖鑑</title>
+<style>
+@font-face{font-family:Silk;src:url(data:font/woff2;base64,__FONT400__) format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:Silk;src:url(data:font/woff2;base64,__FONT700__) format('woff2');font-weight:700;font-display:block}
+/* Literata (OFL) — a reading serif with an optical-size axis, so it thickens up at the
+   12–13px the prose actually runs at. Paired with, not replacing, the pixel face. */
+@font-face{font-family:Lit;src:url(data:font/woff2;base64,__FONTPROSE__) format('woff2');font-weight:400;font-display:swap}
+
+/* Semantic tokens, filled in per mode. The two retro modes map them onto exactly four
+   tones; MODERN spends a full palette. Nothing below hard-codes a colour. */
+:root{
+  --bg:#0d0d0d; --shell:#4f4f4f; --panel:#e8e8e8; --surface:#e8e8e8; --surface2:#a1a1a1;
+  --ink:#0d0d0d; --ink2:#4f4f4f; --line:#0d0d0d; --accent:#0d0d0d; --accentInk:#e8e8e8;
+  --px:3px;                       /* the base pixel unit; every metric is a multiple */
+  /* Silkscreen carries no CJK, so Chinese falls straight through to the system face.
+     Latin therefore stays on the pixel grid while 中文 stays legible. */
+  --font:Silk,"PingFang TC","PingFang SC","Heiti TC","Microsoft JhengHei","Noto Sans TC",sans-serif;
+  /* The type ramp splits by KIND, not by size: names, labels and numbers stay on the
+     pixel face; anything that is a sentence moves to the serif. Reading two lines of
+     prose in a bitmap font is the thing this fixes. */
+  --prose:Lit,"PingFang TC","PingFang SC","Songti TC","Noto Serif TC",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);
+     padding:calc(var(--px)*4);line-height:1.45;position:relative}
+
+/* ---------- atmosphere ----------
+   Ordered dithering, which is how this hardware faked gradients and shading in the first
+   place — so depth arrives in the era's own vocabulary rather than as a modern gradient.
+   Both layers live OUTSIDE the device shell and never composite over artwork or text;
+   that was the flaw in the earlier LCD-grid overlay, which dirtied every sprite.
+   Tiles are canvas-generated per mode (see ditherTile) so the dots land on exact pixels
+   and only ever use colours already in the mode's palette. */
+body{background-image:var(--dither-a);background-repeat:repeat}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:var(--dither-b);background-repeat:repeat;
+  /* density rises toward the margins, so the centre — where the shell sits — stays clean */
+  -webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 42%,transparent 45%,#000 100%);
+          mask-image:radial-gradient(ellipse 62% 58% at 50% 42%,transparent 45%,#000 100%)}
+.dmg{position:relative;z-index:1}
+/* Crispness is only wanted where the pixel face actually renders. Forcing it on CJK
+   turns 11px Chinese into mush. These slots are always Latin: */
+h1,.sub,.no,.mg,.ty,.tally b,footer b{-webkit-font-smoothing:none;font-smooth:never}
+/* …while the name slots swap language with the toggle, so the rule has to follow it.
+   .nm/.fm/.palt hold the leading language; .na/.phead h2's sibling holds the other. */
+body.lang-en .nm,body.lang-en .fm,body.lang-en .phead h2,
+body:not(.lang-en) .na{-webkit-font-smoothing:none;font-smooth:never}
+img{display:block}
+button,input{font:inherit;color:inherit}
+
+/* ---------- shell ---------- */
+.dmg{max-width:1180px;margin:0 auto;background:var(--shell);padding:calc(var(--px)*3);
+     box-shadow:0 0 0 var(--px) var(--line), 0 0 0 calc(var(--px)*4) var(--shell),
+                0 0 0 calc(var(--px)*5) var(--line)}
+.screen{background:var(--panel);padding:calc(var(--px)*4);position:relative;
+        box-shadow:inset 0 0 0 var(--px) var(--line)}
+
+/* ---------- masthead ---------- */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:calc(var(--px)*4);
+     border-bottom:var(--px) solid var(--line);padding-bottom:calc(var(--px)*3);margin-bottom:calc(var(--px)*3)}
+h1{font-size:26px;font-weight:700;letter-spacing:.06em;line-height:1}
+.sub{font-size:11px;color:var(--ink2);letter-spacing:.08em;margin-top:calc(var(--px)*2)}
+.tally{margin-left:auto;display:flex;gap:calc(var(--px)*3);flex-wrap:wrap}
+.tally div{background:var(--accent);color:var(--accentInk);padding:calc(var(--px)*1) calc(var(--px)*2);
+           font-size:12px;letter-spacing:.04em}
+.tally b{font-size:18px;display:block;letter-spacing:0;line-height:1.1}
+
+/* ---------- controls ---------- */
+.ctl{display:flex;flex-direction:column;gap:calc(var(--px)*3);margin-bottom:calc(var(--px)*4)}
+.row{display:flex;flex-wrap:wrap;gap:calc(var(--px)*2);align-items:center}
+.lbl{font-size:13px;color:var(--ink2);letter-spacing:.06em;min-width:44px}
+.tick{font-size:13px;color:var(--ink2);letter-spacing:.02em}
+.srch{flex:1;min-width:150px;background:var(--surface);border:var(--px) solid var(--line);
+      padding:calc(var(--px)*2);font-size:14px;outline:none}
+.srch:focus{background:var(--surface2)}
+.srch::placeholder{color:var(--ink2);opacity:.8}
+
+.chip{background:var(--surface);border:var(--px) solid var(--line);color:var(--ink);
+      padding:calc(var(--px)*1) calc(var(--px)*2);font-size:13px;cursor:pointer;letter-spacing:.03em;
+      display:flex;align-items:center;gap:calc(var(--px)*1);line-height:1.2;min-height:30px}
+.chip:hover{background:var(--surface2)}
+.chip[aria-pressed=true]{background:var(--accent);color:var(--accentInk)}
+.chip img{width:16px;height:16px;image-rendering:pixelated}
+.chip.wide{padding:calc(var(--px)*1) calc(var(--px)*3)}
+/* In MODERN a type chip carries its own colour. The retro modes must NOT pick up --tc
+   anywhere — a single type-coloured border would break the four-tone contract. */
+body.modern .chip.tc{background:var(--tc);color:var(--tcInk);border-color:var(--tc)}
+body.modern .chip.tc[aria-pressed=true]{box-shadow:inset 0 0 0 var(--px) var(--accent);
+                                        border-color:var(--accent)}
+
+/* ---------- grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(164px,1fr));gap:calc(var(--px)*3)}
+.card{background:var(--surface);border:var(--px) solid var(--line);padding:calc(var(--px)*2);
+      cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:calc(var(--px)*1);
+      /* 1px bevel — light along the top-left, shadow along the bottom-right. Reads as a
+         moulded key without spending a colour: both edges come from the existing tones. */
+      box-shadow:inset 1px 1px 0 var(--panel), inset -1px -1px 0 var(--surface2)}
+.card:hover{background:var(--surface2)}
+.card:focus-visible{outline:none;background:var(--surface2);
+                    box-shadow:0 0 0 var(--px) var(--line),inset 0 0 0 var(--px) var(--ink2)}
+.card[aria-current=true]{background:var(--accent)}
+.card[aria-current=true] .nm,.card[aria-current=true] .no,
+.card[aria-current=true] .fm{color:var(--accentInk)}
+
+.chead{display:flex;justify-content:space-between;align-items:center;font-size:10px;
+       letter-spacing:.04em;gap:calc(var(--px)*1)}
+.chead-r{display:flex;align-items:center;gap:calc(var(--px)*1);flex:none}
+.no{color:var(--ink2);font-weight:700}
+.mg{background:var(--accent);color:var(--accentInk);padding:0 calc(var(--px)*1);font-size:10px;
+    letter-spacing:.04em;line-height:1.5}
+.card[aria-current=true] .mg{background:var(--accentInk);color:var(--accent)}
+
+/* Artwork is never recoloured in either mode — only upscaled without smoothing, so the
+   96px source stays a crisp pixel grid. */
+.sprite{width:96px;height:96px;margin:0 auto;image-rendering:pixelated}
+.ph{width:96px;height:96px;margin:0 auto;image-rendering:pixelated}
+
+.nm{font-size:13px;font-weight:700;letter-spacing:.02em;word-break:break-word;line-height:1.2}
+/* The other language always stays on screen — the toggle changes which one leads, it
+   does not hide the other. 10px because CJK is unreadable at the 8px the Latin face
+   handles fine. */
+.na{font-size:12px;color:var(--ink2);letter-spacing:.02em;line-height:1.25;
+    word-break:break-word;min-height:15px}
+.card[aria-current=true] .na{color:var(--accentInk)}
+.fm{font-size:10px;color:var(--ink2);letter-spacing:.04em;line-height:1.3;min-height:13px}
+.ty{display:flex;flex-wrap:wrap;gap:calc(var(--px)*1);font-size:10px;
+    align-items:center;margin-top:auto;padding-top:calc(var(--px)*1)}
+.ty span{display:flex;align-items:center;gap:2px;color:var(--ink2)}
+.card[aria-current=true] .ty span{color:var(--accentInk)}
+/* Colour is the whole point of MODERN: let the type name carry it. On the selected card
+   the accent takes over, so the label matches the mark instead of fighting it. */
+body.modern .ty span{color:var(--tc)}
+.ty img{width:16px;height:16px;image-rendering:pixelated}
+
+.tyr{margin-left:auto;flex:none;display:flex;align-items:center;gap:calc(var(--px)*1)}
+/* Form count. A drawn badge rather than a box-drawing character: Silkscreen has no
+   glyph for those, so they fall back to the system face and break the pixel grid. */
+.fc{flex:none;font-size:10px;font-weight:700;letter-spacing:0;
+    background:var(--ink2);color:var(--panel);padding:0 calc(var(--px)*1);line-height:1.6}
+.card[aria-current=true] .fc{background:var(--accentInk);color:var(--accent)}
+/* Shown only while sorting by stats, so the number that decided the order is visible. */
+.bs{flex:none;font-size:11px;font-weight:700;letter-spacing:0;color:var(--ink)}
+.card[aria-current=true] .bs{color:var(--accentInk)}
+
+.empty{grid-column:1/-1;padding:calc(var(--px)*10);text-align:center;font-family:var(--prose);font-size:14px;color:var(--ink2)}
+
+/* ---------- motion ----------
+   Everything steps. A handheld of this era had no tweening: sprites and menus advanced
+   frame by frame, so easing would read as the wrong decade. `steps()` keeps the movement
+   quantised to the same grid the pixels sit on. Hover stays instant on purpose. */
+@keyframes veilIn  {from{opacity:0} to{opacity:1}}
+@keyframes panelIn {from{opacity:0;transform:translate(-50%,-50%) scale(.88)}
+                    to  {opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes sheetIn {from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none}}
+@keyframes cardIn  {from{opacity:0;transform:translateY(6px)}  to{opacity:1;transform:none}}
+/* a sprite swap is a swap, not a crossfade — one blank frame sells the cartridge feel */
+@keyframes swap    {0%{opacity:0} 50%{opacity:0} 100%{opacity:1}}
+
+.veil.on{animation:veilIn .1s steps(2) both}
+.panel.on{animation:panelIn .16s steps(3) both}
+.big{animation:swap .14s steps(2) both}
+/* the staggered reveal fires once, at boot — re-running it on every keystroke would make
+   filtering feel slower, not livelier */
+body.booting .card{animation:cardIn .22s steps(2) both;
+                   animation-delay:calc(var(--i,0) * 14ms)}
+
+@media (prefers-reduced-motion:reduce){
+  .veil.on,.panel.on,.big,body.booting .card{animation:none}
+}
+
+/* ---------- detail ---------- */
+.veil{position:fixed;inset:0;background:rgba(0,0,0,.66);z-index:50;display:none}
+.veil.on{display:block}
+.panel{position:fixed;z-index:51;background:var(--panel);border:calc(var(--px)*2) solid var(--line);
+       display:none;flex-direction:column;overflow:auto;
+       top:50%;left:50%;transform:translate(-50%,-50%);width:min(620px,calc(100% - 24px));
+       max-height:min(92vh,900px)}
+.panel.on{display:flex}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:calc(var(--px)*2);
+        background:var(--accent);color:var(--accentInk);padding:calc(var(--px)*2) calc(var(--px)*3);
+        position:sticky;top:0;z-index:2}
+.phead h2{font-size:18px;font-weight:700;letter-spacing:.04em}
+.phead .palt{font-size:13px;opacity:.85;letter-spacing:.02em;margin-top:1px}
+.phead .pno{font-size:12px;opacity:.9;margin-top:2px}
+.x{background:none;border:var(--px) solid var(--accentInk);color:var(--accentInk);width:28px;height:28px;
+   cursor:pointer;font-size:13px;line-height:1;flex:none}
+.x:hover{background:var(--accentInk);color:var(--accent)}
+.pbody{padding:calc(var(--px)*4);display:flex;flex-direction:column;gap:calc(var(--px)*3)}
+
+.stage{background:var(--surface2);box-shadow:inset 0 0 0 var(--px) var(--line);
+       padding:calc(var(--px)*2);display:flex;flex-direction:column;align-items:center;
+       gap:calc(var(--px)*1)}
+body.modern .stage{background:var(--surface)}
+.big{width:192px;height:192px;image-rendering:pixelated}
+.stage .cap{font-size:12px;color:var(--ink);letter-spacing:.04em;text-align:center;min-height:14px}
+
+/* form switcher */
+.sw{display:flex;flex-direction:column;gap:calc(var(--px)*2)}
+.swgrp{display:flex;flex-wrap:wrap;gap:calc(var(--px)*2);align-items:center}
+.swgrp>.gl{font-size:11px;color:var(--ink2);letter-spacing:.08em;min-width:58px}
+.fchip{background:var(--surface);border:var(--px) solid var(--ink2);color:var(--ink);
+       padding:calc(var(--px)*1) calc(var(--px)*2);font-size:12px;cursor:pointer;
+       line-height:1.3;letter-spacing:.02em;display:flex;align-items:center;gap:3px}
+.fchip:hover{background:var(--surface2)}
+.fchip[aria-pressed=true]{background:var(--accent);color:var(--accentInk);border-color:var(--accent)}
+.fchip img{width:14px;height:14px;image-rendering:pixelated}
+
+dl.kv{display:grid;grid-template-columns:auto 1fr;gap:calc(var(--px)*2) calc(var(--px)*3);
+      font-size:13px;align-items:baseline}
+dl.kv dt{color:var(--ink2);font-size:13px;letter-spacing:.04em;white-space:nowrap}
+dl.kv dd{font-weight:700}
+.tlist{display:flex;flex-wrap:wrap;gap:calc(var(--px)*2)}
+.tpill{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:700;
+       padding:1px calc(var(--px)*1);border:var(--px) solid var(--ink2);letter-spacing:.02em}
+body.modern .tpill{background:var(--tc);color:var(--tcInk);border-color:var(--tc)}
+.tpill img{width:14px;height:14px;image-rendering:pixelated}
+.warn{font-family:var(--prose);font-optical-sizing:auto;font-size:13px;background:var(--accent);color:var(--accentInk);padding:calc(var(--px)*2);line-height:1.6}
+
+/* ---------- section frame shared by stats / abilities / moves ---------- */
+.sec{display:flex;flex-direction:column;gap:calc(var(--px)*2)}
+.sech{display:flex;align-items:center;gap:calc(var(--px)*2);flex-wrap:wrap;
+      border-bottom:var(--px) solid var(--ink2);padding-bottom:calc(var(--px)*1)}
+.sech h3{font-size:13px;letter-spacing:.06em;font-weight:700}
+.sech .cnt{font-size:12px;color:var(--ink2);font-weight:700}
+.sech .sp{margin-left:auto;display:flex;gap:calc(var(--px)*1);align-items:center}
+.mini{background:var(--surface);border:var(--px) solid var(--ink2);color:var(--ink);
+      font-size:11px;padding:1px calc(var(--px)*1);cursor:pointer;line-height:1.4;letter-spacing:.02em}
+.mini:hover{background:var(--surface2)}
+.mini[aria-pressed=true]{background:var(--accent);color:var(--accentInk);border-color:var(--accent)}
+
+/* ---------- base stats ---------- */
+.stats{display:grid;gap:2px}
+.strow{display:grid;grid-template-columns:62px 38px 1fr;align-items:center;gap:calc(var(--px)*2);
+       font-size:12px;min-height:22px}
+.strow .k{color:var(--ink2);letter-spacing:.02em}
+.strow .v{text-align:right;font-weight:700;font-size:13px}
+/* The form's best stat earns emphasis — via colour and bar weight only, so the row
+   height never changes. NB: must not be called `.top`; that name already belongs to the
+   masthead, whose flex/border/margin would silently land on these rows. */
+.strow.peak .k,.strow.peak .v{color:var(--ink)}
+.bar{height:13px;background:var(--surface2);box-shadow:inset 0 0 0 1px var(--ink2);position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--ink2);display:block}
+.strow.peak .bar i{background:var(--ink)}
+.sttotal{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);
+         border-top:var(--px) solid var(--ink2);padding-top:calc(var(--px)*1);margin-top:2px}
+.sttotal b{color:var(--ink);font-size:14px}
+
+/* ---------- abilities ---------- */
+.abil{display:flex;flex-direction:column;gap:calc(var(--px)*2)}
+.ab{background:var(--surface);box-shadow:inset 0 0 0 var(--px) var(--ink2);
+    padding:calc(var(--px)*2);display:flex;flex-direction:column;gap:2px}
+.ab .ah{display:flex;align-items:baseline;gap:calc(var(--px)*2);flex-wrap:wrap}
+.ab .an{font-size:14px;font-weight:700}
+.ab .ae{font-size:11px;color:var(--ink2);letter-spacing:.02em}
+.ab .hid{font-size:10px;background:var(--ink2);color:var(--panel);padding:0 calc(var(--px)*1);
+         letter-spacing:.04em;line-height:1.6}
+.ab .ad{font-family:var(--prose);font-optical-sizing:auto;font-size:13px;color:var(--ink2);
+        line-height:1.6;letter-spacing:0}
+
+/* ---------- moves ---------- */
+.mvwrap{max-height:400px;overflow:auto;box-shadow:inset 0 0 0 var(--px) var(--ink2)}
+.mvrow{display:grid;grid-template-columns:18px 1fr 28px 44px 44px 34px;
+       align-items:center;gap:calc(var(--px)*1);padding:2px calc(var(--px)*2);font-size:12px}
+.mvrow+.mvrow{border-top:1px solid var(--surface2)}
+.mvrow.hd{position:sticky;top:0;background:var(--surface2);font-size:10px;color:var(--ink2);
+          letter-spacing:.04em;z-index:1;border:none}
+.mvrow img{width:16px;height:16px;image-rendering:pixelated}
+.mvrow .mn{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mvrow .dc{font-size:11px;text-align:center;color:var(--ink2)}
+.mvrow .num{text-align:right;font-size:11px;font-variant-numeric:tabular-nums}
+.mvrow .dash{color:var(--ink2);opacity:.6}
+/* STAB is the single most actionable thing about a move in a battle-only game */
+.mvrow.stab{background:var(--surface2)}
+.mvrow.stab .mn::after{content:"★";font-size:10px;margin-left:3px;vertical-align:top}
+body.modern .mvrow .mn{color:var(--tc)}
+.mvnone{padding:calc(var(--px)*3);font-family:var(--prose);font-size:13px;color:var(--ink2);text-align:center}
+
+footer{margin-top:calc(var(--px)*4);font-family:var(--prose);font-size:13px;color:var(--ink2);
+       line-height:1.75;letter-spacing:0;font-optical-sizing:auto}
+/* the run-in labels stay on the pixel face, so each line reads label / prose */
+footer b{font-family:var(--font);font-size:11px;letter-spacing:.04em}
+footer b{color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+@media (max-width:520px){
+  h1{font-size:18px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+  .sprite,.ph{width:80px;height:80px}
+  .big{width:144px;height:144px}
+  .panel{top:auto;bottom:0;left:0;transform:none;width:100%;max-height:88vh;border-width:var(--px)}
+  /* as a bottom sheet it has no centring transform to preserve, so it rises instead */
+  .panel.on{animation-name:sheetIn}
+  .swgrp>.gl{min-width:0;width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="dmg">
+<div class="screen">
+
+  <div class="top">
+    <div>
+      <h1>CHAMPIONS DEX</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <div class="tally" id="tally"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="row">
+      <label class="lbl" for="q" id="lblSearch"></label>
+      <input class="srch" id="q" type="search" autocomplete="off">
+      <span id="langs" class="row" style="gap:calc(var(--px)*2)"></span>
+      <span class="lbl" style="min-width:0" id="lblMode"></span>
+      <span id="modes" class="row" style="gap:calc(var(--px)*2)"></span>
+    </div>
+    <div class="row">
+      <span class="lbl" id="lblGen"></span>
+      <span id="gens" class="row" style="gap:calc(var(--px)*2)"></span>
+      <button class="chip wide" id="megaonly" aria-pressed="false"></button>
+      <button class="chip wide" id="multionly" aria-pressed="false"></button>
+    </div>
+    <div class="row">
+      <span class="lbl" id="lblType"></span>
+      <span id="types" class="row" style="gap:calc(var(--px)*2)"></span>
+    </div>
+    <div class="row">
+      <span class="lbl" id="lblSort"></span>
+      <span id="sorts" class="row" style="gap:calc(var(--px)*2)"></span>
+      <span class="tick" id="count"></span>
+      <button class="chip" id="reset"></button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer id="foot"></footer>
+
+</div>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pt"></div>
+<p class="sr" role="status" aria-live="polite" id="live"></p>
+
+<script>
+const DEX = __DATA__;
+
+/* Two 4-tone handheld modes plus one that spends a real palette. `tones` drives both
+   the token mapping and the sprite quantiser; MODERN sets its tokens directly. */
+const MODES = [
+  // POCKET keeps the four-tone grayscale chrome but leaves the artwork alone, so the
+  // sprites are the only colour on screen. MODERN spends colour everywhere.
+  {id:'POCKET', tones:['#0d0d0d','#4f4f4f','#a1a1a1','#e8e8e8']},
+  {id:'MODERN', typeColor:true, tokens:{
+     bg:'#0b0d10', shell:'#171b21', panel:'#0f1319', surface:'#1b212a', surface2:'#252d38',
+     ink:'#e9eef4', ink2:'#93a0b0', line:'#2b3441', accent:'#e9eef4', accentInk:'#0f1319'}},
+];
+
+/* Canonical series type colours. Only MODERN can afford them. */
+const TYPE_COLORS = {
+  Normal:'#9FA19F', Fire:'#E62829', Water:'#2980EF', Electric:'#FAC000', Grass:'#3FA129',
+  Ice:'#3DCEF3', Fighting:'#FF8000', Poison:'#9141CB', Ground:'#B0913B', Flying:'#81B9EF',
+  Psychic:'#EF4179', Bug:'#91A119', Rock:'#AFA981', Ghost:'#9060A0', Dragon:'#5060E1',
+  Dark:'#8A6E64', Steel:'#60A1B8', Fairy:'#EF70EF',
+};
+
+/* 18 type marks, hand-plotted on an 8x8 grid — the only honest way to signal type
+   when the palette has no colour left to spend on it. */
+const GLYPHS = {
+  Normal:  ['..####..','.#....#.','#......#','#..##..#','#..##..#','#......#','.#....#.','..####..'],
+  Fire:    ['...##...','..####..','..####..','.######.','.######.','##.##.##','#..##..#','.######.'],
+  Water:   ['...##...','...##...','..####..','..####..','.######.','.######.','.######.','..####..'],
+  Electric:['.....##.','....##..','...##...','..#####.','.####...','...##...','..##....','.##.....'],
+  Grass:   ['......##','....####','..######','.#####..','.####.#.','.###..#.','##...#..','#...#...'],
+  Ice:     ['#..#..#.','.#.#.#..','..###...','#######.','..###...','.#.#.#..','#..#..#.','........'],
+  Fighting:['..####..','.######.','########','##.##.##','########','.######.','..####..','........'],
+  Poison:  ['..####..','.######.','##.##.##','########','.#.##.#.','..####..','.#.##.#.','........'],
+  Ground:  ['........','........','..####..','.######.','########','########','########','########'],
+  Flying:  ['........','##......','####....','.#####..','..#####.','...####.','....##..','........'],
+  Psychic: ['..####..','.#....#.','#..##..#','#.####.#','#.####.#','#..##..#','.#....#.','..####..'],
+  Bug:     ['#..##..#','.######.','##.##.##','########','##.##.##','.######.','#..##..#','........'],
+  Rock:    ['........','.####...','.####...','.######.','####.##.','####.##.','.######.','........'],
+  Ghost:   ['..####..','.######.','##.##.##','########','########','########','#.#.#.#.','........'],
+  Dragon:  ['......##','....####','..######','.#####..','######..','.####...','..##.#..','.#...##.'],
+  Dark:    ['...###..','..####..','.####...','.####...','.####...','.####...','..####..','...###..'],
+  Steel:   ['.#.##.#.','.######.','###..###','##....##','##....##','###..###','.######.','.#.##.#.'],
+  Fairy:   ['...#....','...#....','..###...','#######.','..###...','...#....','...#....','........'],
+};
+const TYPE_ORDER = Object.keys(GLYPHS);
+const TYPE_ZH = {Normal:'一般',Fire:'火',Water:'水',Electric:'電',Grass:'草',Ice:'冰',
+  Fighting:'格鬥',Poison:'毒',Ground:'地面',Flying:'飛行',Psychic:'超能',Bug:'蟲',
+  Rock:'岩石',Ghost:'幽靈',Dragon:'龍',Dark:'惡',Steel:'鋼',Fairy:'妖精'};
+/* Cards are 140px wide and two types must fit. Three-letter codes are both what the
+   era's status screens did and the only thing that fits on the grid. */
+const TYPE_ABBR = {Normal:'NRM',Fire:'FIR',Water:'WTR',Electric:'ELC',Grass:'GRS',Ice:'ICE',
+  Fighting:'FGT',Poison:'PSN',Ground:'GRD',Flying:'FLY',Psychic:'PSY',Bug:'BUG',
+  Rock:'RCK',Ghost:'GHT',Dragon:'DRG',Dark:'DRK',Steel:'STL',Fairy:'FRY'};
+
+const GEN_ROMAN = ['','I','II','III','IV','V','VI','VII','VIII','IX'];
+
+/* Every user-facing string lives here so the toggle can never leave half the page in the
+   other language. Values are strings, or functions when they take arguments. */
+const I18N = {
+  zh: {
+    lang:'中文', search:'搜尋', ph:'名稱 / 編號 / 型別 / 形態', mode:'模式', gen:'世代',
+    type:'型別', sort:'排序', megaOnly:'★ 僅 MEGA', multiOnly:'僅多形態', reset:'清除篩選',
+    tSpecies:'種類', tForms:'形態', tMega:'MEGA', tMoves:'招式',
+    count:(n,tot)=>`${n} / ${tot} 種類`,
+    sortDex:'編號', sortBst:'種族值', sortName:'名稱',
+    empty:'沒有符合的寶可夢。', close:'關閉',
+    kind:{base:'基本', other:'形態', regional:'地區形態', mega:'MEGA'},
+    baseForm:'基本形態',
+    genOf:r=>`第 ${r} 世代`, formsOf:n=>`${n} 個形態`,
+    bstTitle:'最強形態的種族值總和', formsTitle:n=>`${n} 個形態`,
+    dTypes:'型別', dForm:'形態', dVer:'加入版本', dRoster:'當前陣容',
+    rosterIn:'可取得', rosterOut:'不在當前陣容',
+    secStats:'種族值', total:'總和', secAbil:'特性', hidden:'隱藏', secMoves:'可學會招式',
+    stats:['HP','攻擊','防禦','特攻','特防','速度'],
+    dc:{Physical:'物', Special:'特', Status:'變'},
+    dcFull:{Physical:'物理', Special:'特殊', Status:'變化'},
+    mvHead:['','招式','類','威力','命中','PP'],
+    mvName:'名稱', mvPower:'威力', mvType:'屬性', mvStab:'★ 本系',
+    mvStabTitle:'只顯示獲得本系加成的攻擊招式', mvNone:'沒有符合的招式。',
+    notePrefix:'※ ',
+    warnRoster:'※ 此形態不在當前陣容，須透過活動或從其他遊戲經 Pokémon HOME 傳送。',
+    warnApprox:'※ PokeAPI 未收錄此形態的獨立圖像，上方顯示的是該種類的共用圖。',
+    footer:[
+      ['陣容與形態','Bulbapedia《List of Pokémon in Pokémon Champions》原始 wikitext（__ROSTER__）。#923 Pawmot 存在於遊戲資料中但不可操作，已排除。每個形態的圖像路徑都經過 HTTP 實測確認存在。'],
+      ['招式','Bulbapedia 各寶可夢的「Champions learnset」頁面（208 頁），威力／命中／PP 採 Champions 自身數值。僅收錄實際可學會的招式，標為「lost」（舊作可學、本作學不到）者已排除。'],
+      ['種族值與特性','PokeAPI 原始 CSV，以各形態的 variety id 對應 —— 外觀形態沿用母體數值，真正的變體各有獨立數值。'],
+      ['中文名稱','種類名與分類取自 PokeAPI（繁中）。形態名以 PokeAPI 為主，缺漏者取自 Bulbapedia 各頁 langtable；Mega 依「超級＋種類名」規則推導（已對 41 個實例驗證），洗翠／帕底亞形態以地區名組合（規則已對阿羅拉／伽勒爾驗證）。'],
+      ['圖像','PokeAPI/sprites，兩種模式皆呈現原始全彩、以最近鄰放大保持像素銳利。第一至五世代為 Black/White 點陣圖，第六世代之後為渲染圖。連不到外部圖像時改用程式繪製的像素佔位圖。'],
+      ['字型／版權','Silkscreen（OFL）已內嵌。Pokémon © Nintendo / Creatures Inc. / GAME FREAK inc.　本頁為非商業設計稿。'],
+    ],
+  },
+  en: {
+    lang:'EN', search:'Search', ph:'Name / no. / type / form', mode:'Mode', gen:'Gen',
+    type:'Type', sort:'Sort', megaOnly:'★ Mega only', multiOnly:'Multi-form', reset:'Clear',
+    tSpecies:'SPECIES', tForms:'FORMS', tMega:'MEGA', tMoves:'MOVES',
+    count:(n,tot)=>`${n} / ${tot} species`,
+    sortDex:'No.', sortBst:'Stats', sortName:'Name',
+    empty:'No Pokémon match.', close:'Close',
+    kind:{base:'Base', other:'Form', regional:'Regional', mega:'Mega'},
+    baseForm:'Base Form',
+    genOf:r=>`Gen ${r}`, formsOf:n=>`${n} form${n>1?'s':''}`,
+    bstTitle:'Highest base-stat total across forms', formsTitle:n=>`${n} forms`,
+    dTypes:'Types', dForm:'Form', dVer:'Added', dRoster:'Roster',
+    rosterIn:'Obtainable', rosterOut:'Not in current roster',
+    secStats:'BASE STATS', total:'TOTAL', secAbil:'ABILITIES', hidden:'HIDDEN',
+    secMoves:'LEARNSET',
+    stats:['HP','Atk','Def','SpA','SpD','Spe'],
+    dc:{Physical:'PH', Special:'SP', Status:'ST'},
+    dcFull:{Physical:'Physical', Special:'Special', Status:'Status'},
+    mvHead:['','MOVE','CL','PWR','ACC','PP'],
+    mvName:'Name', mvPower:'Power', mvType:'Type', mvStab:'★ STAB',
+    mvStabTitle:'Show only damaging moves that get same-type attack bonus',
+    mvNone:'No moves match.',
+    notePrefix:'NB ',
+    warnRoster:'NB This form is not in the current roster; it must come from an event or be transferred via Pokémon HOME.',
+    warnApprox:'NB PokeAPI carries no distinct artwork for this form — the picture above is the species’ shared sprite.',
+    footer:[
+      ['Roster & forms','Bulbapedia “List of Pokémon in Pokémon Champions” raw wikitext (__ROSTER__). #923 Pawmot exists in game data but is not playable, so it is excluded. Every form’s sprite path was HTTP-verified.'],
+      ['Moves','Bulbapedia’s per-Pokémon “Champions learnset” pages (208 of them). Power/accuracy/PP are Champions’ own values. Only moves actually learnable in Champions are listed; entries marked “lost” (learnable in older games, not here) are excluded.'],
+      ['Base stats & abilities','PokeAPI source CSVs, keyed on each form’s PokeAPI variety id — cosmetic forms inherit their parent’s figures, genuine variants carry their own.'],
+      ['Chinese names','Species names and genera from PokeAPI (zh-Hant). Form names from PokeAPI where present, otherwise scraped from each species’ Bulbapedia langtable; Mega names derived as 超級+species (validated against 41 localised examples) and Hisuian/Paldean composed from region names (pattern validated against Alolan/Galarian).'],
+      ['Artwork','PokeAPI/sprites, shown in original colour in both modes and upscaled nearest-neighbour to keep the pixel grid. Gens I–V are Black/White pixel art; Gen VI onward are renders. If the network is unavailable, a drawn pixel placeholder is used.'],
+      ['Font / rights','Silkscreen (OFL) is embedded. Pokémon © Nintendo / Creatures Inc. / GAME FREAK inc. This page is a non-commercial design study.'],
+    ],
+  },
+};
+const t = k => I18N[state.lang][k];
+/* Bars are scaled to the highest base stat that actually occurs in this roster
+   (Mega Steelix's 230 Defense), not the theoretical 255 — otherwise every bar sits in
+   the left third and the comparison the bars exist for stops working. */
+const STAT_MAX = 230;
+const SPRITES = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+
+let REMOTE = null;                       // null = undecided, true/false = settled
+const state = {q:'', gens:new Set(), types:new Set(), mega:false, multi:false,
+               mode:0, sel:null, form:0, sort:'dex', mvSort:'name', mvStab:false, lang:'zh'};
+const bst = form => form.st.reduce((a,b)=>a+b, 0);
+/* A species' sort weight is its strongest form — sorting by the base form would bury
+   every Mega, which is the opposite of what someone sorting by stats wants. */
+const bestBst = sp => Math.max(...sp.f.map(bst));
+const glyphCache = new Map(), phCache = new Map();
+
+const $  = s => document.querySelector(s);
+const el = (t,c) => { const n=document.createElement(t); if(c) n.className=c; return n; };
+const rgb = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const spName = sp => state.lang === 'zh' ? sp.mz : sp.m;
+const spAlt  = sp => state.lang === 'zh' ? sp.m  : sp.mz;
+const formLabel = f => (state.lang === 'zh' ? f.lz : f.l) || t('baseForm');
+const formAlt   = f => (state.lang === 'zh' ? f.l : f.lz) || '';
+const typeName  = ty => state.lang === 'zh' ? (TYPE_ZH[ty] || ty) : ty;
+const mode = () => MODES[state.mode];
+
+const relLum = hexc => {
+  const [r,g,b] = rgb(hexc).map(v=>{ v/=255; return v<=.03928 ? v/12.92 : ((v+.055)/1.055)**2.4; });
+  return .2126*r + .7152*g + .0722*b;
+};
+const contrast = (a,b) => {
+  const [hi,lo] = [relLum(a), relLum(b)].sort((x,y)=>y-x);
+  return (hi + .05) / (lo + .05);
+};
+/* Pick whichever ink actually contrasts better, rather than guessing at a luminance
+   cut-off: a mid-tone like Rock's #AFA981 sits right at the crossover, and a fixed
+   threshold hands it white — which is the worse of the two by a factor of four. */
+function inkOn(bgHex){
+  return contrast('#101010', bgHex) >= contrast('#ffffff', bgHex) ? '#101010' : '#ffffff';
+}
+
+/* token set for the active mode + quantiser table refresh */
+function applyMode(){
+  const m = mode();
+  const tk = m.tokens || {
+    bg:m.tones[0], shell:m.tones[1], panel:m.tones[3], surface:m.tones[3],
+    surface2:m.tones[2], ink:m.tones[0], ink2:m.tones[1], line:m.tones[0],
+    accent:m.tones[0], accentInk:m.tones[3],
+  };
+  const r = document.documentElement.style;
+  Object.entries(tk).forEach(([k,v])=>r.setProperty('--'+k, v));
+  document.body.classList.toggle('modern', !m.tones);
+  glyphCache.clear(); phCache.clear(); tileCache.clear();
+  r.setProperty('--dither-a', ditherTile(DITHER_SPARSE));
+  r.setProperty('--dither-b', ditherTile(DITHER_DENSE));
+  document.querySelectorAll('#modes .chip').forEach(b=>
+    b.setAttribute('aria-pressed', String(b.dataset.mode === m.id)));
+  render();
+  paintTypeChips();
+  if (state.sel) openDetail(state.sel, state.form, true);
+}
+
+/* A type mark is a bitmap, so its colour is baked in at draw time and cannot inherit
+   anything. It must therefore be chosen against the surface it will sit on — drawing it
+   in the type's own colour on a chip whose background IS that colour makes it vanish.
+   `bg` names that surface: 'surface' | 'accent' | 'typechip'. */
+function glyphOn(type, bg){
+  const m = mode();
+  if (!m.typeColor) return bg === 'accent' ? m.tones[3] : m.tones[0];
+  if (bg === 'typechip') return inkOn(TYPE_COLORS[type] || '#888888');
+  if (bg === 'accent')   return m.tokens.accentInk;
+  return TYPE_COLORS[type] || m.tokens.ink;
+}
+function glyph(type, bg){
+  bg = bg || 'surface';
+  const key = mode().id + ':' + type + ':' + bg;
+  if (glyphCache.has(key)) return glyphCache.get(key);
+  const rows = GLYPHS[type] || GLYPHS.Normal;
+  const cv = el('canvas'); cv.width = cv.height = 8;
+  const g = cv.getContext('2d');
+  g.fillStyle = glyphOn(type, bg);
+  rows.forEach((r,y)=>{ for(let x=0;x<8;x++) if(r[x]==='#') g.fillRect(x,y,1,1); });
+  const u = cv.toDataURL();
+  glyphCache.set(key,u); return u;
+}
+
+/* Ordered-dither tiles as data URIs. Canvas keeps them pixel-exact — a CSS gradient
+   checkerboard antialiases on fractional device pixels and turns to mush. */
+const tileCache = new Map();
+function ditherTile(dots){
+  const m = mode();
+  const key = m.id + ':' + dots.length;
+  if (tileCache.has(key)) return tileCache.get(key);
+  const cv = el('canvas'); cv.width = cv.height = 4;
+  const g = cv.getContext('2d');
+  g.fillStyle = m.tones ? m.tones[1] : m.tokens.shell;
+  dots.forEach(([x,y])=>g.fillRect(x,y,1,1));
+  const u = `url(${cv.toDataURL()})`;
+  tileCache.set(key,u); return u;
+}
+/* 2/16 everywhere for a faint grain; 8/16 in the masked vignette layer */
+const DITHER_SPARSE = [[0,0],[2,2]];
+const DITHER_DENSE  = [[0,0],[2,0],[1,1],[3,1],[0,2],[2,2],[1,3],[3,3]];
+
+/* drawn placeholder for when remote art is unavailable */
+function placeholder(form){
+  const key = mode().id + ':' + form.s;
+  if (phCache.has(key)) return phCache.get(key);
+  const m = mode();
+  const P = m.tones || [m.tokens.line, m.tokens.ink2, m.tokens.surface2, m.tokens.surface];
+  const N = 48;
+  const cv = el('canvas'); cv.width = cv.height = N;
+  const g = cv.getContext('2d');
+  g.fillStyle = P[2]; g.fillRect(0,0,N,N);
+  g.fillStyle = P[1];
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++) if(((x>>1)+(y>>1))%2===0) g.fillRect(x,y,1,1);
+  g.fillStyle = P[0];
+  g.fillRect(0,0,N,2); g.fillRect(0,N-2,N,2); g.fillRect(0,0,2,N); g.fillRect(N-2,0,2,N);
+  g.fillStyle = m.typeColor ? (TYPE_COLORS[form.t[0]] || P[0]) : P[0];
+  const rows = GLYPHS[form.t[0]] || GLYPHS.Normal, s = 4, o = (N - 8*s)/2;
+  rows.forEach((r,y)=>{ for(let x=0;x<8;x++) if(r[x]==='#') g.fillRect(o+x*s, o+y*s, s, s); });
+  const u = cv.toDataURL();
+  phCache.set(key,u); return u;
+}
+
+function spriteNode(form, cls, size){
+  const mk = c => { const i = el('img', c); i.width = i.height = size; i.alt = ''; return i; };
+  if (REMOTE === false){ const p = mk('ph'); p.src = placeholder(form); return p; }
+  const i = mk(cls);
+  i.loading = 'lazy'; i.decoding = 'async';
+  i.src = SPRITES + form.s;
+  i.addEventListener('error', ()=>{
+    const p = mk(cls === 'sprite' ? 'ph' : cls);
+    p.src = placeholder(form); i.replaceWith(p);
+  }, {once:true});
+  return i;
+}
+
+function typeRow(types, bg){
+  const w = el('div','ty');
+  types.forEach(t=>{
+    const s = el('span'); s.title = typeName(t) + ' ' + t;
+    s.style.setProperty('--tc', TYPE_COLORS[t] || 'currentColor');
+    const g = el('img'); g.src = glyph(t, bg); g.alt=''; g.width = g.height = 16;
+    const lab = el('em'); lab.style.fontStyle='normal'; lab.textContent = TYPE_ABBR[t] || t;
+    s.append(g, lab); w.append(s);
+  });
+  return w;
+}
+
+/* ---- filtering ---- */
+const allTypes = sp => new Set(sp.f.flatMap(f=>f.t));
+const hasMega  = sp => sp.f.some(f=>f.k==='mega');
+
+/* Search always spans BOTH languages regardless of the active one — typing "噴火龍"
+   while in English mode, or "charizard" while in Chinese, should both work. */
+function haystack(sp){
+  const at = [...allTypes(sp)];
+  return [sp.m, sp.mz, sp.gz, String(sp.d), String(sp.d).padStart(4,'0'),
+          'gen'+sp.g, GEN_ROMAN[sp.g],
+          ...sp.f.map(f=>f.l), ...sp.f.map(f=>f.lz),
+          ...at, ...at.map(x=>TYPE_ZH[x]||'')].join(' ').toLowerCase();
+}
+function match(sp){
+  if (state.gens.size && !state.gens.has(sp.g)) return false;
+  // types are matched across ALL forms, so consolidating never hides a typing
+  if (state.types.size){
+    const at = allTypes(sp);
+    if (![...state.types].some(t=>at.has(t))) return false;
+  }
+  if (state.mega  && !hasMega(sp)) return false;
+  if (state.multi && sp.f.length < 2) return false;
+  const q = state.q.trim().toLowerCase();
+  if (!q) return true;
+  const hay = haystack(sp);
+  return q.split(/\s+/).every(tok => hay.includes(tok));
+}
+
+/* Which form a card should show. If a filter or the query singled out a non-default
+   form, show THAT one — otherwise the grid would answer "Dragon?" with a Fire/Flying
+   picture and look wrong. */
+function displayIndex(sp){
+  const q = state.q.trim().toLowerCase();
+  if (q){
+    const toks = q.split(/\s+/);
+    const hits = f => { const s = ((f.l || '') + ' ' + (f.lz || '')).toLowerCase();
+                        return f.l && toks.every(tok => s.includes(tok)); };
+    const i = sp.f.findIndex(hits);
+    if (i >= 0) return i;
+  }
+  if (state.types.size){
+    const i = sp.f.findIndex(f => f.t.some(t => state.types.has(t)));
+    if (i >= 0) return i;
+  }
+  if (state.mega){
+    const i = sp.f.findIndex(f => f.k === 'mega');
+    if (i >= 0) return i;
+  }
+  return 0;
+}
+
+const SORTS = [['dex','sortDex'],['bst','sortBst'],['name','sortName']];
+function render(){
+  const grid = $('#grid');
+  grid.textContent = '';
+  const rows = DEX.species.filter(match);
+  if (state.sort === 'bst')       rows.sort((a,b)=> bestBst(b) - bestBst(a) || a.d - b.d);
+  else if (state.sort === 'name') rows.sort((a,b)=> spName(a).localeCompare(spName(b), state.lang === 'zh' ? 'zh-Hant' : 'en'));
+  $('#count').textContent = t('count')(rows.length, DEX.species.length);
+  if (!rows.length){
+    const d = el('div','empty'); d.textContent = t('empty');
+    grid.append(d); return;
+  }
+  const frag = document.createDocumentFragment();
+  rows.forEach((sp,idx)=>{
+    const fi = displayIndex(sp), form = sp.f[fi];
+    const c = el('button','card'); c.type='button';
+    const isSel = state.sel === sp;
+    if (isSel) c.setAttribute('aria-current','true');
+
+    const h = el('div','chead');
+    const no = el('span','no'); no.textContent = 'No.' + String(sp.d).padStart(4,'0');
+    const right = el('span','chead-r');
+    if (hasMega(sp)){
+      const megaForms = sp.f.filter(f=>f.k==='mega');
+      const m = el('span','mg');
+      m.textContent = '★' + (megaForms.length>1 ? megaForms.length : '');
+      m.title = megaForms.map(f=>f.l).join(' / ');
+      right.append(m);
+    }
+    const g = el('span','no'); g.textContent = GEN_ROMAN[sp.g]; right.append(g);
+    h.append(no, right);
+
+    const nm = el('div','nm'); nm.textContent = spName(sp);
+    const na = el('div','na'); na.textContent = spAlt(sp);
+    const fm = el('div','fm'); fm.textContent = form.l ? formLabel(form) : '';
+    if (form.l) fm.title = formAlt(form);
+
+    const ty = typeRow(form.t, isSel ? 'accent' : 'surface');
+    const rt = el('span','tyr');
+    if (state.sort === 'bst'){
+      const b = el('span','bs');
+      b.textContent = bestBst(sp);
+      b.title = t('bstTitle');
+      rt.append(b);
+    }
+    if (sp.f.length > 1){
+      const fc = el('span','fc');
+      fc.textContent = String(sp.f.length);
+      fc.title = t('formsTitle')(sp.f.length);
+      rt.append(fc);
+    }
+    if (rt.childElementCount) ty.append(rt);
+    c.append(h, spriteNode(form,'sprite',96), nm, na, fm, ty);
+    // capped: 208 * 14ms would leave the last card waiting three seconds
+    c.style.setProperty('--i', Math.min(idx, 26));
+    c.addEventListener('click', ()=>openDetail(sp, fi));
+    frag.append(c);
+  });
+  grid.append(frag);
+}
+
+/* ---- detail sections: stats, abilities, Champions learnset ---- */
+function sectionHead(title, count){
+  const h = el('div','sech');
+  const t = el('h3'); t.textContent = title; h.append(t);
+  if (count != null){ const c = el('span','cnt'); c.textContent = count; h.append(c); }
+  return h;
+}
+
+function statsSection(form){
+  const s = el('div','sec');
+  s.append(sectionHead(t('secStats')));
+  const g = el('div','stats');
+  const peak = Math.max(...form.st);
+  form.st.forEach((v,i)=>{
+    const r = el('div','strow');
+    if (v === peak) r.classList.add('peak');
+    const k = el('span','k'); k.textContent = t('stats')[i];
+    const n = el('span','v'); n.textContent = v;
+    const b = el('div','bar'); const fill = el('i');
+    fill.style.width = Math.max(2, Math.round(Math.min(v, STAT_MAX) / STAT_MAX * 100)) + '%';
+    b.append(fill);
+    r.append(k, n, b); g.append(r);
+  });
+  const tot = el('div','sttotal');
+  const tl = el('span'); tl.textContent = t('total');
+  const tv = el('b'); tv.textContent = bst(form);
+  tot.append(tl, tv);
+  s.append(g, tot);
+  return s;
+}
+
+function abilitiesSection(form){
+  const s = el('div','sec');
+  s.append(sectionHead(t('secAbil'), form.ab.length));
+  const list = el('div','abil');
+  form.ab.forEach(ref=>{
+    const a = DEX.abilities[ref[0]], hidden = ref.length > 1;
+    const box = el('div','ab');
+    const ah = el('div','ah');
+    const primary = state.lang === 'zh' ? (a.z || a.n) : a.n;
+    const secondary = state.lang === 'zh' ? (a.z ? a.n : '') : (a.z || '');
+    const n = el('span','an'); n.textContent = primary; ah.append(n);
+    if (secondary){ const e = el('span','ae'); e.textContent = secondary; ah.append(e); }
+    if (hidden){ const hb = el('span','hid'); hb.textContent = t('hidden'); ah.append(hb); }
+    box.append(ah);
+    const desc = state.lang === 'zh' ? (a.d || a.de) : (a.de || a.d);
+    if (desc){ const d = el('div','ad'); d.textContent = desc; box.append(d); }
+    list.append(box);
+  });
+  s.append(list);
+  return s;
+}
+
+const MV_SORTS = [['name','mvName'],['power','mvPower'],['type','mvType']];
+function movesSection(sp, form){
+  const own = new Set(form.t);
+  // STAB only applies to damaging moves, so a same-type Status move must not be marked
+  const all = (sp.sec[form.si] || []).map(i=>{
+    const m = DEX.moves[i];
+    return {...m, stab: own.has(m.ty) && m.dc !== 'Status'};
+  });
+  const rows = state.mvStab ? all.filter(r=>r.stab) : all.slice();
+  const byName = (a,b)=> a.n.localeCompare(b.n);
+  rows.sort({
+    name:  byName,
+    power: (a,b)=> ((b.pw ?? -1) - (a.pw ?? -1)) || byName(a,b),
+    type:  (a,b)=> (TYPE_ORDER.indexOf(a.ty) - TYPE_ORDER.indexOf(b.ty)) || byName(a,b),
+  }[state.mvSort]);
+
+  const s = el('div','sec');
+  const h = sectionHead(t('secMoves'), all.length + (state.mvStab ? ' → ' + rows.length : ''));
+  const sp2 = el('span','sp');
+  MV_SORTS.forEach(([k,lab])=>{
+    const b = el('button','mini'); b.type='button'; b.textContent = t(lab);
+    b.setAttribute('aria-pressed', String(state.mvSort === k));
+    b.addEventListener('click', ()=>{ state.mvSort = k; openDetail(sp, state.form, true); });
+    sp2.append(b);
+  });
+  const st = el('button','mini'); st.type='button'; st.textContent = t('mvStab');
+  st.title = t('mvStabTitle');
+  st.setAttribute('aria-pressed', String(state.mvStab));
+  st.addEventListener('click', ()=>{ state.mvStab = !state.mvStab; openDetail(sp, state.form, true); });
+  sp2.append(st);
+  h.append(sp2);
+  s.append(h);
+
+  const wrap = el('div','mvwrap');
+  const hd = el('div','mvrow hd');
+  t('mvHead').forEach((lab,i)=>{
+    const c = el('span', i >= 3 ? 'num' : (i === 2 ? 'dc' : ''));
+    c.textContent = lab; hd.append(c);
+  });
+  wrap.append(hd);
+
+  if (!rows.length){
+    const n = el('div','mvnone'); n.textContent = t('mvNone');
+    wrap.append(n);
+  }
+  rows.forEach(m=>{
+    const r = el('div','mvrow');
+    if (m.stab) r.classList.add('stab');
+    r.style.setProperty('--tc', TYPE_COLORS[m.ty] || 'currentColor');
+    const g = el('img'); g.src = glyph(m.ty); g.alt=''; g.width = g.height = 16;
+    g.title = typeName(m.ty) + ' ' + m.ty;
+    // one name column only; the other language rides along in the tooltip
+    const zn = el('span','mn');
+    zn.textContent = state.lang === 'zh' ? (m.z || m.n) : m.n;
+    const other = state.lang === 'zh' ? m.n : (m.z || '');
+    zn.title = other ? `${zn.textContent}　${other}` : zn.textContent;
+    const dc = el('span','dc'); dc.textContent = t('dc')[m.dc] || '?';
+    dc.title = t('dcFull')[m.dc] || m.dc;
+    const mk = v => { const c = el('span','num');
+      if (v == null){ c.textContent = '—'; c.classList.add('dash'); } else c.textContent = v;
+      return c; };
+    r.append(g, zn, dc, mk(m.pw), mk(m.ac), mk(m.pp));
+    wrap.append(r);
+  });
+  s.append(wrap);
+  return s;
+}
+
+/* ---- detail with form switcher ---- */
+function openDetail(sp, formIdx, keepScroll){
+  state.sel = sp;
+  state.form = Math.max(0, Math.min(formIdx || 0, sp.f.length - 1));
+  const form = sp.f[state.form];
+  const p = $('#panel');
+  const y = keepScroll ? p.scrollTop : 0;
+  p.textContent = '';
+
+  const head = el('div','phead');
+  const wrap = el('div');
+  const h2 = el('h2'); h2.id='pt'; h2.textContent = spName(sp);
+  const alt = el('div','palt'); alt.textContent = spAlt(sp);
+  const pno = el('div','pno');
+  pno.textContent = 'No.' + String(sp.d).padStart(4,'0') + ' ・ ' + t('genOf')(GEN_ROMAN[sp.g])
+                  + (sp.f.length > 1 ? ' ・ ' + t('formsOf')(sp.f.length) : '')
+                  + (state.lang === 'zh' && sp.gz ? ' ・ ' + sp.gz : '');
+  wrap.append(h2, alt, pno);
+  const x = el('button','x'); x.type='button'; x.textContent='✕';
+  x.setAttribute('aria-label', t('close')); x.addEventListener('click', closeDetail);
+  head.append(wrap, x);
+
+  const b = el('div','pbody');
+
+  const stage = el('div','stage');
+  stage.append(spriteNode(form,'big',192));
+  const cap = el('div','cap'); cap.textContent = formLabel(form);
+  stage.append(cap);
+  b.append(stage);
+
+  // switcher, grouped by kind so 20 Vivillon patterns stay navigable
+  if (sp.f.length > 1){
+    const sw = el('div','sw');
+    const order = ['base','other','regional','mega'];
+    // A type mark on a chip should mean "this form retypes the Pokémon". Stamping all
+    // 20 Vivillon patterns with the same Bug/Flying pair would be pure noise.
+    const baseSig = sp.f[0].t.join('/');
+    order.forEach(kind=>{
+      const items = sp.f.map((f,i)=>[f,i]).filter(([f])=>f.k===kind);
+      if (!items.length) return;
+      const grp = el('div','swgrp');
+      const gl = el('span','gl'); gl.textContent = t('kind')[kind];
+      grp.append(gl);
+      items.forEach(([f,i])=>{
+        const on = i === state.form;
+        const btn = el('button','fchip'); btn.type='button';
+        btn.setAttribute('aria-pressed', String(on));
+        if (f.k === 'mega'){ const s = el('span'); s.textContent='★'; btn.append(s); }
+        const t = el('span'); t.textContent = formLabel(f); btn.append(t);
+        if (f.t.join('/') !== baseSig){
+          btn.title = f.t.map(typeName).join('/');
+          f.t.forEach(ty=>{ const g=el('img'); g.src=glyph(ty, on ? 'accent' : 'surface');
+                            g.alt=''; g.width=g.height=14; btn.append(g); });
+        }
+        btn.addEventListener('click', ()=>openDetail(sp, i, true));
+        grp.append(btn);
+      });
+      sw.append(grp);
+    });
+    b.append(sw);
+  }
+
+  const dl = el('dl','kv');
+  const dt = k => { const d=el('dt'); d.textContent=k; dl.append(d); };
+  const put = (k,v) => { dt(k); const dd=el('dd'); dd.textContent=v; dl.append(dd); };
+
+  dt(t('dTypes'));
+  const tdd = el('dd'); const tl = el('div','tlist');
+  form.t.forEach(t=>{
+    const pill = el('span','tpill');
+    pill.style.setProperty('--tc', TYPE_COLORS[t] || 'transparent');
+    pill.style.setProperty('--tcInk', inkOn(TYPE_COLORS[t] || '#888888'));
+    // the pill is filled with the type colour in MODERN, bare-bordered in POCKET
+    const g = el('img'); g.src = glyph(t, mode().typeColor ? 'typechip' : 'surface');
+    g.alt=''; g.width=g.height=14;
+    const s = el('span'); s.textContent = state.lang === 'zh' ? typeName(t) + ' ' + t : t;
+    pill.append(g, s); tl.append(pill);
+  });
+  tdd.append(tl); dl.append(tdd);
+
+  put(t('dForm'), formLabel(form) + '（' + t('kind')[form.k] + '）'
+                  + (formAlt(form) ? '　' + formAlt(form) : ''));
+  put(t('dVer'), 'v' + (form.v || sp.v));
+  const cur = form.x ? false : (form.k === 'base' ? !sp.x : true);
+  put(t('dRoster'), cur ? t('rosterIn') : t('rosterOut'));
+  b.append(dl);
+
+  const note = form.n || (form.k === 'base' ? sp.n : '');
+  if (note){ const w = el('div','warn'); w.textContent = t('notePrefix') + note; b.append(w); }
+  if (!cur){
+    const w = el('div','warn');
+    w.textContent = t('warnRoster');
+    b.append(w);
+  }
+  if (form.a){
+    const w = el('div','warn');
+    w.textContent = t('warnApprox');
+    b.append(w);
+  }
+
+  b.append(statsSection(form), abilitiesSection(form), movesSection(sp, form));
+
+  p.append(head, b);
+  p.classList.add('on'); $('#veil').classList.add('on');
+  p.scrollTop = y;
+  if (!keepScroll) x.focus();
+  // warm the other forms so switching is instant
+  if (REMOTE !== false) sp.f.forEach(f=>{ const i=new Image(); i.src = SPRITES + f.s; });
+  $('#live').textContent = sp.m + ' ' + formLabel(form);
+  render();
+}
+function closeDetail(){
+  state.sel = null; state.form = 0;
+  $('#panel').classList.remove('on'); $('#veil').classList.remove('on');
+  render();
+}
+function stepForm(d){
+  if (!state.sel) return;
+  const n = state.sel.f.length;
+  if (n < 2) return;
+  openDetail(state.sel, (state.form + d + n) % n, true);
+}
+
+/* ---- controls ---- */
+function paintTypeChips(){
+  const typeChipBg = mode().typeColor;   // in MODERN the chip itself is the type colour
+  document.querySelectorAll('#types .chip').forEach(b=>{
+    const ty = b.dataset.type;
+    b.style.setProperty('--tc', TYPE_COLORS[ty]);
+    b.style.setProperty('--tcInk', inkOn(TYPE_COLORS[ty]));
+    b.querySelector('img').src = glyph(ty, typeChipBg ? 'typechip'
+      : (b.getAttribute('aria-pressed') === 'true' ? 'accent' : 'surface'));
+  });
+}
+/* One place that repaints every string, so a toggle can never leave the page half
+   translated. Chip labels are re-read from the table rather than stored in the DOM. */
+const ROSTER = '__ROSTER__';
+function applyLang(){
+  document.documentElement.lang = state.lang === 'zh' ? 'zh-Hant' : 'en';
+  // drives which name slots get pixel-crisp rendering (Latin) vs smoothing (CJK)
+  document.body.classList.toggle('lang-en', state.lang === 'en');
+  $('#lblSearch').textContent = t('search');
+  $('#q').placeholder          = t('ph');
+  $('#lblMode').textContent    = t('mode');
+  $('#lblGen').textContent     = t('gen');
+  $('#lblType').textContent    = t('type');
+  $('#lblSort').textContent    = t('sort');
+  $('#megaonly').textContent   = t('megaOnly');
+  $('#multionly').textContent  = t('multiOnly');
+  $('#reset').textContent      = t('reset');
+  $('#sub').textContent = 'POKÉMON CHAMPIONS ・ ' + ROSTER;
+
+  const tally = $('#tally'); tally.textContent = '';
+  [[t('tSpecies'),DEX.meta.species],[t('tForms'),DEX.meta.formEntries],
+   [t('tMega'),DEX.meta.megas],[t('tMoves'),DEX.meta.moves]].forEach(([k,v])=>{
+    const d = el('div'); const b = el('b'); b.textContent = v;
+    d.append(b, document.createTextNode(k)); tally.append(d);
+  });
+
+  document.querySelectorAll('#sorts .chip').forEach(b=>{
+    const e = SORTS.find(([k])=>k === b.dataset.sort); if (e) b.textContent = t(e[1]);
+  });
+  document.querySelectorAll('#langs .chip').forEach(b=>{
+    b.textContent = I18N[b.dataset.lang].lang;
+    b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang));
+  });
+  document.querySelectorAll('#types .chip').forEach(b=>{
+    b.querySelector('span').textContent = typeName(b.dataset.type);
+  });
+
+  const foot = $('#foot'); foot.textContent = '';
+  t('footer').forEach(([label, body])=>{
+    const line = el('div');
+    const b = el('b'); b.textContent = label;
+    line.append(b, document.createTextNode('　' + body.replace('__ROSTER__', ROSTER)));
+    foot.append(line);
+  });
+
+  render();
+  if (state.sel) openDetail(state.sel, state.form, true);
+}
+
+function buildControls(){
+  const lg = $('#langs');
+  Object.keys(I18N).forEach(code=>{
+    const b = el('button','chip'); b.type='button'; b.dataset.lang = code;
+    b.addEventListener('click', ()=>{ if (state.lang === code) return;
+      state.lang = code; applyLang(); paintTypeChips(); });
+    lg.append(b);
+  });
+  const so = $('#sorts');
+  SORTS.forEach(([k,lab])=>{
+    const b = el('button','chip'); b.type='button'; b.textContent = lab;
+    b.dataset.sort = k; b.setAttribute('aria-pressed', String(state.sort === k));
+    b.addEventListener('click', ()=>{
+      state.sort = k;
+      document.querySelectorAll('#sorts .chip').forEach(x=>
+        x.setAttribute('aria-pressed', String(x.dataset.sort === k)));
+      render();
+    });
+    so.append(b);
+  });
+  const md = $('#modes');
+  MODES.forEach((m,i)=>{
+    const b = el('button','chip wide'); b.type='button'; b.textContent = m.id;
+    b.dataset.mode = m.id; b.setAttribute('aria-pressed', String(i === state.mode));
+    b.addEventListener('click', ()=>{ state.mode = i; applyMode(); });
+    md.append(b);
+  });
+  const g = $('#gens');
+  for (let i=1;i<=9;i++){
+    const b = el('button','chip'); b.type='button'; b.textContent = GEN_ROMAN[i];
+    b.setAttribute('aria-pressed','false');
+    b.addEventListener('click', ()=>{
+      state.gens.has(i) ? state.gens.delete(i) : state.gens.add(i);
+      b.setAttribute('aria-pressed', String(state.gens.has(i)));
+      render();
+    });
+    g.append(b);
+  }
+  const t = $('#types');
+  TYPE_ORDER.forEach(ty=>{
+    const b = el('button','chip tc'); b.type='button'; b.dataset.type = ty;
+    b.setAttribute('aria-pressed','false');
+    const im = el('img'); im.alt=''; im.src = glyph(ty);
+    const sp = el('span'); sp.textContent = typeName(ty); sp.dataset.i18n = 'type';
+    b.append(im, sp);
+    b.addEventListener('click', ()=>{
+      state.types.has(ty) ? state.types.delete(ty) : state.types.add(ty);
+      b.setAttribute('aria-pressed', String(state.types.has(ty)));
+      paintTypeChips(); render();
+    });
+    t.append(b);
+  });
+}
+
+$('#q').addEventListener('input', ev=>{ state.q = ev.target.value; render(); });
+$('#reset').addEventListener('click', ()=>{
+  state.q=''; state.gens.clear(); state.types.clear(); state.mega=false; state.multi=false;
+  $('#q').value='';
+  document.querySelectorAll('#gens .chip,#types .chip').forEach(b=>b.setAttribute('aria-pressed','false'));
+  $('#megaonly').setAttribute('aria-pressed','false');
+  $('#multionly').setAttribute('aria-pressed','false');
+  paintTypeChips(); render();
+});
+$('#megaonly').addEventListener('click', ev=>{
+  state.mega = !state.mega;
+  ev.currentTarget.setAttribute('aria-pressed', String(state.mega)); render();
+});
+$('#multionly').addEventListener('click', ev=>{
+  state.multi = !state.multi;
+  ev.currentTarget.setAttribute('aria-pressed', String(state.multi)); render();
+});
+$('#veil').addEventListener('click', closeDetail);
+addEventListener('keydown', ev=>{
+  if (!state.sel) return;
+  if (ev.key === 'Escape') closeDetail();
+  else if (ev.key === 'ArrowRight'){ ev.preventDefault(); stepForm(1); }
+  else if (ev.key === 'ArrowLeft'){  ev.preventDefault(); stepForm(-1); }
+});
+
+/* ---- boot ---- */
+buildControls();
+applyMode();      // tokens + glyph cache first, so applyLang's render has colours
+applyLang();
+
+/* One orchestrated reveal on load. The class is dropped once the last card has landed so
+   later renders (filtering, mode/language switches) repaint instantly. */
+document.body.classList.add('booting');
+setTimeout(()=>document.body.classList.remove('booting'), 26 * 14 + 260);
+
+/* Probe once: if remote art is blocked (offline, CSP, cold DNS) fall back wholesale
+   rather than letting hundreds of broken images flash through. */
+(function probe(){
+  const t = setTimeout(()=>settle(false), 6000);
+  const im = new Image();
+  im.onload  = ()=>{ clearTimeout(t); settle(true);  };
+  im.onerror = ()=>{ clearTimeout(t); settle(false); };
+  im.src = SPRITES + '25.png';
+  function settle(ok){
+    if (REMOTE !== null) return;
+    REMOTE = ok;
+    if (!ok) render();
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Local
+.DS_Store
+shots/
+*.local
+*.log*
+
+# Dist
+node_modules
+dist/
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Python (pipeline scripts)
+__pycache__/
+
+# TypeScript
+*.tsbuildinfo
+.spectra/
+openspec/.vector-search.db*

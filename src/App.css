@@ -1,0 +1,441 @@
+/*
+ * Nothing here names a colour. Every surface, border and text colour reads a token that
+ * src/state/display.ts writes onto .Root as an inline CSS custom property, so a mode
+ * switch recolours the running screen without recreating anything.
+ *
+ * Metrics are literal pixels rather than multiples of a base unit: the design document
+ * scaled everything off --px because it was a desktop page pretending to be a handheld,
+ * while this runs at device scale already.
+ */
+
+/*
+ * Two families for two weights, not one family with two weight descriptors: Lynx's
+ * @font-face ignores font-weight, so a second rule on the same family name would simply
+ * replace the first. Styles that want bold name SilkBold directly.
+ *
+ * Silkscreen carries no CJK, so Chinese falls straight through to the system face — Latin
+ * stays on the pixel grid while 中文 stays legible. The stack is repeated per rule rather
+ * than held in a custom property so the pixel face never depends on variable resolution.
+ *
+ * WEB PREVIEW CAVEAT (measured, see design/HANDOFF.md): these two rules do nothing in the
+ * web target. Lynx injects component CSS into the `lynx-view` shadow root, where
+ * `@font-face` is inert, and app code runs off the browser context on both threads so it
+ * cannot register the face itself. Latin text therefore falls back to the system face in
+ * the preview. To check pixel-face layout on web, inject the same two rules into the host
+ * document from devtools — a document-scoped face does apply inside the shadow root. The
+ * rules below are what native Lynx reads, and native is where they are verified.
+ */
+@font-face {
+  font-family: Silk;
+  src: url('./assets/fonts/Silkscreen-Regular.ttf');
+}
+
+@font-face {
+  font-family: SilkBold;
+  src: url('./assets/fonts/Silkscreen-Bold.ttf');
+}
+
+.Root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg);
+  padding: 12px;
+}
+
+.Shell {
+  background-color: var(--shell);
+  padding: 9px;
+}
+
+.Screen {
+  background-color: var(--panel);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- masthead ---------- */
+
+.Masthead {
+  display: flex;
+  flex-direction: column;
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--line);
+  padding-bottom: 9px;
+  margin-bottom: 9px;
+}
+
+.Title {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.Sub {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-top: 6px;
+}
+
+/* ---------- controls ---------- */
+
+.Row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 9px;
+}
+
+.Label {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-right: 6px;
+}
+
+.Chip {
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 3px 6px;
+  margin-right: 6px;
+}
+
+.ChipText {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+/* ---------- token swatches ----------
+   Present so a mode switch is observable at a glance: every token that paints a surface
+   in this slice gets one tile. */
+
+.Swatches {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.Swatch {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+.SwatchText {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  color: var(--ink);
+}
+
+.SwatchTextAccent {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  color: var(--accent-ink);
+}
+
+.SwatchBg {
+  background-color: var(--bg);
+}
+
+.SwatchShell {
+  background-color: var(--shell);
+}
+
+.SwatchSurface {
+  background-color: var(--surface);
+}
+
+.SwatchSurface2 {
+  background-color: var(--surface2);
+}
+
+.SwatchAccent {
+  background-color: var(--accent);
+}
+
+/* ---------- glyph board ---------- */
+
+.Section {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--line);
+  padding-top: 9px;
+  margin-top: 9px;
+  margin-bottom: 6px;
+}
+
+.SectionNote {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-bottom: 3px;
+}
+
+.GlyphRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+/* The cell carries the background the glyph was told it would sit on — the board is only
+   meaningful if the declared surface and the painted surface are the same. */
+.GlyphCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 3px;
+  margin-right: 3px;
+  margin-bottom: 3px;
+}
+
+.GlyphCellAccent {
+  background-color: var(--accent);
+}
+
+.GlyphAbbr {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 9px;
+  color: var(--ink2);
+}
+
+.GlyphAbbrAccent {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 9px;
+  color: var(--accent-ink);
+}
+
+/* ---------- species card ----------
+   The outer view owns the outline; the inner view owns the 1px bevel. Two views because
+   inset box shadows are unsupported, so a bevel has to be per-side border colours and the
+   outline already claimed the outer border. */
+
+.Cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.Card {
+  width: 164px;
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+.CardBevel {
+  display: flex;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: solid;
+  /* Light along the top-left, shadow along the bottom-right: reads as a moulded key
+     without spending a colour, since both edges come from existing tones. */
+  border-top-color: var(--panel);
+  border-left-color: var(--panel);
+  border-bottom-color: var(--surface2);
+  border-right-color: var(--surface2);
+  padding: 6px;
+}
+
+.CardHead {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.CardHeadRight {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: none;
+}
+
+.CardNo {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+}
+
+.CardMega {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-right: 3px;
+}
+
+/* Artwork is never recoloured in either mode — only upscaled without smoothing, so the
+   96px source stays a crisp pixel grid. The declaration sits on the image itself because
+   the platform applies image-rendering to the declaring element only, never inherited. */
+.CardSprite {
+  width: 96px;
+  height: 96px;
+  align-self: center;
+  image-rendering: pixelated;
+}
+
+.CardName {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+/* The other language always stays on screen — the toggle changes which one leads, it does
+   not hide the other. The reserved height keeps cards aligned when one has no alternate. */
+.CardNameAlt {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink2);
+  min-height: 15px;
+  word-break: break-word;
+}
+
+.CardForm {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  min-height: 13px;
+}
+
+.CardTypes {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 3px;
+}
+
+.CardType {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 6px;
+}
+
+.CardTypeAbbr {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  color: var(--ink2);
+  margin-left: 2px;
+}
+
+/* A drawn badge rather than a box-drawing character: the pixel face has no glyph for
+   those, so they fall back to the system face and break the grid. */
+.CardFormCount {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  background-color: var(--ink2);
+  color: var(--panel);
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-left: auto;
+  flex: none;
+}
+
+/* The box reserves the artwork's footprint so nothing shifts when the image lands. */
+.CardSpriteBox {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  align-self: center;
+}
+
+/* Opaque and exactly covering the image, so the box never reads as empty or broken. */
+.CardSpriteFallback {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface2);
+}
+
+/* ---------- upscale check ----------
+   The card renders artwork 1:1, where nearest-neighbour and smooth interpolation look
+   identical. Only a whole-number upscale shows which one the platform actually did, which
+   is why this pair exists. */
+
+.SpritePair {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.SpriteCase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 6px;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+.SpriteCaseLabel {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-top: 3px;
+}
+
+.SpriteNative {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+}
+
+/* Twice the source, so nearest-neighbour shows as whole square cells. */
+.SpriteDouble {
+  width: 192px;
+  height: 192px;
+  image-rendering: pixelated;
+}
+
+/* The same upscale with no declaration, as the control: if this looks identical to the one
+   above, the platform is ignoring image-rendering. */
+.SpriteDoubleSmooth {
+  width: 192px;
+  height: 192px;
+}

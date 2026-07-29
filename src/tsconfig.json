@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["vue-lynx/types"],
+
+    // Without this the checker falls back to the ES5 lib and rejects `includes`,
+    // `flatMap`, `Object.entries` and friends. ES2019 rather than something newer so the
+    // checker stays close to what the Lynx engine actually ships.
+    "target": "ES2019",
+
+    // Bundler resolution turns this on implicitly. Left on, the compiler infers a literal
+    // type for the ~195 KB dex dataset and type checking becomes unusable. Off, the
+    // `*.json` shim types the import as `unknown` and src/data/dex.ts narrows it once.
+    "resolveJsonModule": false,
+
+    "noEmit": true,
+  },
+  "vueCompilerOptions": {
+    "plugins": ["vue-lynx/types/volar-plugin"]
+  },
+  "include": ["./**/*.ts", "./**/*.vue"],
+}
