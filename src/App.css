@@ -140,10 +140,48 @@
   margin-right: 6px;
 }
 
-/* A selected control inverts to the accent pair rather than gaining a new colour, so the
-   four-tone contract holds in POCKET. */
+.Label {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-right: 6px;
+}
+
+/*
+ * Selected states: each `…On` rule sits directly below the base rule it overrides.
+ *
+ * That order is load-bearing, not tidiness. Both are single-class selectors, so they carry
+ * equal weight and the later one wins — a selected rule placed above its base is silently
+ * cancelled by it, and the control then looks identical whether or not it is selected. This
+ * file had exactly that bug: the chip's selected rules were written into this section while
+ * the base rules sat further down, so generation and sort chips gave no feedback at all while
+ * the type chips, whose pair happened to be in the right order, worked.
+ *
+ * Keep every pair adjacent, base first.
+ */
+
+.Chip {
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 3px 6px;
+  margin-right: 6px;
+}
+
+/* Inverts to the accent pair rather than gaining a new colour, so POCKET's four-tone contract
+   holds. It has to be the background rather than the border, because POCKET resolves accent
+   and line to the same tone and a border could not tell the two states apart. */
 .ChipOn {
   background-color: var(--accent);
+}
+
+.ChipText {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
 }
 
 .ChipTextOn {
@@ -166,34 +204,8 @@
   margin-bottom: 3px;
 }
 
-/* Selection inverts to the accent pair. It has to be the background rather than the border,
-   because POCKET resolves accent and line to the same tone. */
 .TypeChipOn {
   background-color: var(--accent);
-}
-
-.Label {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: var(--ink2);
-  margin-right: 6px;
-}
-
-.Chip {
-  background-color: var(--surface);
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--line);
-  padding: 3px 6px;
-  margin-right: 6px;
-}
-
-.ChipText {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: var(--ink);
 }
 
 /* ---------- species grid ----------
