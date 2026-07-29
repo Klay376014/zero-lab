@@ -17,13 +17,13 @@
  * stays on the pixel grid while 中文 stays legible. The stack is repeated per rule rather
  * than held in a custom property so the pixel face never depends on variable resolution.
  *
- * WEB PREVIEW CAVEAT (measured, see design/HANDOFF.md): these two rules do nothing in the
- * web target. Lynx injects component CSS into the `lynx-view` shadow root, where
- * `@font-face` is inert, and app code runs off the browser context on both threads so it
+ * WEB PREVIEW CAVEAT (measured, see design/HANDOFF.md): the @font-face rules here and below
+ * do nothing in the web target. Lynx injects component CSS into the `lynx-view` shadow root,
+ * where `@font-face` is inert, and app code runs off the browser context on both threads so it
  * cannot register the face itself. Latin text therefore falls back to the system face in
- * the preview. To check pixel-face layout on web, inject the same two rules into the host
- * document from devtools — a document-scoped face does apply inside the shadow root. The
- * rules below are what native Lynx reads, and native is where they are verified.
+ * the preview. To check face layout on web, inject the same rules into the host document from
+ * devtools — a document-scoped face does apply inside the shadow root. These rules are what
+ * native Lynx reads, and native is where they are verified.
  */
 @font-face {
   font-family: Silk;
@@ -33,6 +33,24 @@
 @font-face {
   font-family: SilkBold;
   src: url('./assets/fonts/Silkscreen-Bold.ttf');
+}
+
+/*
+ * The reading serif, for prose. One face and one family name, like the two above.
+ *
+ * The asset is a pinned instance of an upstream variable font, subset to the characters this
+ * app draws — derived by design/pipeline/fetch_fonts.sh, which explains both steps. Two things
+ * follow from it being pinned rather than variable: no rule may declare font-optical-sizing,
+ * because the optical size is already baked in and a declaration that does nothing reads as one
+ * that does; and there is no bold, because prose has one weight here.
+ *
+ * scripts/check-styles.mjs asserts the subset still covers every character the prose corpus
+ * needs. A character outside it renders as a missing-glyph box: visible, but reported by
+ * nothing.
+ */
+@font-face {
+  font-family: Lit;
+  src: url('./assets/fonts/Literata-Prose.ttf');
 }
 
 /*
@@ -260,8 +278,10 @@
 }
 
 /* A sentence, so the reading face rather than the pixel one — the pixel face has no CJK
-   glyphs and prose in it is tiring to read at any length. */
+   glyphs and prose in it is tiring to read at any length. Chinese falls through the stack to a
+   system serif, which is the design document's own behaviour: Literata carries no CJK. */
 .DexGridEmpty {
+  font-family: Lit, "PingFang TC", "PingFang SC", "Songti TC", "Noto Serif TC", serif;
   font-size: 12px;
   color: var(--ink2);
   padding-top: 12px;
@@ -714,6 +734,7 @@
    is distributed as WOFF2, which this platform's font registration rejects on Android, so prose
    falls through to the platform's own face until that is resolved. */
 .DetailWarn {
+  font-family: Lit, "PingFang TC", "PingFang SC", "Songti TC", "Noto Serif TC", serif;
   font-size: 13px;
   line-height: 20px;
   background-color: var(--accent);
@@ -903,6 +924,7 @@
 /* Prose, so no pixel face is named here and none is embedded for it — see the warning rule's
    note. Line height carries the reading rhythm the design document set. */
 .AbilityDesc {
+  font-family: Lit, "PingFang TC", "PingFang SC", "Songti TC", "Noto Serif TC", serif;
   font-size: 13px;
   line-height: 20px;
   color: var(--ink2);

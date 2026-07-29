@@ -323,10 +323,18 @@ Mega 沿用基本形態的學習表（`si` 回退到 0），但**本系加成隨
 | 第二個限制 | Lynx 的 `@font-face` **不支援 `font-style` / `font-weight` / `font-variant` 描述子** |
 | 對設計稿的影響 | 設計稿三個內嵌字型都是 WOFF2（檔頭 `d09GMg` 已確認），且用同一個 `Silk` 家族掛 400 / 700 兩筆 —— **兩點都不成立** |
 | 已採行 | `design/pipeline/fetch_fonts.sh` 抓 Silkscreen 官方 TTF 到 `src/assets/fonts/`（已進版控）；Regular 註冊為 `Silk`、Bold 註冊為 `SilkBold` 兩個獨立家族名，需要粗體的樣式直接指名 `SilkBold` |
-| 尚未處理 | Literata（`Lit`）也是 WOFF2。注意 Literata TTF 比 WOFF2 大約兩倍，會直接反映在 bundle |
-| 現況（詳情面板切片，2026-07-29） | **散文面用系統字型佔位，Literata 尚未內嵌。** 長文有三處（特性說明、兩則警語、網格空結果），三處的樣式規則都刻意不寫 `font-family`，落到平台自己的字型。中文本來就是這樣（Silkscreen 無 CJK），所以差異只出現在拉丁文字上 |
-| 這個佔位的代價 | **§11 的「字型分工未跑偏」驗收項在佔位期間不成立** —— 該項要求「特性說明與 footer 長文應為 `Lit`」，現在不是。這不是靜默偏離，是記在這裡的已知缺口 |
-| 為什麼不順手做掉 | 內嵌一個字型是 bundle 體積的決定（約兩倍），把它綁在同一批會讓平台驗證（覆蓋層、節點樹深度）等一個與平台無關的取捨。要做的時候獨立一批：抓 Literata 官方 TTF 進 `src/assets/fonts/`、註冊為一個家族名（`@font-face` 不吃 weight 描述子，見上），三處長文改指名它 |
+| 散文面（已完成，2026-07-29） | Literata 已內嵌為 `Lit`。**但不是「抓官方 TTF」那麼簡單，也不是本文件原先估計的「約兩倍」** —— 見以下各列 |
+| ⚠️ 原先的體積估計是錯的 | 本節原本寫「Literata TTF 比 WOFF2 大約兩倍」。實測**不是兩倍，是二十倍**：上游 Google Fonts 只提供可變字型 `Literata[opsz,wght].ttf`，**955,132 B（933 KB）**，而設計稿內嵌的 WOFF2 只有 46,568 B —— 那是已經 subset 過的 latin 子集，拿它跟完整可變字型比本來就不對等 |
+| 實際的處理步驟 | 兩步，都在 `fetch_fonts.sh` 裡：①**釘一個靜態實例** `wght=400 opsz=13`（264 KB）—— 400 因為散文只有一個字重，13 因為設計稿的散文是 13px 配 `font-optical-sizing: auto`，瀏覽器在該尺寸解析到的就是 13；不用可變字型是因為 Lynx 對可變字軸沒有承諾，缺支援時會拿到字型自己的預設 `opsz=12` 而且**不會有任何錯誤訊息**。②**subset 成宣告的範圍**（可見 ASCII、Latin-1 補充、破折號、引號、刪節號、角分號），得到 **35,788 B**，與 Silkscreen 的 32,220 / 30,632 B 同級 |
+| 需要 fonttools，但只有這個腳本需要 | 實例化與 subset 用 `python3 -m fontTools.varLib.instancer` 與 `python3 -m fontTools.subset`。缺它時腳本會非零退出並印出安裝指令。**應用建置、CI、任何只跑 `pnpm run build` 的人都不需要 Python** —— 資產已進版控 |
+| ⚠️ bundle 成本是檔案大小的 4/3，不是檔案大小 | `lynx.config.ts` 設了 `dataUriLimit: 64 * 1024`，低於此值的字型會被內嵌成 base64 data URI（這正是 §12.8 的修法）。所以 35,788 B 的資產進 bundle 是 46.6 KB。lynx bundle 從 405.6 KB 變成 453.6 KB（+11.8%），三個字型都是內嵌的 |
+| ⚠️ 這給 subset 範圍訂了上限 | 資產一旦超過 64 KB 就不再內嵌，會退回成 lynx bundle 抓不到的 URL —— **字型靜默失效**。目前 35.8 KB 餘裕很大，但日後放寬 subset 範圍時要一起確認 |
+| subset 的風險由不變式擋住 | `pnpm run check` 新增第三條檢查 `prose face covers the prose corpus`：把散文語料（資料集的特性說明與種類備註 + 字串表的所有字面值，排除東亞文字）逐字比對資產的 cmap，缺任何一個就非零退出並列出缺哪些。豆腐字是「畫面上有東西、console 乾淨、建置成功」的典型靜默失敗 |
+| 這條檢查第一次跑就抓到一個真的 bug | 中文的 `notePrefix` 與兩則中文警語用 `※`（U+203B）。它在 General Punctuation 而不是 CJK 區塊，所以範圍檢查漏掉它 —— 而**上游 Literata 根本沒有這個字**，放寬 subset 範圍也拿不到。它跟著它前綴的中文一起穿透到系統襯線體，這是對的行為，已寫成有理由的排除 |
+| §11 的驗收項恢復可驗 | 「字型分工未跑偏」不再是紅的：三處長文（特性說明、兩則警語、網格空結果）都指名 `Lit` 開頭的完整堆疊，中文仍穿透到系統襯線體。**樣式表不得出現 `font-optical-sizing`** —— 光學尺寸已烘進資產，留著一行不再起作用的宣告會誤導後人 |
+| ✅ iOS 實機已確認（2026-07-29） | 三處長文的拉丁文字都是襯線體，與同畫面的像素面（特性名、種族值標籤）明顯有別；中文落在系統**襯線**體而非預設無襯線；`※` 正常顯示不是方框。**退路不啟用** —— subset 過的 TTF 在 Lynx 上正常，不需要退回「只實例化不 subset」的 264 KB 版本 |
+| 順帶確立 | Lynx 吃**subset 過**的 TTF。這件事事前沒有證據 —— 一個被裁掉大半表格的字型有可能被平台拒收，而拒收的樣子與「字型沒載到」一樣是靜默落回系統面。現在知道保留 `cmap` / `glyf` / `hmtx` / `kern` / `name` / `head` / `hhea` / `maxp` / `post` 這組表就夠 |
+| 字元穿透是逐字的，不是整段的 | `※` 與它前綴的中文在同一個 `<text>` 節點裡，但 `※` 不在 Literata 的 cmap 內，所以平台是**逐字**往字型堆疊後面找，而不是整段換一個字型。這也是為什麼那條覆蓋檢查只需要管「Literata 該畫的字」，不必管整段文字 |
 
 ### 12.3 `box-shadow` 不支援 `inset`
 
@@ -572,7 +580,7 @@ macOS 桌面版視窗固定 800×600 且只有 `--url` / `--remote-debug` 兩個
 | `.mvrow.stab .mn::after{content:"★"}` | 真的 `<text>` 節點（形態鈕的 MEGA 星號已照此做） | 平台沒有 `content` 屬性，偽元素的星號根本不會出現 |
 | `openDetail(sp, i, true)` 自己存取 `scrollTop` | **不寫任何捲動位置的程式** | Vue 的響應式更新只換掉變動的節點，捲動位置本來就留著。設計稿要存取是因為它把內容整個重建。**不要「補」上去** |
 | `form.n`（每個形態的備註） | 只讀種類層級的 `species.n`，且只在基本形態顯示 | 型別裡沒有這個欄位，360 個形態也一筆都沒有 —— 設計稿是在防禦它自己的 pipeline 從不產出的形狀 |
-| Literata（`Lit`）散文面 | 系統字型佔位 | 見 §12.2 的現況列 |
+| Literata（`Lit`）散文面 | **已內嵌**（`embed-prose-face` 批次）| 詳情面板切片時是系統字型佔位，現已改為釘住的靜態實例 + subset，35.8 KB。處理步驟、正確的體積數字、以及 `※` 那個 bug 都在 §12.2 |
 
 一併記下一個**靜默失效的 bug 與它的成因**：形態鈕的 MEGA 星號原本用 `var(--ink)`，而 POCKET 的 `--accent` 與 `--ink` 都是 tone 0 —— 選中的鈕上，星號與背景同色，星號直接消失。修法是給它 `FormChipStarOn`（`var(--accent-ink)`），與標籤的做法一致。
 
