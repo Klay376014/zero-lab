@@ -96,8 +96,36 @@ function checkSelectedStateOrder({ path, css }) {
   return failures
 }
 
+/**
+ * No rule may declare an inset box shadow.
+ *
+ * The platform ignores such a declaration outright — it does not fall back, warn, or fail to
+ * build. What is left is a surface missing a hairline frame, which is close to invisible in a
+ * screenshot, and the larger fact that a design-document rule was copied rather than ported.
+ * Every surface that the design document drew with an inset shadow is a bordered view here.
+ *
+ * Matches the declaration only. The word appears in this project's prose too — the comments
+ * explaining why the bevel is two views — and a check that failed on those would teach people
+ * to stop writing the explanation.
+ */
+function checkNoInsetShadow({ path, css }) {
+  const failures = []
+  css.split('\n').forEach((line, i) => {
+    const declaration = line.match(/^\s*box-shadow\s*:\s*(.+?);?\s*$/)
+    if (!declaration) return
+    if (!/\binset\b/.test(declaration[1])) return
+    failures.push(
+      `${relative(ROOT, path)}:${i + 1}: box-shadow declares inset, which the platform `
+      + 'silently ignores — the surface will simply have no frame. Draw it with a bordered '
+      + 'view instead, as the card bevel does.',
+    )
+  })
+  return failures
+}
+
 const CHECKS = [
   { name: 'selected-state rules follow the rules they override', run: checkSelectedStateOrder },
+  { name: 'no inset box shadows', run: checkNoInsetShadow },
 ]
 
 const sources = styleSources()

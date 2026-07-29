@@ -42,6 +42,10 @@
  * without this chain the 208th card is not merely below the fold — it is unreachable.
  *
  * A fixed height rather than a minimum for the same reason: a minimum lets the root grow.
+ *
+ * Positioned, so the detail overlay resolves against this view rather than against whatever
+ * the platform would otherwise pick. The overlay covers the padding area too, because an
+ * absolutely positioned child is placed from the padding edge.
  */
 .Root {
   display: flex;
@@ -49,6 +53,7 @@
   height: 100vh;
   background-color: var(--bg);
   padding: 12px;
+  position: relative;
 }
 
 .Shell {
@@ -421,4 +426,567 @@
   align-items: center;
   justify-content: center;
   background-color: var(--surface2);
+}
+
+/* ---------- detail overlay ----------
+   The overlay is positioned against the root view, not the viewport: the root already fills
+   the screen, and the platform makes no documented promise about viewport-fixed positioning.
+
+   A centred dialog, as the design document draws it. Centred with the row-and-column
+   primitives rather than the document's centring transform, which exists there only because a
+   viewport-fixed element has no parent to centre inside. */
+
+.DetailOverlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+/* Dims the dex rather than hiding it, in both modes, at the design document's own strength.
+
+   Expressed as opacity on the background token rather than as a literal translucent colour, so
+   nothing here names a colour the theme layer does not own.
+
+   This is the one place where POCKET paints outside its four-tone ramp: compositing produces
+   tones between the ramp's. The exemption is deliberate and recorded in the retro-theme spec —
+   a veil that hides the dex outright stops reading as an overlay, which is the whole point of
+   the panel sitting above the grid rather than replacing it. Nothing else may take this
+   liberty. */
+.DetailVeil {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg);
+  opacity: 0.66;
+  animation: veilIn 0.1s steps(2) both;
+}
+
+/* Sized by its content, capped by the body's own height below — so a species with little to say
+   gets a short dialog, as in the design document. The 6px frame is that document's own value
+   (twice its 3px base unit); a hairline border reads as a modern card rather than a pixel-art
+   box, which is most of what makes a port stop looking like its source.
+
+   The width cap keeps the dialog from stretching on a tablet. On a handheld the available width
+   is well under it, so the dialog is full width there. */
+.DetailPanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 620px;
+  background-color: var(--panel);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--line);
+  animation: panelIn 0.16s steps(3) both;
+}
+
+/* ---------- detail header ----------
+   Outside the scrolling container, which is what keeps it in place while the content scrolls.
+   The design document held it there with sticky positioning; a header that is not inside the
+   scrolling region needs no such support. */
+
+.DetailHead {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--accent);
+  padding: 6px 9px;
+  flex-shrink: 0;
+}
+
+.DetailHeadText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.DetailName {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--accent-ink);
+  word-break: break-word;
+}
+
+.DetailNameAlt {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  color: var(--accent-ink);
+  margin-top: 1px;
+  word-break: break-word;
+}
+
+.DetailIdentity {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--accent-ink);
+  margin-top: 3px;
+}
+
+/* A bordered box rather than a bare mark: a 28px target is the smallest that stays tappable,
+   and the border is what says it is a control at all on a touch screen with no hover. */
+.DetailClose {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--accent-ink);
+  margin-left: 9px;
+}
+
+.DetailCloseMark {
+  font-size: 13px;
+  color: var(--accent-ink);
+}
+
+/* ---------- detail body ---------- */
+
+/* The scrolling container carries the bound itself, in viewport units, rather than asking for
+   whatever height is left of an ancestor. That is what the panel above is capped by, and it is
+   what makes this scroll at all: a scrolling container whose ancestors are unbounded grows to
+   fit its children and scrolls nothing — the same chain the grid depends on, and the way this
+   panel first broke. */
+.DetailBody {
+  height: 60vh;
+}
+
+.DetailSections {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+/* Stepped like everything else. The dialog scales up from its centre, as the design document's
+   does — and unlike that document's version it needs no centring transform folded into the
+   keyframes, because the overlay centres it by layout rather than by translation. */
+@keyframes veilIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- detail stage ----------
+   192px is exactly twice the 96px source, so the pixel grid survives the upscale. The
+   declaration sits on the image itself: the platform applies image-rendering to the declaring
+   element only and never inherits it. */
+
+.DetailStage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--surface2);
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 6px;
+  margin-bottom: 9px;
+}
+
+.DetailSpriteBox {
+  position: relative;
+  width: 192px;
+  height: 192px;
+}
+
+.DetailSprite {
+  width: 192px;
+  height: 192px;
+  image-rendering: pixelated;
+}
+
+.DetailSpriteFallback {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 192px;
+  height: 192px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface2);
+}
+
+.DetailStageCaption {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink);
+  min-height: 15px;
+  margin-top: 3px;
+  text-align: center;
+}
+
+/* ---------- detail attributes ----------
+   A row per attribute, label at a fixed width and value taking the rest. The design document
+   used a two-column grid; nothing else in this stylesheet does, and a fixed label width gets
+   the same alignment out of the row primitives already in use. */
+
+.DetailAttrs {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 9px;
+}
+
+.DetailAttr {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.DetailAttrKey {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  width: 62px;
+  flex: none;
+}
+
+.DetailAttrValue {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  flex: 1;
+  word-break: break-word;
+}
+
+.DetailAttrTypes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+/* Bordered and unfilled here; the mode that spends type colour fills it inline. The border is
+   what keeps the pill legible in the four-tone mode, where a fill would introduce a colour
+   outside the ramp. */
+.TypePill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--ink2);
+  padding: 1px 3px;
+  margin-right: 6px;
+  margin-bottom: 3px;
+}
+
+.TypePillText {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  margin-left: 3px;
+}
+
+/* A sentence rather than a label, so it stays off the pixel face — which carries no CJK and is
+   tiring to read at any length. No embedded reading face is named: the design document's serif
+   is distributed as WOFF2, which this platform's font registration rejects on Android, so prose
+   falls through to the platform's own face until that is resolved. */
+.DetailWarn {
+  font-size: 13px;
+  line-height: 20px;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  padding: 6px;
+  margin-bottom: 9px;
+}
+
+/* ---------- base stats ----------
+   Fixed label and value widths with the bar taking the rest: the design document used a
+   three-column grid, and the row primitives reach the same alignment. Row height is set here
+   and never varies with emphasis — see the component's note on why that matters. */
+
+.Stats {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 9px;
+}
+
+.StatsHead {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--ink2);
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+}
+
+.StatRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 22px;
+}
+
+.StatKey {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink2);
+  width: 62px;
+  flex: none;
+}
+
+/* Emphasis is the ink pair only. No size, weight or spacing change: those would alter the row's
+   height or width and make the block shift when the displayed form changes. */
+.StatKeyPeak {
+  color: var(--ink);
+}
+
+.StatValue {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  color: var(--ink2);
+  width: 38px;
+  flex: none;
+  text-align: right;
+}
+
+.StatValuePeak {
+  color: var(--ink);
+}
+
+/* The trough is a bordered box rather than an inset shadow, which the platform ignores. */
+.StatBar {
+  flex: 1;
+  height: 13px;
+  background-color: var(--surface2);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--ink2);
+  margin-left: 6px;
+}
+
+.StatFill {
+  height: 100%;
+  background-color: var(--ink2);
+}
+
+.StatFillPeak {
+  background-color: var(--ink);
+}
+
+.StatTotal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top-width: 3px;
+  border-top-style: solid;
+  border-top-color: var(--ink2);
+  padding-top: 3px;
+  margin-top: 3px;
+}
+
+.StatTotalKey {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+}
+
+.StatTotalValue {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ---------- abilities ----------
+   The box is a bordered view rather than an inset shadow, which the platform ignores. */
+
+.Abilities {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 9px;
+}
+
+.AbilitiesHead {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--ink2);
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+}
+
+.AbilitiesTitle {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.AbilitiesCount {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink2);
+  margin-left: 6px;
+}
+
+.Ability {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface);
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--ink2);
+  padding: 6px;
+  margin-bottom: 6px;
+}
+
+.AbilityHead {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.AbilityName {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.AbilityNameAlt {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink2);
+  margin-left: 6px;
+}
+
+.AbilityHidden {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  background-color: var(--ink2);
+  color: var(--panel);
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-left: 6px;
+}
+
+/* Prose, so no pixel face is named here and none is embedded for it — see the warning rule's
+   note. Line height carries the reading rhythm the design document set. */
+.AbilityDesc {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink2);
+  margin-top: 3px;
+}
+
+/* ---------- form switcher ----------
+   A row per kind, the group label at a fixed width on wide rows and on its own line when the
+   chips need the whole width. Wrapping is what keeps twenty Vivillon patterns on screen. */
+
+.Forms {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 9px;
+}
+
+.FormGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.FormGroupLabel {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-bottom: 3px;
+}
+
+.FormChips {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* Base first, selected rule directly below it — both are single-class selectors, so the later
+   one wins and a selected rule placed above its base would be cancelled on every property they
+   share. The style check asserts this ordering. */
+.FormChip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--surface);
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--ink2);
+  padding: 3px 6px;
+  margin-right: 6px;
+  margin-bottom: 3px;
+}
+
+/* Inverts to the accent pair rather than gaining a colour, so POCKET's four-tone contract
+   holds — the same reason the query bar's chips invert. */
+.FormChipOn {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.FormChipText {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  margin-right: 3px;
+}
+
+.FormChipTextOn {
+  color: var(--accent-ink);
+}
+
+/* A real text node, not a generated marker: the platform has no content property, and the
+   design document's pseudo-element star would simply not appear.
+
+   It needs its own selected rule for the same reason the label does: POCKET resolves accent and
+   ink to the same tone, so a star left on the ink token vanishes into a selected chip's
+   background. Invisible rather than wrong — exactly the failure the style check exists for, and
+   one the check cannot see, because a missing rule is not a misordered one. */
+.FormChipStar {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink);
+  margin-right: 3px;
+}
+
+.FormChipStarOn {
+  color: var(--accent-ink);
 }

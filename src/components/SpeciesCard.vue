@@ -9,7 +9,7 @@ import { computed, ref, watch } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
 import type { Species } from '../data/dex.js'
-import { genNumeral, megaForms } from '../data/dex.js'
+import { genNumeral, megaForms, spriteUrl } from '../data/dex.js'
 import { formLabel, speciesName } from '../data/i18n.js'
 import { typeAbbr } from '../data/types.js'
 import { lang } from '../state/display.js'
@@ -19,8 +19,6 @@ const props = defineProps<{
   /** Which of the species' forms to render. */
   formIndex: number
 }>()
-
-const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'
 
 const form = computed(() => props.species.f[props.formIndex] ?? props.species.f[0]!)
 
@@ -44,7 +42,7 @@ const formCount = computed(() => (props.species.f.length > 1 ? String(props.spec
 
 const names = computed(() => speciesName(props.species, lang.value))
 const label = computed(() => formLabel(form.value, lang.value))
-const spriteSrc = computed(() => SPRITE_BASE + form.value.s)
+const spriteSrc = computed(() => spriteUrl(form.value))
 
 /**
  * Artwork is the card's one external dependency, so a failure has to leave something in the

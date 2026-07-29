@@ -22,6 +22,7 @@ import SpeciesCard from './SpeciesCard.vue'
 import { t } from '../data/i18n.js'
 import { lang } from '../state/display.js'
 import type { Result } from '../state/query.js'
+import { openDetail } from '../state/selection.js'
 
 const props = defineProps<{
   /** The active query's results, each already paired with the form its card draws. */
@@ -87,6 +88,20 @@ function revealDelayMs(index: number): number {
 function cardKey(result: Result): string {
   return `${result.species.d}-${result.formIndex}`
 }
+
+/**
+ * Opens the detail for a tapped cell, on the form that cell is displaying.
+ *
+ * The displayed form rather than the species' first form: a type filter decides which form
+ * each cell shows, so filtering for Dragon and tapping Charizard has to open Mega Charizard
+ * X. Opening the base form there would contradict the artwork that was tapped.
+ *
+ * The grid holds no selection state of its own — it reports, and the selection module
+ * decides. A second copy here could disagree with the panel's.
+ */
+function onCellTap(result: Result): void {
+  openDetail(result.species, result.formIndex)
+}
 </script>
 
 <template>
@@ -98,11 +113,18 @@ function cardKey(result: Result): string {
     <text v-if="results.length === 0" class="DexGridEmpty">{{ t('empty', lang) }}</text>
 
     <view v-else class="Cards">
+      <!--
+        The tap is bound on this cell rather than on the card component: a binding placed on
+        a component reaches an element only by attribute fall-through, and a binding that
+        never lands looks exactly like a platform that ignores it (see design/HANDOFF.md
+        §12.14, which established the same point for class and style).
+      -->
       <view
         v-for="(result, index) in results"
         :key="cardKey(result)"
         :class="booting ? 'DexCell CardReveal' : 'DexCell'"
         :style="booting ? { animationDelay: `${revealDelayMs(index)}ms` } : undefined"
+        @tap="onCellTap(result)"
       >
         <SpeciesCard :species="result.species" :form-index="result.formIndex" />
       </view>

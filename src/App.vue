@@ -2,9 +2,11 @@
 import './App.css'
 import DexGrid from './components/DexGrid.vue'
 import QueryBar from './components/QueryBar.vue'
+import SpeciesDetail from './components/SpeciesDetail.vue'
 import { t } from './data/i18n.js'
 import { cycleMode, lang, mode, toggleLang, tokenStyle } from './state/display.js'
 import { results } from './state/query.js'
+import { selected, selectedFormIndex } from './state/selection.js'
 </script>
 
 <template>
@@ -29,5 +31,16 @@ import { results } from './state/query.js'
         <DexGrid :results="results" />
       </view>
     </view>
+
+    <!--
+      A sibling of the shell rather than a descendant of the screen: the overlay is positioned
+      against this root view, so anything between them would confine it. Mounted only while a
+      species is selected — see the panel's own note on why that is not a hidden element.
+    -->
+    <SpeciesDetail
+      v-if="selected"
+      :species="selected"
+      :form-index="selectedFormIndex"
+    />
   </view>
 </template>

@@ -215,3 +215,53 @@ export function hasMega(species: Species): boolean {
 export function megaForms(species: Species): Form[] {
   return species.f.filter((form) => form.k === 'mega')
 }
+
+/**
+ * Where the artwork is served from.
+ *
+ * External by design: the sprites are the only thing on screen carrying original colour, and
+ * 360 of them would dominate a bundle that is otherwise 195 KB of data.
+ */
+const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'
+
+/**
+ * The artwork URL for one form.
+ *
+ * Here rather than in each component that draws artwork: the card and the detail panel show
+ * the same sprites at different sizes, and two copies of the host would be two things to
+ * change when it moves.
+ */
+export function spriteUrl(form: Form): string {
+  return SPRITE_BASE + form.s
+}
+
+/**
+ * The ability an ability slot refers to.
+ *
+ * Slots hold an index into the shared ability table rather than the ability itself, because
+ * 360 forms share 200 abilities. Resolving the index here keeps every caller from reaching
+ * into {@link Dex.abilities} and repeating the lookup — and from having to decide what an
+ * out-of-range index means, which cannot happen: the dataset's ability count is asserted at
+ * load, and the pipeline builds these indices from the same table.
+ */
+export function abilityOf(ref: AbilityRef): Ability {
+  const ability = dex.abilities[ref[0]]
+  if (ability === undefined) {
+    throw new Error(
+      `ability slot refers to index ${ref[0]}, which is outside the ability table. `
+      + 'A slot and the table it indexes are built together by design/pipeline, so this '
+      + 'means the two came from different builds.',
+    )
+  }
+  return ability
+}
+
+/**
+ * Whether an ability slot holds the species' hidden ability.
+ *
+ * Encoded as the presence of a second element rather than a flag, which is the dataset's own
+ * shape — see {@link AbilityRef}.
+ */
+export function isHidden(ref: AbilityRef): boolean {
+  return ref.length > 1
+}

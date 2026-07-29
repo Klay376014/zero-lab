@@ -14,7 +14,7 @@ English side by side, and type marks hand-plotted on an 8×8 grid.
 | `design/champions-dex.html` | The design study. Self-contained — open it in a browser. |
 | `design/pipeline/` | Rebuilds the study and its dataset from upstream sources in 8 stages, each asserting its own invariants. |
 | `design/HANDOFF.md` | The document that matters. Data provenance, derivation rules, design decisions and their reasons, and the measured Lynx platform facts (§12). |
-| `src/` | The Vue Lynx port. First vertical slice only — data layer, colour modes, type glyph, one species card. |
+| `src/` | The Vue Lynx port. Data layer, colour modes, type glyph, the species grid with its query bar, and the detail panel. The learnset table is the one piece still unported. |
 | `openspec/` | [Spectra](https://github.com/spectra-app/spectra) specs the port is built against. |
 
 ## Running

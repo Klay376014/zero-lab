@@ -2,14 +2,20 @@
  * Every user-facing string of this slice's screen, plus the bilingual name resolution.
  *
  * The strings live in one table so the language toggle can never leave half the screen in
- * the other language. Scope is the screens that exist: the grid and its query bar are here;
- * the detail panel and learnset strings stay in design/pipeline/template.html until the
- * slice that ports them.
+ * the other language. Scope is the screens that exist: the grid, its query bar and the
+ * detail panel are here; the learnset strings stay in design/pipeline/template.html until
+ * the slice that ports them.
  *
  * Values are carried over from that template's own I18N table rather than written fresh, so
  * the two do not drift into two different vocabularies for the same control.
+ *
+ * `Strings` holds plain strings only, and `t()` therefore returns a plain string. The panel
+ * also needs a six-item list, a per-kind lookup and two strings that take a number; each of
+ * those has its own named accessor below. Widening `t()`'s return to cover them would put a
+ * type assertion at every call site and give up what the interface is for.
  */
-import type { Form, Species } from './dex.js'
+import { GEN_ROMAN } from './dex.js'
+import type { Ability, Form, FormKind, Species } from './dex.js'
 
 export type Lang = 'zh' | 'en'
 
@@ -34,6 +40,31 @@ export interface Strings {
   readonly reset: string
   /** Shown in the card area when the query matches no species. */
   readonly empty: string
+  // Detail panel.
+  /** Label on the control that closes the detail. */
+  readonly close: string
+  /** Attribute row: the form's types. */
+  readonly dTypes: string
+  /** Attribute row: the form and its kind. */
+  readonly dForm: string
+  /** Attribute row: the game version that introduced the form. */
+  readonly dVer: string
+  /** Attribute row: whether the form is in the current roster. */
+  readonly dRoster: string
+  readonly rosterIn: string
+  readonly rosterOut: string
+  readonly secStats: string
+  /** Label on the base-stat total. */
+  readonly total: string
+  readonly secAbil: string
+  /** Marker on the slot holding a species' hidden ability. */
+  readonly hidden: string
+  /** Prefix on a roster note carried by the dataset. */
+  readonly notePrefix: string
+  /** Warning shown for a form outside the current roster. */
+  readonly warnRoster: string
+  /** Warning shown when the artwork is the species' shared sprite. */
+  readonly warnApprox: string
 }
 
 export const I18N: Record<Lang, Strings> = {
@@ -49,6 +80,20 @@ export const I18N: Record<Lang, Strings> = {
     sortBst: '種族值',
     reset: '清除篩選',
     empty: '沒有符合的寶可夢。',
+    close: '關閉',
+    dTypes: '型別',
+    dForm: '形態',
+    dVer: '加入版本',
+    dRoster: '當前陣容',
+    rosterIn: '可取得',
+    rosterOut: '不在當前陣容',
+    secStats: '種族值',
+    total: '總和',
+    secAbil: '特性',
+    hidden: '隱藏',
+    notePrefix: '※ ',
+    warnRoster: '※ 此形態不在當前陣容，須透過活動或從其他遊戲經 Pokémon HOME 傳送。',
+    warnApprox: '※ PokeAPI 未收錄此形態的獨立圖像，上方顯示的是該種類的共用圖。',
   },
   en: {
     lang: 'EN',
@@ -62,6 +107,22 @@ export const I18N: Record<Lang, Strings> = {
     sortBst: 'Stats',
     reset: 'Clear',
     empty: 'No Pokémon match.',
+    close: 'Close',
+    dTypes: 'Types',
+    dForm: 'Form',
+    dVer: 'Added',
+    dRoster: 'Roster',
+    rosterIn: 'Obtainable',
+    rosterOut: 'Not in current roster',
+    secStats: 'BASE STATS',
+    total: 'TOTAL',
+    secAbil: 'ABILITIES',
+    hidden: 'HIDDEN',
+    notePrefix: 'NB ',
+    warnRoster: 'NB This form is not in the current roster; it must come from an event or be '
+      + 'transferred via Pokémon HOME.',
+    warnApprox: 'NB PokeAPI carries no distinct artwork for this form — the picture above is '
+      + 'the species’ shared sprite.',
   },
 }
 
@@ -98,4 +159,63 @@ export function formLabel(form: Form, lang: Lang): NamePair {
     : { lead: form.l, alt: form.lz }
   if (pair.lead) return pair
   return { lead: t('baseForm', lang), alt: '' }
+}
+
+/**
+ * The ability's name pair for `lang`.
+ *
+ * Two of the 200 abilities carry no Chinese name, so the lead falls back to the name that
+ * does exist rather than rendering an empty heading — and the alt is then empty, because
+ * repeating the lead beside itself says nothing.
+ */
+export function abilityName(ability: Ability, lang: Lang): NamePair {
+  const pair = lang === 'zh'
+    ? { lead: ability.z, alt: ability.n }
+    : { lead: ability.n, alt: ability.z }
+  if (pair.lead) return pair
+  return { lead: pair.alt, alt: '' }
+}
+
+/**
+ * The ability's description in `lang`, falling back to the other language, and empty when
+ * the dataset carries neither.
+ *
+ * The fallback lives here rather than in the component so that the rule for which language
+ * leads is stated once. An empty return is the signal to omit the description entirely —
+ * 19 abilities have no Chinese description, and an empty area reads as a rendering fault.
+ */
+export function abilityDescription(ability: Ability, lang: Lang): string {
+  return lang === 'zh' ? (ability.d || ability.de) : (ability.de || ability.d)
+}
+
+/** The six base-stat labels for `lang`, in the dataset's stat order. */
+export function statLabels(lang: Lang): readonly string[] {
+  return STAT_LABELS[lang]
+}
+
+/** The label for a form kind in `lang`. */
+export function kindLabel(kind: FormKind, lang: Lang): string {
+  return KIND_LABELS[lang][kind]
+}
+
+/** "Generation IV" and its Chinese equivalent, from a generation number. */
+export function genOfLabel(gen: number, lang: Lang): string {
+  const numeral = GEN_ROMAN[gen] ?? String(gen)
+  return lang === 'zh' ? `第 ${numeral} 世代` : `Gen ${numeral}`
+}
+
+/** "3 forms" and its Chinese equivalent. English pluralises; Chinese has no plural. */
+export function formsOfLabel(count: number, lang: Lang): string {
+  if (lang === 'zh') return `${count} 個形態`
+  return count > 1 ? `${count} forms` : `${count} form`
+}
+
+const STAT_LABELS: Record<Lang, readonly [string, string, string, string, string, string]> = {
+  zh: ['HP', '攻擊', '防禦', '特攻', '特防', '速度'],
+  en: ['HP', 'Atk', 'Def', 'SpA', 'SpD', 'Spe'],
+}
+
+const KIND_LABELS: Record<Lang, Record<FormKind, string>> = {
+  zh: { base: '基本', other: '形態', regional: '地區形態', mega: 'MEGA' },
+  en: { base: 'Base', other: 'Form', regional: 'Regional', mega: 'Mega' },
 }
