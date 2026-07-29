@@ -35,8 +35,19 @@ prints the native diagnostic log to stdout:
 LynxExplorer.app/Contents/MacOS/LynxExplorer --url='http://<host>:<port>/main.lynx.bundle?fullscreen=true'
 ```
 
-Its limits are recorded in §12.9 — it cannot render SVG, so it cannot verify the type
-glyphs.
+Its limits are recorded in §12.9 — it draws no SVG at all, so it cannot verify the type
+glyphs. That is a defect in the desktop build rather than platform behaviour: on a physical
+iOS device the same glyphs render correctly (§12.10).
+
+## Checks
+
+```bash
+pnpm run check
+```
+
+Asserts style invariants that fail silently if broken, and exits non-zero on violation — the
+same idea as the pipeline's stage assertions below. A wrong colour is visible; a selected
+control that renders identically to an unselected one is not.
 
 ## Rebuilding the dataset
 

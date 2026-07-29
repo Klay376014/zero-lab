@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "rspeedy build",
+    "check": "node scripts/check-styles.mjs",
     "dev": "rspeedy dev",
     "preview": "rspeedy preview"
   },
