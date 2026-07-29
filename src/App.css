@@ -35,24 +35,36 @@
   src: url('./assets/fonts/Silkscreen-Bold.ttf');
 }
 
+/*
+ * The height chain. Each link is load-bearing: the grid's scrolling container asks for the
+ * space left over, and a scrolling container whose ancestors are unbounded grows to fit its
+ * children and scrolls nothing at all. The platform does not scroll a page on its own, so
+ * without this chain the 208th card is not merely below the fold — it is unreachable.
+ *
+ * A fixed height rather than a minimum for the same reason: a minimum lets the root grow.
+ */
 .Root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--bg);
   padding: 12px;
 }
 
 .Shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   background-color: var(--shell);
   padding: 9px;
 }
 
 .Screen {
-  background-color: var(--panel);
-  padding: 12px;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  background-color: var(--panel);
+  padding: 12px;
 }
 
 /* ---------- masthead ---------- */
@@ -84,11 +96,80 @@
 
 /* ---------- controls ---------- */
 
-.Row {
+.MastheadRow {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: 6px;
+}
+
+.QueryBar {
+  display: flex;
+  flex-direction: column;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--line);
+  padding-bottom: 6px;
   margin-bottom: 9px;
+}
+
+.QueryRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+/* The type row is eighteen marks and the generation row is nine chips; both need more than
+   one line on a handheld, and wrapping is what makes the bar's height follow its content
+   instead of clipping it. */
+.QueryRowWrap {
+  flex-wrap: wrap;
+}
+
+.QueryInput {
+  flex: 1;
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 3px 6px;
+  margin-right: 6px;
+}
+
+/* A selected control inverts to the accent pair rather than gaining a new colour, so the
+   four-tone contract holds in POCKET. */
+.ChipOn {
+  background-color: var(--accent);
+}
+
+.ChipTextOn {
+  color: var(--accent-ink);
+}
+
+/* The mark alone names the type — no abbreviation, because eighteen chips with three letters
+   each will not fit a handheld row and the mark is the primary name everywhere else.
+
+   The unselected background is the surface token here and is overridden inline with the
+   type's own colour in the mode that spends colour; the mark's fill is chosen by the theme
+   layer for whichever of those it lands on, never recoloured here. */
+.TypeChip {
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 2px;
+  margin-right: 3px;
+  margin-bottom: 3px;
+}
+
+/* Selection inverts to the accent pair. It has to be the background rather than the border,
+   because POCKET resolves accent and line to the same tone. */
+.TypeChipOn {
+  background-color: var(--accent);
 }
 
 .Label {
@@ -115,116 +196,59 @@
   color: var(--ink);
 }
 
-/* ---------- token swatches ----------
-   Present so a mode switch is observable at a glance: every token that paints a surface
-   in this slice gets one tile. */
+/* ---------- species grid ----------
+   The scrolling container takes whatever height is left after the masthead and query bar,
+   so the height chain above it (root through screen) is what bounds it — established where
+   the grid is mounted, not here. A scrolling container with no bound would grow to fit its
+   children and scroll nothing. */
 
-.Swatches {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+.DexGrid {
+  flex: 1;
 }
 
-.Swatch {
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--line);
-  padding: 6px;
-  margin-right: 6px;
-  margin-bottom: 6px;
-}
+/* One column's share of the row. Two cells fill a row exactly, because the platform's box
+   model counts padding inside a declared width — which is also why the gutter is padding and
+   not margin: margin would sit outside the 50% and push the second cell onto its own row.
+   3px all round makes a 6px gap between cards and a 3px inset at the edges.
 
-.SwatchText {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 10px;
-  color: var(--ink);
-}
-
-.SwatchTextAccent {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 10px;
-  color: var(--accent-ink);
-}
-
-.SwatchBg {
-  background-color: var(--bg);
-}
-
-.SwatchShell {
-  background-color: var(--shell);
-}
-
-.SwatchSurface {
-  background-color: var(--surface);
-}
-
-.SwatchSurface2 {
-  background-color: var(--surface2);
-}
-
-.SwatchAccent {
-  background-color: var(--accent);
-}
-
-/* ---------- glyph board ---------- */
-
-.Section {
-  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: var(--ink);
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-top-color: var(--line);
-  padding-top: 9px;
-  margin-top: 9px;
-  margin-bottom: 6px;
-}
-
-.SectionNote {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: var(--ink2);
-  margin-bottom: 3px;
-}
-
-.GlyphRow {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
-}
-
-/* The cell carries the background the glyph was told it would sit on — the board is only
-   meaningful if the declared surface and the painted surface are the same. */
-.GlyphCell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--surface);
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--line);
+   A proportion rather than the design document's 164px, which was sized for a browser no
+   narrower than 500px. On a 390px phone that value leaves 324px after the chrome padding and
+   fits one column, wasting half the row. Change this one value to change the column count. */
+.DexCell {
+  width: 50%;
   padding: 3px;
-  margin-right: 3px;
-  margin-bottom: 3px;
+  /* Never give up width to fit another cell in: shrinking is how a wrapping row silently
+     turns two columns into two squeezed ones instead of wrapping. */
+  flex-shrink: 0;
 }
 
-.GlyphCellAccent {
-  background-color: var(--accent);
+/* Stepped, not eased: the handhelds this interface quotes had no tweening, and a smooth
+   curve reads as the wrong decade. The delay is bound per card from the grid rather than
+   multiplied out of a custom property here, so the cap lives in one place.
+   The duration below has no counterpart in script: the reveal is disarmed by the first query
+   change rather than by a timer, so nothing has to know how long it runs. */
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.GlyphAbbr {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 9px;
+.CardReveal {
+  animation: cardIn 0.22s steps(2) both;
+}
+
+/* A sentence, so the reading face rather than the pixel one — the pixel face has no CJK
+   glyphs and prose in it is tiring to read at any length. */
+.DexGridEmpty {
+  font-size: 12px;
   color: var(--ink2);
-}
-
-.GlyphAbbrAccent {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 9px;
-  color: var(--accent-ink);
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 /* ---------- species card ----------
@@ -238,14 +262,14 @@
   flex-wrap: wrap;
 }
 
+/* The card fills whatever cell it is placed in; the grid's cell owns the column width and the
+   gutter. Nothing here is a pixel width, so the same card works at any column proportion. */
 .Card {
-  width: 164px;
+  width: 100%;
   background-color: var(--surface);
   border-width: 1px;
   border-style: solid;
   border-color: var(--line);
-  margin-right: 6px;
-  margin-bottom: 6px;
 }
 
 .CardBevel {
@@ -385,57 +409,4 @@
   align-items: center;
   justify-content: center;
   background-color: var(--surface2);
-}
-
-/* ---------- upscale check ----------
-   The card renders artwork 1:1, where nearest-neighbour and smooth interpolation look
-   identical. Only a whole-number upscale shows which one the platform actually did, which
-   is why this pair exists. */
-
-.SpritePair {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.SpriteCase {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--surface);
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--line);
-  padding: 6px;
-  margin-right: 6px;
-  margin-bottom: 6px;
-}
-
-.SpriteCaseLabel {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: var(--ink2);
-  margin-top: 3px;
-}
-
-.SpriteNative {
-  width: 96px;
-  height: 96px;
-  image-rendering: pixelated;
-}
-
-/* Twice the source, so nearest-neighbour shows as whole square cells. */
-.SpriteDouble {
-  width: 192px;
-  height: 192px;
-  image-rendering: pixelated;
-}
-
-/* The same upscale with no declaration, as the control: if this looks identical to the one
-   above, the platform is ignoring image-rendering. */
-.SpriteDoubleSmooth {
-  width: 192px;
-  height: 192px;
 }

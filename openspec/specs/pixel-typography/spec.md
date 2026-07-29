@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'port-champions-dex-foundation'. Update Purpose after archive.
+How the pixel display face is obtained, registered, and assigned. Covers the scripted fetch of the upstream TrueType files, registration in a format both target platforms accept with each weight as its own family, the assignment of the face to names, labels and numbers rather than prose, and the recorded fallback for how the font asset is referenced.
 
 ## Requirements
 

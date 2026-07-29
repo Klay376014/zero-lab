@@ -2,8 +2,12 @@
  * Every user-facing string of this slice's screen, plus the bilingual name resolution.
  *
  * The strings live in one table so the language toggle can never leave half the screen in
- * the other language. Scope is this slice only: the grid, detail panel and learnset
- * strings stay in design/pipeline/template.html until the slice that ports them.
+ * the other language. Scope is the screens that exist: the grid and its query bar are here;
+ * the detail panel and learnset strings stay in design/pipeline/template.html until the
+ * slice that ports them.
+ *
+ * Values are carried over from that template's own I18N table rather than written fresh, so
+ * the two do not drift into two different vocabularies for the same control.
  */
 import type { Form, Species } from './dex.js'
 
@@ -13,47 +17,51 @@ export type Lang = 'zh' | 'en'
 export interface Strings {
   /** Label on the language toggle — the language it switches to reading as. */
   readonly lang: string
-  readonly mode: string
   readonly type: string
   /** Form label shown for a species' base form, which carries no upstream label. */
   readonly baseForm: string
-  // Verification-harness section headings. This screen is the acceptance interface for
-  // the slice, so its own labels belong in the table too.
-  readonly hCards: string
-  readonly hGlyphs: string
-  readonly hSprite: string
-  readonly surfaceCard: string
-  readonly surfaceAccent: string
-  readonly spriteNative: string
-  readonly spriteDouble: string
+  // Query bar.
+  readonly search: string
+  /** Placeholder inside the search field. */
+  readonly searchPlaceholder: string
+  readonly gen: string
+  readonly sort: string
+  /** Sort by national number. */
+  readonly sortDex: string
+  /** Sort by the strongest form's base-stat total. */
+  readonly sortBst: string
+  /** Clears every filter and the search string. */
+  readonly reset: string
+  /** Shown in the card area when the query matches no species. */
+  readonly empty: string
 }
 
 export const I18N: Record<Lang, Strings> = {
   zh: {
     lang: '中文',
-    mode: '模式',
     type: '型別',
     baseForm: '基本形態',
-    hCards: '卡片',
-    hGlyphs: '型別字符',
-    hSprite: '放大檢查',
-    surfaceCard: '卡片表面',
-    surfaceAccent: '選中表面',
-    spriteNative: '原生 96px',
-    spriteDouble: '放大 192px',
+    search: '搜尋',
+    searchPlaceholder: '名稱 / 編號 / 型別 / 形態',
+    gen: '世代',
+    sort: '排序',
+    sortDex: '編號',
+    sortBst: '種族值',
+    reset: '清除篩選',
+    empty: '沒有符合的寶可夢。',
   },
   en: {
     lang: 'EN',
-    mode: 'Mode',
     type: 'Type',
     baseForm: 'Base Form',
-    hCards: 'CARDS',
-    hGlyphs: 'TYPE GLYPHS',
-    hSprite: 'UPSCALE CHECK',
-    surfaceCard: 'Card surface',
-    surfaceAccent: 'Accent surface',
-    spriteNative: 'Native 96px',
-    spriteDouble: 'Upscaled 192px',
+    search: 'Search',
+    searchPlaceholder: 'Name / no. / type / form',
+    gen: 'Gen',
+    sort: 'Sort',
+    sortDex: 'No.',
+    sortBst: 'Stats',
+    reset: 'Clear',
+    empty: 'No Pokémon match.',
   },
 }
 

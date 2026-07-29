@@ -218,8 +218,8 @@ Mega 沿用基本形態的學習表（`si` 回退到 0），但**本系加成隨
 | 現況 | Lynx 做法 |
 |---|---|
 | `div`/`span`/`img`/`button` | `view`/`text`/`image`，文字必須包在 `<text>` 內 |
-| 208 張卡片的 `overflow:auto` | **`<list>`**（遠超三個螢幕，`scroll-view` 不回收會耗盡記憶體） |
-| 招式表（最多 105 列） | `<list>` 較保險 |
+| 208 張卡片的 `overflow:auto` | ~~`<list>`~~ → **`<scroll-view>`**。原本的判斷是 `<list>`（遠超三個螢幕，`scroll-view` 不回收），但 `<list>` 在 vue-lynx 只支援尾端追加，篩選與排序在它上面無法正確運作 —— **見 §12.13** |
+| 招式表（最多 105 列） | 同樣受 §12.13 影響。招式表有排序與本系篩選，所以也不能用 `<list>` |
 | 詳情面板捲動 | `<scroll-view>` |
 | canvas 產生型別字符 | 改用 `<svg>` 畫 8×8 方塊，或建置期預先產生 |
 | `.mvrow.stab .mn::after` 的 ★ | 真的 `<text>` 節點 |
@@ -236,10 +236,12 @@ Mega 沿用基本形態的學習表（`si` 回退到 0），但**本系加成隨
 
 兩項都**只能在 iOS Simulator 或 Android 上驗**，macOS 桌面版答不了。在有答案之前不要展開網格與詳情面板，因為兩者都會放大錯誤的成本。
 
-| # | 要確認什麼 | 為什麼卡在這裡 | 怎麼驗 | 若失敗要怎麼做 |
+| # | 要確認什麼 | 狀態 | 怎麼驗 | 若失敗要怎麼做 |
 |---|---|---|---|---|
-| 1 | `<svg content="…">` 在 iOS / Android 畫不畫得出來 | macOS 桌面版**完全不渲染**（§12.10）。18 個型別字符 × 5 種表面是設計的核心，實作方式現在懸在半空 | 跑載具，看「型別字符」色板 36 格有沒有東西。可順手重跑 §12.10 那四種寫法的對照 | 改用 `<image src>` 指向 SVG **檔案**（實測唯一可行的形式），配 `<image>` 的 `tint-color` 依 `glyphOn()` 上色 —— 18 個單色 SVG 就夠，不需要 108 個檔案。**data URI 是死路** |
-| 2 | 像素字型在 **Android** 載不載得起來 | Lynx 的 `@font-face` 在 Android 只吃 TTF/OTF/TTC（§12.2）。目前已改成 base64 內嵌 TTF 並在 macOS native 確認有效，但 Android 是另一套字型註冊 | 在 Android 上看拉丁名稱是不是像素字（不是系統字） | 檢查 `output.dataUriLimit` 是否生效、或改用 `local()` 註冊 |
+| 1 | `<svg content="…">` 在 iOS / Android 畫不畫得出來 | **✅ iOS 已結清（2026-07-29）**：正常渲染，36 格全部畫得出來，兩個模式都確認。`TypeGlyph` 不動，退路不啟用。見 §12.10。**Android 仍未驗** | 跑載具，看「型別字符」色板 36 格有沒有東西 | 改用 `<image src>` 指向 SVG **檔案**，配 `<image>` 的 `tint-color` 依 `glyphOn()` 上色 —— 18 個單色 SVG 就夠。**data URI 是死路** |
+| 2 | 像素字型在 **Android** 載不載得起來 | 仍掛帳 —— 手上沒有 Android 裝置。影響範圍限於樣式表的字型註冊規則，且失敗模式明顯可見（拉丁文字落回系統字型），不會靜默通過 | 在 Android 上看拉丁名稱是不是像素字（不是系統字） | 檢查 `output.dataUriLimit` 是否生效、或改用 `local()` 註冊 |
+
+**iOS 實機已結清的項目（2026-07-29）**：型別字符的 `<svg content>`（§12.10）、`image-rendering: pixelated`（§12.1）、`<image>` 的 `@load` 事件（§12.6）。**Android 完全未驗** —— 字型註冊與字符渲染在該平台都還沒有證據。
 
 已經在 native 定案、不需要重驗的：像素字型（macOS）、PNG sprite、`image-rendering: pixelated`（量化驗證，§12.1）、卡片斜角、`@load`/`@error` 事件差異（§12.6）、資產 URL（§12.8）。
 
@@ -307,6 +309,7 @@ Mega 沿用基本形態的學習表（`si` 回退到 0），但**本系加成隨
 | 對設計稿的影響 | 設計稿在 `.card` 上宣告一次讓子孫繼承，**這個寫法在 Lynx 無效**。每個要放大的 `image` 都必須自己帶宣告 |
 | web 實測 | 有宣告的 192px 圖呈現銳利方格；同一張圖不帶宣告（對照組）呈現平滑插值。兩者並排在載具的「放大檢查」區塊 |
 | **native 實測（macOS，量化）** | **成立**。對截圖三個區域數不同顏色數：原生 96px = **15 色**；192px 有宣告 = **15 色**（與來源完全相同 → 純最近鄰，沒有產生任何中間色）；192px 無宣告 = **3104 色**（雙線性插值造出 200 倍的中間色）。這比目視可靠，建議 iOS/Android 沿用同一招驗收 |
+| **iOS 實機實測（2026-07-29）** | **成立**。192px 有宣告呈現銳利方格，同一張圖無宣告呈現模糊插值，兩者並排目視差異明顯。與 macOS 的量化結論一致，`pixelated` 在 iOS 上生效，不需要啟用退路 |
 | 另一個陷阱 | 卡片的 sprite 是 96px 原圖顯示 96px，**1:1 下最近鄰與雙線性看起來完全一樣**。只有整數倍放大看得出差別 —— 所以載具刻意放了 96/192/192(無宣告) 三張對照 |
 | 退路（未啟用） | 詳情大圖改用原生 96px，或 pipeline 預先產生 2 倍 PNG |
 
@@ -358,10 +361,13 @@ Mega 沿用基本形態的學習表（`si` 回退到 0），但**本系加成隨
 
 | | |
 |---|---|
-| 狀態 | web 與 native **行為不同**，兩邊都已實測 |
-| web | `<image @error>` **會觸發**（指向不存在的檔名時顯示 `error: FIRED`）|
-| **native（macOS）** | `@error` **不會觸發** —— 同一個 404 在真機上只是靜靜留下空白框。但 `@load` **會觸發**（實測 `LOAD: FIRED`）|
-| 因此改用反向策略（已採行） | 不靠失敗事件，靠成功事件：替代圖塊**一開始就蓋在圖上**，`@load` 到達才移除。這樣兩個平台達到同樣的可觀察狀態，而且慢速載入時看到的是型別字符而不是空框 |
+| 狀態 | 三個目標**行為不同**，三邊都已實測 |
+| web | `@error` **會觸發**、`@load` 會觸發 |
+| **native（macOS 桌面版）** | `@error` **不會觸發** —— 同一個 404 只是靜靜留下空白框。`@load` **會觸發** |
+| **native（iOS 實機，2026-07-29）** | `@error` **會觸發**、`@load` 也會觸發。**與 macOS 相反** |
+| 結論 | **`@load` 是三個目標的交集，`@error` 不是。** 所以反向策略不是為某一個 build 的權宜，而是唯一在三處都成立的機制 —— 這個結論在拿到 iOS 證據之後比原本更強，不是更弱 |
+| 反向策略（已採行） | 不靠失敗事件，靠成功事件：替代圖塊**一開始就蓋在圖上**，`@load` 到達才移除。三個目標達到同樣的可觀察狀態，而且慢速載入時看到的是型別字符而不是空框 |
+| 不要做的事 | **不要因為 iOS 會觸發 `@error` 就改回失敗驅動。** 那會在 macOS 桌面版上靜默失效，而那是目前唯一能讀原生診斷日誌的環境 |
 | 實作細節 | `<image>` 必須**始終掛在樹上**才會發出請求，所以替代圖塊是 `position: absolute` 疊在上面、載入後移除，不是用 `v-if` 互換 |
 | 教訓 | **不要用 web 的事件行為推論 native。** 這一項如果只驗 web 就會做出在真機上永遠不會生效的錯誤處理 |
 
@@ -374,6 +380,11 @@ Mega 沿用基本形態的學習表（`si` 回退到 0），但**本系加成隨
 | `src/tsconfig.json` 原本沒設 `target` | 預設落到 ES5 lib，`includes` / `flatMap` / `Object.entries` 全部不存在。已設 `"target": "ES2019"`（貼近 Lynx 引擎，不是隨手挑最新） |
 | POCKET 的「介面顏色數 3」是舊數字 | 實測靜止狀態是 **4** —— 卡片斜角的 `--surface2` 邊在靜止時就會上色。§11 的檢查項已改為「所有上色顏色都落在四階灰之內，上限 4」，這才是真正的不變式（防的是引入色盤外的顏色） |
 | console 有兩筆非本專案的錯誤 | `NYI: profileStart` / `NYI: profileEnd`，訊息自己標明 "This is an issue of lynx-core"。web 預覽的環境噪音，不是 app 的錯誤 |
+| `<input>` 的輸入事件把值放在 `e.value`，**不是** `e.detail.value` | 官方文件寫明 `e.value`；照 web 慣例讀 `e.detail.value` 會拿到 `undefined`。失敗模式見下一列 —— 它不會像 web 那樣只是「搜尋沒反應」 |
+| **一個拋錯的 computed 在 Lynx 上表現成「畫面壞掉」，不是錯誤訊息** | 上一列那個 bug 讓 `search.value` 變成 `undefined`，於是 `undefined.trim()` 在 computed 裡拋錯。症狀是**深色模式下輸入框文字變白看不見、樣式沒套上、計數不更新** —— 完全不像一個 TypeError。當時我據此推論「`background-color` 不適用於原生文字欄」，結果是錯的（A/B/C 三種上色方式實測全部有效）。**教訓：在 Lynx 上看到無法解釋的樣式異常，先懷疑 render 期間有 exception，不要先推論平台不支援某個屬性。** 也順帶確立：CSS class 與 inline style 對 `<input>` 都有效，`background-color` 有效 |
+| 症狀出現的**時機**要拿來分辨成因 | 同一輪報了兩個 bug（沒有動畫、白字），看起來像一件事。但動畫在首次繪製就沒有，那時搜尋字串還是 `''`、computed 不會拋錯；白字只在打字後出現。時序對不上就是兩個獨立成因 —— 合著查會兩個都查不出來 |
+| `box-sizing` 預設是 `border-box`，不是 `content-box` | 文件明寫「Default value is `border-box` in Lynx, while `content-box` in web」。所有從設計稿搬過來的寬度算式都要重算 —— 設計稿的 `.card` 是 `width:164px` 加 1px 邊框，在 web 上外圍 166px，在 Lynx 上就是 164px。另外 `box-sizing` **不影響 `flex-basis` 的解讀**（web 會）。好處是百分比寬度變得可用：`width:50%` 已含邊框，兩張卡正好 100% 不會溢出 |
+| 設計稿的 164px 卡片寬度是為 500px 瀏覽器調的，手機放不下兩欄 | 水平 chrome padding 是 `Root 12 + Shell 9 + Screen 12 = 33` 每側共 66px。一張卡外圍 `164 + 6 margin = 170`，兩張需 340px。iPhone 邏輯寬度 375／390／393 的可用寬度是 309／324／327，**全部放不下兩欄**；只有 430（Plus / Pro Max）的 364 放得下。目標是手機，所以卡片寬度改成百分比、由容器分欄 |
 | bundle 大小 | 帶入資料集後 web bundle 由 88.6KB 跳到 331KB（資料集 compact 後 195KB）。本切片刻意不切分以免與 pipeline 產物分家；真正的判斷點在網格切片，屆時以 `moves` 與 `sec` 兩個大欄位為切割線 |
 
 ### 12.8 CSS `url()` 資產在 lynx bundle 裡會變成抓不到的 URL（**已修**）
@@ -409,7 +420,21 @@ LynxExplorer.app/Contents/MacOS/LynxExplorer --url='http://<host>:<port>/main.ly
 
 **同理，Android 只吃 TTF/OTF 那條也只有 Android 能驗**（§12.2）—— macOS 走的是另一套字型註冊。
 
-### 12.10 ⚠️ `<svg content>` 在 macOS 桌面版**完全不渲染** —— 型別字符的最大未解風險
+**它不能用來驗型別字符。** iOS 實機證實 `<svg content>` 正常（§12.10），所以桌面版畫不出 SVG 是這個 build 自己的缺陷，不是 Lynx 的行為。用它來判斷字符會得到假的失敗。它仍可用來驗 bundle 載入與執行、資產 URL、PNG sprite 與字型註冊。
+
+### 12.10 ✅ `<svg content>` 在 iOS 實機**正常** —— macOS 桌面版是唯一的例外（已結清）
+
+**結論（iOS 實機實測，2026-07-29）**：`content` 屬性在 iOS 上正常渲染。十八個字符乘兩種表面的三十六格色板全部畫得出來，POCKET 與 MODERN 兩個模式都確認過。
+
+因此：**`TypeGlyph` 的現行實作不動**，`<image src>` 加 `tint-color` 的退路**不啟用**，十八個單色 SVG 資產**不需要產生**。當初「先不要據此改寫」的判斷是對的 —— 若當時照 macOS 的證據改寫，就會用一個平台的缺陷污染實作。
+
+**macOS 桌面版從此標記為「不能用來驗型別字符」**，見 §12.9。它仍可用來驗 bundle 載入、資產 URL、PNG sprite 與字型註冊。
+
+下面保留當初的 macOS 實測記錄，因為它仍然是那個平台的事實。
+
+---
+
+原標題：⚠️ `<svg content>` 在 macOS 桌面版**完全不渲染** —— 型別字符的最大未解風險
 
 實測（LynxExplorer 4.0.0 macOS arm64）：字符的**容器**正常（背景色、邊框、下方縮寫都在），但**方塊一個都沒畫出來**。日誌對應 `Failed to create ImageDescriptor`（所以 Lynx 是把 svg 走影像管線）。
 
@@ -422,11 +447,9 @@ LynxExplorer.app/Contents/MacOS/LynxExplorer --url='http://<host>:<port>/main.ly
 | `<image src="http://…/glyph.svg">` | **正常顯示且銳利** ✓ |
 | `<image src="data:image/svg+xml;base64,…">` | **空白** ✗ |
 
-**先不要據此改寫 `TypeGlyph`。** 這是**單一平台**的證據，而 `content` 屬性是官方文件寫明的用法 —— 很可能是 macOS desktop build 的 service 層缺 SVG 支援，iOS / Android 未必有問題。在只有 macOS 證據的情況下改寫，等於用一個平台的缺陷去污染實作。
+當時的判斷是「先不要據此改寫 `TypeGlyph`」，理由是這只是**單一平台**的證據，而 `content` 是官方文件寫明的用法 —— 很可能是 macOS desktop build 的 service 層缺 SVG 支援。**iOS 實測證明這個判斷是對的**：問題只存在於 macOS 桌面版。
 
-**要先做的事**：在 iOS Simulator 或 Android 上重跑這四個對照。
-- 若 `content` 在 iOS/Android 正常 → 現行實作不動，把 macOS 桌面版標記為「不能用來驗字符」
-- 若 `content` 在 iOS/Android 也失敗 → 改用 `<image src>` 指向 SVG 檔。**不要**為 18 型別 × 3 表面 × 2 模式產生 108 個檔案：`<image>` 有 `tint-color`（對非透明像素上色），所以 18 個單色 SVG + 依 `glyphOn()` 給的 `tint-color` 就夠。注意 data URI 這條在 macOS 是死路，必須是真實 URL / 打包資產
+未啟用的退路仍記在此，以備 Android 實測失敗時使用：改用 `<image src>` 指向 SVG 檔。**不要**為 18 型別 × 3 表面 × 2 模式產生 108 個檔案：`<image>` 有 `tint-color`（對非透明像素上色），所以 18 個單色 SVG + 依 `glyphOn()` 給的 `tint-color` 就夠。注意 data URI 這條在 macOS 是死路，必須是真實 URL / 打包資產。
 
 ### 12.11 前一版本節的更正
 
@@ -439,3 +462,61 @@ macOS 桌面版視窗固定 800×600 且只有 `--url` / `--remote-debug` 兩個
 驗收時的做法：臨時把要看的區塊移到最上面重新建置。這也預告了網格切片的第一件事 —— 任何超過一屏的內容都必須自己包 `<scroll-view>` 或 `<list>`，這條在 web 上不會暴露出來。
 
 順帶一個踩到的坑：`pkill` 後立刻用視窗 ID 截圖，可能抓到**上一個 instance 還沒消失的視窗**，看起來像「改動沒生效」。截圖前確認視窗 ID 有變，或在畫面上放一行 debug 值（我用 `DBG idx=… id=… lang=…` 才確認狀態其實是對的）。
+
+### 12.14 ✅ `@keyframes` 與 `steps()` 在 iOS 成立
+
+| | |
+|---|---|
+| 狀態 | `iOS 實機實測`（2026-07-29） |
+| 為什麼要驗 | §9 記的「所有動態用 `steps()` 而非 easing」是這份設計的年代語彙本身，不是可選的潤飾。若 Lynx 忽略 `animation`，整條要換機制或承認做不到 |
+| 驗法 | 在畫面上放一個無條件、無限循環的方塊：`animation: probeSlide 1s steps(4) infinite`，向右移 60px。**判別的重點是「有沒有在動」與「是跳格還是平滑」** —— 一個從未落到元素上的綁定，看起來與一個被平台忽略的 timing function 完全一樣 |
+| 結果 | **方塊會動，且是跳格**。所以 `@keyframes`、`animation` 簡寫、`steps()`、`transform: translateX` 在 iOS 都成立 |
+
+#### 階梯揭示為什麼原本不播（已解決，iOS 實機確認逐格出現）
+
+動畫本身既然支援，成因就在綁定。逐一拿掉變數之後定位到**兩個**，而不是一個：
+
+**1. `已證實` 用計時器關閉「開機旗標」的做法不成立。** 設計稿在 boot 後 `26 * 14 + 260` ms 移除 `body.booting`，移植時照搬成 `onMounted` 裡的 `setTimeout`。在 Lynx 上這個窗口太短 —— **佈局 208 個儲格並發出 208 個圖像請求，可以比任何這種固定窗口都久**，於是 Vue 在平台真正畫出任何東西之前就把 class 拿掉了，畫面上是「完全沒有動態」。
+
+改成不依賴時間的判準：**監看查詢結果，第一次改變時才關閉旗標**。揭示屬於啟動，而啟動在使用者動了任何控制項的那一刻結束 —— 這句話與首次繪製要多久無關。副作用是那個「動畫時長」常數連同它與 CSS 的耦合一起消失了，時長只剩樣式表一處來源。
+
+> **這條是通則，不只關於這個動畫**：任何「在 mount 後等 N 毫秒」的邏輯在 Lynx 上都要重新檢查。208 張卡的首次繪製比直覺慢得多。
+
+**2. `已繞過，未單獨證實` 靜態 `class` 與綁定 `:class` 併用。** 原本寫 `class="DexCell"` 加 `:class="booting ? 'CardReveal' : undefined"`，改成單一運算式 `:class="booting ? 'DexCell CardReveal' : 'DexCell'"`。**兩個修正是同一輪做的，所以無法判斷第 2 項本身是否也是成因。** 沒有回頭拆開驗證，因為單一運算式在任何情況下都不會更差。若日後需要知道 vue-lynx 是否正確合併兩者，這是還沒有答案的問題。
+
+**另外附帶確立**：`animation-delay` 透過 `:style` 綁定**有效** —— 逐格錯開看得出來，所以每張卡拿到的是不同的延遲值。
+
+無論上述如何，較安全的寫法都是：**不要把 class 或 style 綁在元件上然後假設它會落到根元素**（原本是綁在 `<SpeciesCard>` 上靠 attribute fall-through），綁在自己寫的元素上，落點才是確定的。
+
+### 12.13 ⚠️ `<list>` 在 vue-lynx 只支援尾端追加 —— 會變動的序列不能用它
+
+| | |
+|---|---|
+| 狀態 | `原始碼實測` 確立（讀 `node_modules/vue-lynx/main-thread/`，不是讀文件） |
+| 版本 | 專案裝的 0.4.0，與 npm `latest` 的 0.5.1 **行為一字不差**（抓 tarball 逐段比對）。`1.0.0` 的 tarball 只有 171 bytes，是佔位 stub 不是真套件 |
+
+三個位置合起來造成這個限制：
+
+| 位置 | 行為 |
+|---|---|
+| `insertListItem` | 只做尾端 `push`，**忽略傳入的 anchor** → 無法插入到指定位置 |
+| `flushListUpdates` | `removeAction` 與 `updateAction` **硬編為空陣列**；只回報索引 ≥ 已回報數的新項目；已回報數 (`listItemsReported`) **永不遞減** |
+| `ops-apply.js` 的 `OP.REMOVE` | 呼叫 `__RemoveElement` 移除原生元素，但**不把該項目從 `listItems` 移除** |
+
+**後果**：`v-for` 跑在會變動的陣列上時 `<list>` 不會正確更新。序列因篩選變短 → `flushListUpdates` 的 `if (items.length <= reported) continue` 直接跳過，畫面留著舊項目；排序改變順序 → `listItems` 永遠是插入順序，格子與內容錯配。
+
+**文件與程式碼不一致**：官方 guide 的 scroll-view / list 比較頁描述了 LIS 移動偵測與 remove／reorder 支援，**出貨的程式碼沒有那些東西**。該頁同時自己註明 framework-side cell recycling「still open」（vue-lynx issue #302）。**以程式碼為準。**
+
+**因此網格切片改用 `<scroll-view>`**。原本選 `<list>` 的理由是「scroll-view 不回收」，但 vue-lynx 也沒有真的交付回收 —— 所以選 `<list>` 換不到回收，還要賠掉篩選與排序的正確性，取捨的兩邊都是負的。208 筆是有界的已知集合，記憶體改成在裝置上實測而不是靠元素選擇來假設。
+
+**重新評估的觸發條件**：vue-lynx 實作了 `removeAction` 與 `updateAction`。屆時 `<scroll-view>` 換回 `<list>` 的改動範圍限於網格元件一處。**這是「當時 list 不能用」，不是「這個專案偏好 scroll-view」** —— 不要把它讀成後者。
+
+已排除的替代方案：每次查詢改變就重建整個 `<list>`（內部狀態以 list 的 id 為鍵存在 `Map` 裡且沒有對應的清理路徑，每次按鍵都會留下一份 → 記憶體無界成長）；打 patch 自己實作 `removeAction`（要摸索 native 的 `update-list-info` 協定，只有在裝置上才驗得出來）。
+
+#### `<scroll-view>` 承載 208 張卡的實測結果（iOS 實機，2026-07-29）
+
+**可接受，退路不啟用。** 從第一張捲到第 208 張，全程無空白卡、無錯配內容、無明顯卡頓。
+
+所以「208 筆不回收會不會太重」這個問題的答案是不會 —— 卡片結構淺（兩層 view、七個文字節點、一張圖），sprite 是外部資源不佔 bundle。設計時準備的視窗化退路（以捲動位移推算可見區間、只渲染區間加前後各一屏）**不需要啟用**，記在這裡以備資料集日後變大時參考。
+
+注意這個結論綁在「208 筆、這個卡片結構」上。詳情面板切片會加入更深的節點樹，屆時要重新量而不是沿用這個結論。

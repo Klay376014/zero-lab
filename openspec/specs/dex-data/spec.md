@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'port-champions-dex-foundation'. Update Purpose after archive.
+The bundled Champions dataset and the reference tables that read it. Covers how the dataset arrives as a pipeline artifact rather than hand-authored data, the load-time integrity assertions that turn upstream drift into a thrown error, the named types the rest of the app reads it through, the derived accessors for base-stat totals and cross-form type sets, bilingual name resolution, the eighteen-type reference tables, and the user-facing string table.
 
 ## Requirements
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'port-champions-dex-foundation'. Update Purpose after archive.
+The presentation contract for a single species card. Covers element order and badge rules, both languages staying on the card at once, layout stability when optional rows are empty and when names are overlong, nearest-neighbour sprite upscaling declared per element, the guarantee that artwork is never recoloured, the glyph-tile fallback when artwork fails to load, the bevel built from per-side border colours instead of an unsupported inset shadow, in-place updates on mode and language change, and the species-plus-form-index input contract.
 
 ## Requirements
 

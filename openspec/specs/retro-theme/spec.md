@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'port-champions-dex-foundation'. Update Purpose after archive.
+The two colour modes and the shared state that drives them. Covers one ten-token semantic contract resolved by both POCKET and MODERN, POCKET's derivation from a four-tone greyscale ramp against MODERN's direct declaration, application of the active tokens as inline custom properties on the root view, ink selection by measured contrast rather than a fixed luminance threshold, surface-aware glyph fill selection, and the reactive mode and language state that components read without prop threading.
 
 ## Requirements
 
@@ -92,7 +92,7 @@ code:
 ---
 ### Requirement: POCKET derives its tokens from four tones
 
-POCKET SHALL derive its ten tokens from an ordered four-tone greyscale ramp rather than declaring them individually, because the same ramp is the colour source for later sprite placeholders and the ambience layer. MODERN SHALL declare its ten tokens directly. The count of distinct colours POCKET's interface renders SHALL remain three.
+POCKET SHALL derive its ten tokens from an ordered four-tone greyscale ramp rather than declaring them individually, because the same ramp is the colour source for later sprite placeholders and the ambience layer. MODERN SHALL declare its ten tokens directly. The count of distinct colours POCKET's interface renders SHALL NOT exceed four, because the card bevel's secondary surface tone is painted even at rest, which puts the resting count at four rather than three. The invariant this count protects is that no colour outside the ramp is ever introduced; it does not pin the count to one particular value.
 
 #### Scenario: POCKET tokens come from the ramp
 
@@ -122,71 +122,16 @@ POCKET SHALL derive its ten tokens from an ordered four-tone greyscale ramp rath
 
 
 <!-- @trace
-source: port-champions-dex-foundation
+source: port-champions-dex-grid
 updated: 2026-07-29
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
-  - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
+  - src/components/QueryBar.vue
   - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
   - src/data/i18n.ts
-  - src/index.ts
+  - src/state/query.ts
+  - src/components/DexGrid.vue
+  - src/App.css
+  - src/App.vue
 -->
 
 ---
