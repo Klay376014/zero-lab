@@ -10,6 +10,7 @@ import type { Species } from '../data/dex.js'
 import { learnsetOf, spriteUrl } from '../data/dex.js'
 import { formLabel, formsOfLabel, genOfLabel, kindLabel, speciesName, t } from '../data/i18n.js'
 import { typeColor, typeName } from '../data/types.js'
+import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang, mode } from '../state/display.js'
 import { closeDetail, selectForm } from '../state/selection.js'
 import { inkOn } from '../theme/contrast.js'
@@ -112,6 +113,8 @@ const identity = computed(() => {
 
 <template>
   <view class="DetailOverlay">
+    <!-- No press feedback on the veil, deliberately: a pressed appearance would present it as a
+         control, and its only behaviour is to dismiss the panel. -->
     <view class="DetailVeil" @tap="closeDetail" />
 
     <view class="DetailPanel">
@@ -121,7 +124,13 @@ const identity = computed(() => {
           <text v-if="names.alt" class="DetailNameAlt">{{ names.alt }}</text>
           <text class="DetailIdentity">{{ identity }}</text>
         </view>
-        <view class="DetailClose" @tap="closeDetail">
+        <view
+          class="DetailClose"
+          :main-thread-bindtouchstart="onPressStart"
+          :main-thread-bindtouchend="onPressEnd"
+          :main-thread-bindtouchcancel="onPressEnd"
+          @tap="closeDetail"
+        >
           <text class="DetailCloseMark">✕</text>
         </view>
       </view>

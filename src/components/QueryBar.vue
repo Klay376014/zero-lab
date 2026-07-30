@@ -5,6 +5,7 @@ import TypeGlyph from './TypeGlyph.vue'
 import { t } from '../data/i18n.js'
 import { TYPE_ORDER, typeColor } from '../data/types.js'
 import type { TypeName } from '../data/types.js'
+import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang, mode, tokens } from '../state/display.js'
 import { genFilter, resetQuery, search, sortOrder, typeFilter } from '../state/query.js'
 import type { SortOrder } from '../state/query.js'
@@ -77,7 +78,15 @@ const inputStyle = computed<Record<string, string>>(() => ({
         :placeholder="t('searchPlaceholder', lang)"
         @input="onSearchInput"
       />
-      <view class="Chip" @tap="resetQuery">
+      <!-- All three touch bindings go together on every control below: cancel is what releases
+           a press that became a scroll. -->
+      <view
+        class="Chip"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="resetQuery"
+      >
         <text class="ChipText">{{ t('reset', lang) }}</text>
       </view>
     </view>
@@ -90,6 +99,9 @@ const inputStyle = computed<Record<string, string>>(() => ({
         class="TypeChip"
         :class="typeFilter === type ? 'TypeChipOn' : undefined"
         :style="chipBackground(type)"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
         @tap="pickType(type)"
       >
         <TypeGlyph :type="type" :surface="chipSurface(type)" />
@@ -103,6 +115,9 @@ const inputStyle = computed<Record<string, string>>(() => ({
         :key="gen"
         class="Chip"
         :class="genFilter === gen ? 'ChipOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
         @tap="pickGen(gen)"
       >
         <text class="ChipText" :class="genFilter === gen ? 'ChipTextOn' : undefined">{{ gen }}</text>
@@ -111,10 +126,24 @@ const inputStyle = computed<Record<string, string>>(() => ({
 
     <view class="QueryRow">
       <text class="Label">{{ t('sort', lang) }}</text>
-      <view class="Chip" :class="sortOrder === 'number' ? 'ChipOn' : undefined" @tap="pickSort('number')">
+      <view
+        class="Chip"
+        :class="sortOrder === 'number' ? 'ChipOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="pickSort('number')"
+      >
         <text class="ChipText" :class="sortOrder === 'number' ? 'ChipTextOn' : undefined">{{ t('sortDex', lang) }}</text>
       </view>
-      <view class="Chip" :class="sortOrder === 'stats' ? 'ChipOn' : undefined" @tap="pickSort('stats')">
+      <view
+        class="Chip"
+        :class="sortOrder === 'stats' ? 'ChipOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="pickSort('stats')"
+      >
         <text class="ChipText" :class="sortOrder === 'stats' ? 'ChipTextOn' : undefined">{{ t('sortBst', lang) }}</text>
       </view>
     </view>

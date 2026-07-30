@@ -14,6 +14,7 @@ import { moveOf } from '../data/dex.js'
 import type { Move } from '../data/dex.js'
 import { damageClassAbbr, moveHeads, moveName, t } from '../data/i18n.js'
 import { TYPE_ORDER } from '../data/types.js'
+import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang } from '../state/display.js'
 import { bonusOnly, moveSort } from '../state/learnset.js'
 import type { MoveSort } from '../state/learnset.js'
@@ -135,6 +136,9 @@ function figureClass(value: number | null): string {
         :key="option.key"
         class="MoveMini"
         :class="moveSort === option.key ? 'MoveMiniOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
         @tap="pickSort(option.key)"
       >
         <text
@@ -142,7 +146,14 @@ function figureClass(value: number | null): string {
           :class="moveSort === option.key ? 'MoveMiniTextOn' : undefined"
         >{{ t(option.label, lang) }}</text>
       </view>
-      <view class="MoveMini" :class="bonusOnly ? 'MoveMiniOn' : undefined" @tap="toggleBonusOnly">
+      <view
+        class="MoveMini"
+        :class="bonusOnly ? 'MoveMiniOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="toggleBonusOnly"
+      >
         <text class="MoveMiniText" :class="bonusOnly ? 'MoveMiniTextOn' : undefined">
           {{ t('mvStab', lang) }}
         </text>

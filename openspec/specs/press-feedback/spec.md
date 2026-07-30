@@ -1,4 +1,10 @@
-## ADDED Requirements
+# press-feedback Specification
+
+## Purpose
+
+How a control answers a press in the frame the finger lands, ahead of the thread the handler runs on. Covers the pressed appearance drawn by a main-thread function bound through the platform's main-thread event attributes, that function reading only the target the event carries and touching no application state, no background-thread invocation and no element reference, the existing tap bindings left as the only thing that changes state, the mark as a one-pixel downward displacement with the three separate contracts that forbid a colour, a transparency and a shadow instead, the displacement expressed exactly once and why that one place is the main-thread module rather than the stylesheet — the platform substitutes no custom property in a value a main-thread function writes, measured with the property declared in the stylesheet and inline alike, the mark cleared by a cancellation binding as well as a release one because a press that becomes a scroll inside the detail panel produces the former and never the latter, a background-thread inline-style update ending the mark accepted as correct rather than worked around because that platform replaces inline styles wholesale and so cannot leave one stuck, and the control set that carries the mark against the card sequence and the veil that deliberately do not.
+
+## Requirements
 
 ### Requirement: A control's press mark is drawn on the main thread without a thread crossing
 
@@ -19,13 +25,30 @@ The existing tap bindings SHALL remain unchanged and SHALL remain the only thing
 - **WHEN** a control is pressed and released with no other input
 - **THEN** the query state, the selection state and the display state hold the values they held before the press, other than whatever that control's own tap binding changes
 
+
+<!-- @trace
+source: press-feedback-main-thread
+updated: 2026-07-30
+code:
+  - src/components/FormSwitcher.vue
+  - src/components/QueryBar.vue
+  - src/components/SpeciesDetail.vue
+  - src/components/LearnsetTable.vue
+  - design/HANDOFF.md
+  - src/App.css
+  - src/interaction/press.ts
+-->
+
+---
 ### Requirement: The press mark is a positional shift, never a colour or transparency change
 
 A pressed control SHALL be marked by displacing it one pixel downward. It SHALL NOT be marked by altering any colour, by altering opacity, or by adding a shadow.
 
 Three separate contracts forbid the alternatives. Reducing opacity would compose tones outside the four-tone ramp, which the theme specification permits for the detail veil alone and names explicitly as not a precedent. Repainting the control with the accent token would make an unselected control momentarily indistinguishable from a selected one, because the accent token is what carries the selected state. An inset shadow is ignored by the platform and is rejected by the project's own stylesheet check.
 
-The displacement SHALL be expressed once in the stylesheet rather than written as a literal inside a main-thread function, so that changing how far a control moves does not require editing code that runs on the main thread.
+The displacement SHALL be expressed exactly once in the project, so that changing how far a control moves is a single edit at a single known place.
+
+It SHALL NOT be expressed as a stylesheet custom property read by the main-thread function. The platform does not substitute custom properties in the values a main-thread function writes, so such a reference resolves to nothing and the control does not move at all — measured with the property declared in the stylesheet and declared inline on the root view alike. The one place is therefore the main-thread module itself.
 
 #### Scenario: A selected control and an unselected control are pressed
 
@@ -39,6 +62,21 @@ The displacement SHALL be expressed once in the stylesheet rather than written a
 - **WHEN** the project's contrast check runs after press feedback is implemented
 - **THEN** it reports the same set of glyph-and-surface combinations it reported before, because no colour was introduced or altered
 
+
+<!-- @trace
+source: press-feedback-main-thread
+updated: 2026-07-30
+code:
+  - src/components/FormSwitcher.vue
+  - src/components/QueryBar.vue
+  - src/components/SpeciesDetail.vue
+  - src/components/LearnsetTable.vue
+  - design/HANDOFF.md
+  - src/App.css
+  - src/interaction/press.ts
+-->
+
+---
 ### Requirement: The press mark is cleared on release and on cancellation
 
 Each control carrying press feedback SHALL bind a main-thread function to the touch-cancel event in addition to the touch-end event, and both SHALL clear the displacement.
@@ -57,6 +95,21 @@ Binding release alone leaves a reachable state in which a control stays displace
 - **THEN** the control returns to its undisplaced position
 - **AND** the control's tap behaviour occurs
 
+
+<!-- @trace
+source: press-feedback-main-thread
+updated: 2026-07-30
+code:
+  - src/components/FormSwitcher.vue
+  - src/components/QueryBar.vue
+  - src/components/SpeciesDetail.vue
+  - src/components/LearnsetTable.vue
+  - design/HANDOFF.md
+  - src/App.css
+  - src/interaction/press.ts
+-->
+
+---
 ### Requirement: A background-thread style update ends the press mark, and this is accepted rather than corrected
 
 The platform applies a background-thread inline-style update by replacing the target's inline styles wholesale rather than merging the changed properties. A control that carries an inline style binding therefore loses its main-thread press mark at the moment the background thread next renders it.
@@ -77,6 +130,21 @@ No control SHALL be restructured to avoid this, and the main thread and the back
 - **THEN** the displacement written by the main thread survives that re-render
 - **AND** it is cleared by the control's own release or cancellation binding
 
+
+<!-- @trace
+source: press-feedback-main-thread
+updated: 2026-07-30
+code:
+  - src/components/FormSwitcher.vue
+  - src/components/QueryBar.vue
+  - src/components/SpeciesDetail.vue
+  - src/components/LearnsetTable.vue
+  - design/HANDOFF.md
+  - src/App.css
+  - src/interaction/press.ts
+-->
+
+---
 ### Requirement: Press feedback covers the control set and excludes the card sequence and the veil
 
 Press feedback SHALL be carried by the mode button, the language button, the query reset button, every type filter button, every generation filter button, every sort button, every form button, every move sort button, the same-type-bonus button, and the detail panel's close button.
@@ -96,3 +164,16 @@ The detail panel's veil SHALL NOT carry press feedback. A pressed appearance on 
 - **WHEN** the detail panel's veil is pressed
 - **THEN** the veil is not displaced
 - **AND** the panel closes
+
+<!-- @trace
+source: press-feedback-main-thread
+updated: 2026-07-30
+code:
+  - src/components/FormSwitcher.vue
+  - src/components/QueryBar.vue
+  - src/components/SpeciesDetail.vue
+  - src/components/LearnsetTable.vue
+  - design/HANDOFF.md
+  - src/App.css
+  - src/interaction/press.ts
+-->

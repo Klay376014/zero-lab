@@ -9,7 +9,7 @@
 ## What Changes
 
 - 新增一個按壓回饋層：控制項在手指按下的當下就在主線程畫出被按下的樣子，不等背景線程。
-- 回饋的形式是**位移一個像素**（`transform: translateY(1px)`），不是改變顏色也不是降低不透明度。理由見 Non-Goals。
+- 回饋的形式是**位移一個像素**（`transform: translateY(1px)`），不是改變顏色也不是降低不透明度。理由見 Non-Goals。位移量是 `src/interaction/press.ts` 裡的字面值、全專案唯一一處 —— 原本打算放在樣式表，平台不給（§12.22）。
 - 綁定方式是 `main-thread-bindtouchstart` / `main-thread-bindtouchend` / `main-thread-bindtouchcancel`，三個都要 —— 只綁前兩個會讓「按住之後改成捲動」的手勢留下一顆永遠凹著的鈕。
 - 既有的 `@tap` 一律不動，仍然由背景線程負責真正的狀態改變。主線程只負責那一格的視覺，兩者互不知道對方存在。
 - 涵蓋範圍是 37 個控制項，分佈在五個元件：外殼的模式鈕與語系鈕；查詢列的重置鈕、18 顆型別鈕、9 顆世代鈕、2 顆排序鈕；形態切換器的形態鈕；招式表的 3 顆排序鈕與屬修鈕；詳情面板的關閉鈕。
@@ -42,8 +42,8 @@
   - New:
     - `src/interaction/press.ts`
   - Modified:
+    - `src/App.css`（只有註解 —— 按壓回饋最後在樣式表裡沒有任何規則，理由記在那裡）
     - `src/App.vue`
-    - `src/App.css`
     - `src/components/QueryBar.vue`
     - `src/components/FormSwitcher.vue`
     - `src/components/LearnsetTable.vue`

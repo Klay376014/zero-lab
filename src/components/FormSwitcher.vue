@@ -5,6 +5,7 @@ import { computed } from 'vue-lynx'
 import TypeGlyph from './TypeGlyph.vue'
 import type { FormKind, Species } from '../data/dex.js'
 import { formLabel, kindLabel } from '../data/i18n.js'
+import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang } from '../state/display.js'
 
 const props = defineProps<{
@@ -53,6 +54,9 @@ const groups = computed(() => KIND_ORDER.flatMap((kind) => {
           v-for="entry in group.forms"
           :key="entry.index"
           :class="entry.index === formIndex ? 'FormChip FormChipOn' : 'FormChip'"
+          :main-thread-bindtouchstart="onPressStart"
+          :main-thread-bindtouchend="onPressEnd"
+          :main-thread-bindtouchcancel="onPressEnd"
           @tap="emit('select', entry.index)"
         >
           <text

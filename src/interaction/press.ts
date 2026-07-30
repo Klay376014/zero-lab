@@ -17,12 +17,21 @@ export interface PressEvent {
 /**
  * Draw the pressed state.
  *
- * Bind to `main-thread-bindtouchstart`. Note the value references a custom property rather
- * than carrying a length: see the module comment.
+ * Bind to `main-thread-bindtouchstart`.
+ *
+ * The distance is a literal here, and this line is its only occurrence in the project. It was
+ * a `var(--press-shift)` reading the stylesheet until a device said otherwise: the main thread
+ * writes inline styles through `__AddInlineStyle`, and the value it passes is **not** run
+ * through custom-property substitution. Measured both ways — with the property declared in
+ * the stylesheet and declared inline on the root view — and neither resolves, while the same
+ * function with a literal length moves the control. See design/HANDOFF.md §12.22.
+ *
+ * So to change how far a control moves, change the length on the next line. That is the whole
+ * procedure; nothing else in the project carries this distance.
  */
 export function onPressStart(event: PressEvent): void {
   'main thread'
-  event.currentTarget.setStyleProperty('transform', 'translateY(var(--press-shift))')
+  event.currentTarget.setStyleProperty('transform', 'translateY(1px)')
 }
 
 /**

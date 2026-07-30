@@ -73,20 +73,19 @@
   padding: 12px;
   position: relative;
 
-  /* How far a control moves while it is held down. The single source for that distance:
-     the main-thread press functions reference this property rather than carrying a length,
-     so adjusting the depth never means editing code that runs on the main thread.
+  /* Press feedback has no presence in this stylesheet, and that is measured rather than
+     chosen. How far a control moves while it is held down lived here as `--press-shift`
+     until a device answered: the main thread writes its inline styles through
+     `__AddInlineStyle`, which does not substitute custom properties, so a `var()` written
+     from a main-thread function resolves to nothing — with the property declared here or
+     declared inline on this same view. The distance is a literal in
+     `src/interaction/press.ts`, its only occurrence. See design/HANDOFF.md §12.22.
 
-     Declared here so it inherits to every control in the tree, the same way the mode's ten
-     colour tokens reach descendants — except that those are written onto this view inline
-     from script, because they change with the mode, and this one never does.
-
-     A displacement rather than a colour or an opacity, and that is not a stylistic
-     preference: a translucent surface would compose tones outside the four-tone ramp (which
-     the veil alone is exempted from), repainting with the accent would make an unselected
-     control briefly indistinguishable from a selected one, and an inset shadow is both
-     ignored by the platform and rejected by check-styles.mjs. */
-  --press-shift: 1px;
+     Why a displacement at all, rather than a colour or an opacity: a translucent surface
+     would compose tones outside the four-tone ramp (which the veil alone is exempted from),
+     repainting with the accent would make an unselected control briefly indistinguishable
+     from a selected one, and an inset shadow is both ignored by the platform and rejected by
+     check-styles.mjs. */
 }
 
 .Shell {
