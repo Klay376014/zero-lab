@@ -304,3 +304,42 @@ export function abilityOf(ref: AbilityRef): Ability {
 export function isHidden(ref: AbilityRef): boolean {
   return ref.length > 1
 }
+
+/**
+ * The move indices `form` can learn, from the owning species' learnset sections.
+ *
+ * Resolved here rather than in the table because a section is held on the species while a
+ * form holds only an index into those sections — so the table cannot reach one from a form
+ * alone, and the alternative is handing the table a species it has no other use for.
+ *
+ * An out-of-range index yields an empty list instead of throwing, which is the opposite of
+ * {@link abilityOf}'s choice and deliberately so. A missing ability leaves nothing to draw,
+ * but an empty learnset is a state the table already renders — one species has a single move
+ * and the bonus filter empties it entirely. More importantly, a throw inside a computed
+ * surfaces on this platform as unexplained broken layout rather than as an error, so failing
+ * loudly here would fail invisibly.
+ *
+ * Megas reuse their base form's section, which is why several forms return the same list.
+ */
+export function learnsetOf(species: Species, form: Form): readonly number[] {
+  return species.sec[form.si] ?? []
+}
+
+/**
+ * The move at `index` in the shared move table.
+ *
+ * Learnset sections hold indices rather than moves because 208 sections share 496 moves.
+ * Resolving here keeps every caller out of {@link Dex.moves} — the same arrangement, and the
+ * same reasoning about an impossible index, as {@link abilityOf}.
+ */
+export function moveOf(index: number): Move {
+  const move = dex.moves[index]
+  if (move === undefined) {
+    throw new Error(
+      `learnset refers to move index ${index}, which is outside the move table. `
+      + 'A section and the table it indexes are built together by design/pipeline, so this '
+      + 'means the two came from different builds.',
+    )
+  }
+  return move
+}

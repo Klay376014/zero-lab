@@ -16,10 +16,11 @@ import { computed, ref, watch } from 'vue-lynx'
 
 import AbilityList from './AbilityList.vue'
 import FormSwitcher from './FormSwitcher.vue'
+import LearnsetTable from './LearnsetTable.vue'
 import StatBars from './StatBars.vue'
 import TypeGlyph from './TypeGlyph.vue'
 import type { Species } from '../data/dex.js'
-import { spriteUrl } from '../data/dex.js'
+import { learnsetOf, spriteUrl } from '../data/dex.js'
 import { formLabel, formsOfLabel, genOfLabel, kindLabel, speciesName, t } from '../data/i18n.js'
 import { typeColor, typeName } from '../data/types.js'
 import { lang, mode } from '../state/display.js'
@@ -39,6 +40,15 @@ const form = computed(() => props.species.f[props.formIndex] ?? props.species.f[
 const names = computed(() => speciesName(props.species, lang.value))
 const label = computed(() => formLabel(form.value, lang.value))
 const spriteSrc = computed(() => spriteUrl(form.value))
+
+/**
+ * The move indices this form can learn.
+ *
+ * Resolved here because a section is held on the species and the form carries only an index
+ * into them, so the table cannot reach it from the form it describes. Resolving it is all the
+ * panel does with the learnset — the bonus, the order and the filter belong to the table.
+ */
+const learnset = computed(() => learnsetOf(props.species, form.value))
 
 /**
  * Whether the artwork has arrived.
@@ -273,6 +283,7 @@ const identity = computed(() => {
 
           <StatBars :stats="form.st" />
           <AbilityList :abilities="form.ab" />
+          <LearnsetTable :moves="learnset" :types="form.t" />
         </view>
       </scroll-view>
     </view>

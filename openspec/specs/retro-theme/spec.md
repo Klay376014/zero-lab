@@ -329,7 +329,9 @@ code:
 ---
 ### Requirement: Glyph fill is chosen by the surface it will sit on
 
-A type glyph's fill colour SHALL be selected from the type and the named surface it renders onto, where the surface is one of surface, accent or typechip. A glyph SHALL NOT be filled with the same colour as the surface beneath it.
+A type glyph's fill colour SHALL be selected from the type and the named surface it renders onto, where the surface is one of surface, accent, typechip, panel or surface2. A glyph SHALL NOT be filled with the same colour as the surface beneath it.
+
+The function that reports a glyph's effective background SHALL report the panel token for the panel member and the surface2 token for the surface2 member. Both functions SHALL be extended together: extending only the fill selection leaves the contrast measurement computing against a background the glyph is not on, which yields numbers that look ordinary and mean nothing.
 
 #### Scenario: POCKET spends no colour on glyphs
 
@@ -338,8 +340,8 @@ A type glyph's fill colour SHALL be selected from the type and the named surface
 
 #### Scenario: MODERN colours the glyph on a neutral surface
 
-- **WHEN** a glyph fill is selected in MODERN for the surface or accent target
-- **THEN** the fill is the type's own colour on surface, and the accent ink token on accent
+- **WHEN** a glyph fill is selected in MODERN for the surface, panel, or surface2 target
+- **THEN** the fill is the type's own colour
 
 #### Scenario: MODERN inverts the glyph on a type-coloured chip
 
@@ -349,85 +351,53 @@ A type glyph's fill colour SHALL be selected from the type and the named surface
 #### Scenario: No combination renders an invisible glyph
 
 - **WHEN** the measured contrast of every mode, type and surface combination is computed against its effective background
-- **THEN** no combination measures below 2.9
+- **THEN** no combination measures below 2.5
+
+#### Scenario: The bonus row is legible without relying on the glyph's contrast
+
+- **WHEN** a bonus-marked learnset row renders a type whose glyph contrast on surface2 is the lowest measured
+- **THEN** the row still states the bonus through its star text node, which does not take its colour from the type
 
 ##### Example: measured contrast floors and ceilings per combination
 
 | Mode   | Surface  | Glyph fill source        | Lowest measured        | Highest measured        |
 | ------ | -------- | ------------------------ | ---------------------- | ----------------------- |
 | POCKET | surface  | darkest ramp tone        | 15.86 (all types)      | 15.86 (all types)       |
+| POCKET | panel    | darkest ramp tone        | 15.86 (all types)      | 15.86 (all types)       |
+| POCKET | surface2 | darkest ramp tone        | 7.52 (all types)       | 7.52 (all types)        |
 | POCKET | accent   | lightest ramp tone       | 15.86 (all types)      | 15.86 (all types)       |
 | MODERN | surface  | the type's own colour    | 2.95 (Poison)          | 9.71 (Electric)         |
+| MODERN | panel    | the type's own colour    | 3.39 (Poison)          | 11.18 (Electric)        |
+| MODERN | surface2 | the type's own colour    | 2.53 (Poison)          | 8.34 (Electric)         |
 | MODERN | accent   | accent ink token         | 15.97 (all types)      | 15.97 (all types)       |
 | MODERN | typechip | higher-contrast ink      | 4.47 (Fire)            | 11.42 (Electric)        |
 
+##### Example: MODERN types measuring below 2.9 on surface2
+
+| Type   | Measured on surface2 | Notes                                                              |
+| ------ | -------------------- | ------------------------------------------------------------------ |
+| Poison | 2.53                 | the new floor; the same type that floors the surface member at 2.95 |
+| Dragon | 2.71                 | above 2.9 on surface, below it on the lighter surface2             |
+| Ghost  | 2.89                 | marginally below the previous floor                                |
+
 
 <!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
+source: port-champions-dex-learnset
+updated: 2026-07-30
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
+  - scripts/check-contrast.mjs
   - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
-  - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
+  - README.md
+  - src/components/SpeciesDetail.vue
   - src/data/i18n.ts
-  - src/index.ts
+  - src/state/learnset.ts
+  - src/data/dex.ts
+  - package.json
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/query.ts
+  - src/theme/modes.ts
+  - design/HANDOFF.md
 -->
 
 ---

@@ -250,6 +250,8 @@
    narrower than 500px. On a 390px phone that value leaves 324px after the chrome padding and
    fits one column, wasting half the row. Change this one value to change the column count. */
 .DexCell {
+  display: flex;
+  flex-direction: column;
   width: 50%;
   padding: 3px;
   /* Never give up width to fit another cell in: shrinking is how a wrapping row silently
@@ -300,18 +302,36 @@
 }
 
 /* The card fills whatever cell it is placed in; the grid's cell owns the column width and the
-   gutter. Nothing here is a pixel width, so the same card works at any column proportion. */
+   gutter. Nothing here is a pixel width, so the same card works at any column proportion.
+
+   Growing is what makes "fills" true of the height as well as the width. A wrapping row
+   stretches both of its cells to the taller one, but a cell is a column flex container and the
+   card defaults to its own content height — so without this the shorter card stops early and
+   leaves a gap inside its own stretched cell. Visible when one species name wraps to two lines
+   and its neighbour's does not: at a phone width Crabominable wraps and Lycanroc beside it does
+   not, and the two card outlines ended 16px apart.
+
+   Expressed as a height rather than as flex growth, and that is not a style preference. The web
+   target rewrites every flex property into a `--`-prefixed custom property, and for these two
+   elements nothing consumes it — an authored `flex: 1` or `flex-grow: 1` lands as `--flex-grow`
+   and resolves to nothing at all. Plain properties like width and padding pass through intact.
+   See design/HANDOFF.md. */
 .Card {
   width: 100%;
+  height: 100%;
   background-color: var(--surface);
   border-width: 1px;
   border-style: solid;
   border-color: var(--line);
 }
 
+/* Grows with the card for the same reason the card grows with its cell: the bevel draws the
+   light and shadow edges, so if it stopped at its content height those edges would float above
+   the card's own bottom outline. */
 .CardBevel {
   display: flex;
   flex-direction: column;
+  height: 100%;
   border-width: 1px;
   border-style: solid;
   /* Light along the top-left, shadow along the bottom-right: reads as a moulded key
@@ -1011,4 +1031,230 @@
 
 .FormChipStarOn {
   color: var(--accent-ink);
+}
+
+/* ---------- learnset table ----------
+   Fixed column widths and a flexible name column, not a grid: the stylesheet uses none, and
+   this batch is not the place to introduce an unverified layout mode. The alignment is the
+   same either way.
+
+   Every row goes straight into the panel's scrolling container. Nothing here declares a
+   height or a scrolling container — the design document bounded the table at 400px and
+   scrolled it, which would put two same-axis scrolling layers in one gesture's path. */
+
+.Learnset {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 9px;
+}
+
+/* Same heading treatment as the stats and ability sections, so the fifth section reads as one
+   of the set rather than as an appendix. */
+.LearnsetHead {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--ink2);
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+}
+
+.LearnsetTitle {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+/* Carries either the learnset size or "total → filtered". One number cannot distinguish a
+   species with twelve moves from a filter that left twelve. */
+.LearnsetCount {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink2);
+  margin-left: 6px;
+}
+
+/* Its own row rather than the heading's trailing edge: four controls plus a heading do not fit
+   across a phone, and wrapping them inside the heading would push the count onto its own line
+   instead. */
+.LearnsetControls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+/* Base first, selected rule directly below it — both single-class selectors, so a selected rule
+   placed above its base would be cancelled on every property they share. The style check
+   asserts this ordering. Inverts to the accent pair rather than gaining a colour, as every
+   other selected control in this interface does. */
+.MoveMini {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--ink2);
+  padding: 2px 6px;
+  margin-right: 6px;
+  margin-bottom: 3px;
+}
+
+.MoveMiniOn {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.MoveMiniText {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.MoveMiniTextOn {
+  color: var(--accent-ink);
+}
+
+.MoveRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--surface2);
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+/* Selected-style rule below its base, as the style check asserts. A marked row takes the
+   secondary surface — which is also the backdrop its type glyph is told about, and the reason
+   the glyph's measured contrast floor differs from the rest of the panel's. */
+.MoveRowStab {
+  background-color: var(--surface2);
+}
+
+.MoveHead {
+  background-color: var(--surface2);
+  border-bottom-width: 3px;
+  border-bottom-color: var(--ink2);
+}
+
+/* A cell rather than the glyph itself, so the column keeps its width on the header row where
+   there is no glyph to hold it open. 18px for a 16px mark: the mark is fixed at whole
+   multiples of its 8px grid and cannot flex with the column. */
+.MoveGlyphCell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 18px;
+  flex: none;
+}
+
+/* One line. The species cards wrap their names and this deliberately does not: a table read down
+   its columns depends on every row being the same height, and one row growing to two moves the
+   eye off the column.
+
+   Nothing in the dataset reaches the truncation declared below, and that is a consequence of the
+   column widths beside it rather than of the type size. Measured at the narrowest target width
+   with the Bold face loaded: the row is 315px, the fixed columns take 128px, so this column gets
+   187px — or 171px on a row carrying the bonus star, which the star's 10px and its two 3px
+   margins come out of. The widest names in the set want 160.5px. Shrinking the type instead was
+   tried and abandoned: fitting the worst case into the starved 131px column the earlier widths
+   left would have taken 9.8px, smaller than every figure beside it.
+
+   The line limit itself is NOT here — it is a `text-maxline` attribute on the element. As a
+   style declaration it is silently inert, which is how the longest name reached a second line
+   on device while this rule looked like it had handled it. What belongs here is the overflow
+   the platform requires alongside that attribute, and the ellipsis, which stay as the guard for
+   a dataset that grows a longer name than today's. */
+.MoveName {
+  flex: 1;
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The fixed columns are sized to their own widest content plus slack, not to the design
+   document's browser-width values, and that is what leaves the name column enough room to never
+   truncate. Measured at 11px, the widest thing each has to hold:
+
+     class  PH 16.5   power  PWR 26.1   accuracy  ACC 24.8   PP  PP/40 16.5
+
+   In every case the widest content is a column heading rather than a value — no power exceeds
+   three digits, no PP exceeds two. The design document's 44/44/34 were roughly double what the
+   content needs, and the 52px they wasted was taken straight out of the name. */
+.MoveClass {
+  width: 22px;
+  flex: none;
+  text-align: center;
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink2);
+}
+
+/* Right-aligned at a fixed width, which is what aligns a column of numbers here. The pixel
+   face's digits do not share one advance and the platform's font registration takes no
+   font-variant descriptor, so tabular figures are unavailable — and a declaration that cannot
+   take effect is worse than none, because it reads as though the alignment were handled. */
+.MoveFigure {
+  width: 32px;
+  flex: none;
+  text-align: right;
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.MoveFigurePp {
+  width: 24px;
+  flex: none;
+  text-align: right;
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+/* The secondary ink alone, with no opacity: the design document faded this mark, and a
+   translucent mark over a toned surface composites a value outside POCKET's four greys. The
+   detail veil is the one layer allowed to do that. */
+.MoveFigureDash {
+  color: var(--ink2);
+}
+
+/* A real text node, like the form switcher's Mega badge and for the same reason: the platform
+   has no content property, so the design document's pseudo-element star would simply not
+   appear.
+
+   It only ever sits on a marked row, so its one backdrop is the secondary surface — measured at
+   7.52 in POCKET and 11.91 in MODERN. Unlike the switcher's star it needs no selected variant,
+   because there is no accent background in this table for the ink token to vanish into.
+
+   No embedded face carries U+2605, so it falls through to a system font in either stack. That is
+   the same path the switcher's star already takes, and the platform resolves fall-through per
+   character, so it draws beside the pixel-face name without changing it. */
+.MoveStar {
+  flex: none;
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  color: var(--ink);
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+/* A sentence, so the reading face leads and no pixel face is named — the same treatment as the
+   grid's empty result and the ability descriptions. Chinese falls through to a system serif,
+   which is the design document's own behaviour. */
+.MoveNone {
+  font-family: Lit, "PingFang TC", "PingFang SC", "Songti TC", "Noto Serif TC", serif;
+  font-size: 13px;
+  color: var(--ink2);
+  text-align: center;
+  padding-top: 9px;
+  padding-bottom: 9px;
 }

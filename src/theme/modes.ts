@@ -66,8 +66,15 @@ export function tokensOf(mode: Mode): Tokens {
  * Which surface a glyph is about to be drawn onto. A glyph is a shape with its fill
  * written in, so it cannot inherit anything — the fill has to be chosen against the
  * surface beneath it, or it vanishes.
+ *
+ * `panel` and `surface2` are the learnset table's two row backgrounds: an unmarked row sits
+ * on the panel's own background, a bonus-marked row on the secondary surface. A caller names
+ * the surface its glyph actually sits on and never a near neighbour — POCKET resolves `panel`
+ * and `surface` to the same tone, but MODERN gives them different values, so borrowing one
+ * for the other reports a background the glyph is not on and makes the measured contrast
+ * mean nothing.
  */
-export type GlyphSurface = 'surface' | 'accent' | 'typechip'
+export type GlyphSurface = 'surface' | 'accent' | 'typechip' | 'panel' | 'surface2'
 
 /** The fill a glyph of `type` needs to stay visible on `surface` under `mode`. */
 export function glyphOn(mode: Mode, type: string, surface: GlyphSurface): string {
@@ -79,11 +86,20 @@ export function glyphOn(mode: Mode, type: string, surface: GlyphSurface): string
   return typeColor(type) ?? tokens.ink
 }
 
-/** The background a glyph on `surface` will actually sit on, for contrast checking. */
+/**
+ * The background a glyph on `surface` will actually sit on, for contrast checking.
+ *
+ * Kept in step with {@link glyphOn} by hand: extending only the fill selection leaves the
+ * contrast measurement computing against a background the glyph is not on, which yields
+ * numbers that look ordinary and mean nothing. Both functions change together or neither
+ * does.
+ */
 export function glyphBackdrop(mode: Mode, type: string, surface: GlyphSurface): string {
   const tokens = tokensOf(mode)
   if (surface === 'accent') return tokens.accent
   if (surface === 'typechip') return typeColor(type) ?? '#888888'
+  if (surface === 'panel') return tokens.panel
+  if (surface === 'surface2') return tokens.surface2
   return tokens.surface
 }
 

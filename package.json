@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "rspeedy build",
-    "check": "node scripts/check-styles.mjs",
+    "check": "node scripts/check-styles.mjs && node scripts/check-contrast.mjs",
     "dev": "rspeedy dev",
     "preview": "rspeedy preview"
   },

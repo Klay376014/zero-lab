@@ -139,7 +139,8 @@ const STRINGS = join(SRC, 'data/i18n.ts')
  * later moves into a prose role is already accounted for.
  *
  * CJK is excluded. The prose face carries none, and Chinese falls through the declared stack to
- * a system serif by design — asking the face to cover it would fail on correct behaviour.
+ * a system serif by design — asking the face to cover it would fail on correct behaviour. So are
+ * the few marks no embedded face carries; see the two predicates below.
  */
 function proseCorpus() {
   const text = []
@@ -159,6 +160,7 @@ function proseCorpus() {
       const code = char.codePointAt(0)
       if (code < 0x20) continue // control characters are not drawn
       if (isEastAsian(code)) continue
+      if (isUncoveredMark(code)) continue
       chars.add(char)
     }
   }
@@ -171,19 +173,34 @@ function proseCorpus() {
  * Unified ideographs, the extension A block, CJK symbols and punctuation, and the halfwidth and
  * fullwidth forms. All of these fall through the declared stack to a system serif, which is the
  * design document's own behaviour rather than a gap.
- *
- * The reference mark is here too, and it is the one entry worth explaining. It sits in General
- * Punctuation rather than a CJK block, so a range check misses it — but it appears only in the
- * Chinese strings (the English ones open with "NB"), and upstream Literata does not carry it at
- * all, so no widening of the subset range could ever cover it. It falls through with the Chinese
- * it prefixes. This check found that by failing on it, which is the check working.
  */
 function isEastAsian(code) {
   return (code >= 0x3000 && code <= 0x303f)
     || (code >= 0x3400 && code <= 0x4dbf)
     || (code >= 0x4e00 && code <= 0x9fff)
     || (code >= 0xff00 && code <= 0xffef)
-    || code === 0x203b // ※ REFERENCE MARK
+}
+
+/**
+ * Marks no embedded face carries, and none is expected to.
+ *
+ * Both sit in General Punctuation or Miscellaneous Symbols rather than a CJK block, so the range
+ * check above misses them, and neither is present in upstream Literata or upstream Silkscreen —
+ * so no widening of the subset range could ever cover them. Both fall through to a system font,
+ * which the platform does per character rather than per run, so a mark in the middle of a
+ * Latin or Chinese string still draws.
+ *
+ * The reference mark appears only in the Chinese warnings (the English ones open with "NB") and
+ * falls through with the Chinese it prefixes. The star is a control label and a row marker drawn
+ * in the pixel stack, never in prose — the corpus only sees it because it collects every string
+ * literal, which is deliberately broader than prose.
+ *
+ * Kept as an explicit list rather than folded into the range check: an entry here is a claim
+ * about one character with a reason, and a range check cannot carry a reason.
+ */
+function isUncoveredMark(code) {
+  return code === 0x203b // ※ REFERENCE MARK — prefixes the Chinese warnings
+    || code === 0x2605 // ★ BLACK STAR — Mega badge, bonus row marker, bonus filter label
 }
 
 /**

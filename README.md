@@ -1,7 +1,7 @@
 # CHAMPIONS DEX
 
-A pixel-styled, bilingual Pokémon Champions dex — a finished design study, plus an
-in-progress port of it to [Vue Lynx](https://vue.lynxjs.org/).
+A pixel-styled, bilingual Pokémon Champions dex — a finished design study, plus a port of it
+to [Vue Lynx](https://vue.lynxjs.org/).
 
 Two colour modes (`POCKET`, a four-tone greyscale chrome that leaves the artwork as the
 only colour on screen; `MODERN`, which spends colour everywhere), Traditional Chinese and
@@ -14,7 +14,7 @@ English side by side, and type marks hand-plotted on an 8×8 grid.
 | `design/champions-dex.html` | The design study. Self-contained — open it in a browser. |
 | `design/pipeline/` | Rebuilds the study and its dataset from upstream sources in 8 stages, each asserting its own invariants. |
 | `design/HANDOFF.md` | The document that matters. Data provenance, derivation rules, design decisions and their reasons, and the measured Lynx platform facts (§12). |
-| `src/` | The Vue Lynx port. Data layer, colour modes, type glyph, the species grid with its query bar, and the detail panel. The learnset table is the one piece still unported. |
+| `src/` | The Vue Lynx port, complete: data layer, colour modes, type glyph, the species grid with its query bar, the detail panel, and the learnset table. |
 | `openspec/` | [Spectra](https://github.com/spectra-app/spectra) specs the port is built against. |
 
 ## Running
@@ -45,9 +45,12 @@ iOS device the same glyphs render correctly (§12.10).
 pnpm run check
 ```
 
-Asserts style invariants that fail silently if broken, and exits non-zero on violation — the
-same idea as the pipeline's stage assertions below. A wrong colour is visible; a selected
-control that renders identically to an unselected one is not.
+Asserts the invariants that fail silently if broken, and exits non-zero on violation — the same
+idea as the pipeline's stage assertions below. A wrong colour is visible; a selected control
+that renders identically to an unselected one is not, nor is a type mark filled with the colour
+it is sitting on. Four checks: selected-state rule ordering, absence of inset shadows, prose-face
+coverage of the prose corpus, and the measured contrast of every type mark on every surface it is
+drawn onto.
 
 ## Rebuilding the dataset
 
