@@ -1,17 +1,7 @@
-/**
- * Turns an 8x8 glyph bitmap into the SVG XML string the platform's svg element takes.
- *
- * Kept out of the component so the emitted geometry can be asserted on directly.
- */
 import { GLYPH_FILLED } from '../data/types.js'
 import type { GlyphRows } from '../data/types.js'
 
-/**
- * `rows` painted in `fill`, as an SVG document with an 8x8 view box.
- *
- * Each run of consecutive filled cells becomes one rect: 64 single-cell rects per glyph
- * would be a far larger string for a pixel-identical result.
- */
+/** `rows` painted in `fill`, as an SVG document with an 8x8 view box. One rect per filled run. */
 export function buildGlyphSvg(rows: GlyphRows, fill: string): string {
   const rects: string[] = []
   rows.forEach((row, y) => {

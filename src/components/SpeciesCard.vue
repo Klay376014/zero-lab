@@ -1,10 +1,4 @@
 <script setup lang="ts">
-/**
- * One species card, showing one of that species' forms.
- *
- * Which form is shown is the caller's decision (`formIndex`) — the card has no form
- * switching of its own. That belongs with the form switcher, in a later slice.
- */
 import { computed, ref, watch } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
@@ -27,10 +21,7 @@ const dexNo = computed(() => `No.${String(props.species.d).padStart(4, '0')}`)
 
 const generation = computed(() => genNumeral(props.species))
 
-/**
- * The star alone when there is one Mega, the star plus a count when there are several —
- * a bare star would under-report Charizard's two.
- */
+/** The star alone for one Mega, the star plus a count for several. */
 const megaBadge = computed(() => {
   const megas = megaForms(props.species)
   if (megas.length === 0) return ''
@@ -45,20 +36,11 @@ const label = computed(() => formLabel(form.value, lang.value))
 const spriteSrc = computed(() => spriteUrl(form.value))
 
 /**
- * Artwork is the card's one external dependency, so a failure has to leave something in the
- * box rather than a gap or a broken-image marker. The placeholder is the form's first type
- * mark on the secondary surface — the design document drew one on a canvas, which this
- * platform has no element for.
- *
- * Driven by success rather than by failure: measured on native, the image element's error
- * event never fires (a 404 leaves the box silently empty) while its load event does. So the
- * placeholder covers the box from the start and is removed once the artwork actually
- * arrives — which reaches the same observable state on both targets, and additionally means
- * a slow image shows the mark instead of a gap.
+ * Whether the artwork has arrived. Driven by load, not error: measured on native, the image
+ * element's error event never fires — a 404 leaves the box silently empty.
  */
 const spriteLoaded = ref(false)
 
-// A new form means a new request, so the box goes back to the placeholder until it lands.
 watch(spriteSrc, () => { spriteLoaded.value = false })
 
 function onSpriteLoad(): void {
@@ -68,11 +50,8 @@ function onSpriteLoad(): void {
 
 <template>
   <view class="Card">
-    <!--
-      The bevel lives on its own nested view: the platform does not support inset box
-      shadows, so the light and shadow edges have to be real per-side borders, and the card
-      already spends its own border on the outline.
-    -->
+    <!-- The bevel needs its own view: the platform ignores inset box shadows, so the light and
+         shadow edges must be real per-side borders. -->
     <view class="CardBevel">
       <view class="CardHead">
         <text class="CardNo">{{ dexNo }}</text>
@@ -82,10 +61,7 @@ function onSpriteLoad(): void {
         </view>
       </view>
 
-      <!--
-        Both mounted at once: the image has to stay in the tree to be fetched at all, so the
-        placeholder sits on top of it and is removed on load rather than swapped in on error.
-      -->
+      <!-- Image and placeholder mount together: the image must stay in the tree to be fetched. -->
       <view class="CardSpriteBox">
         <image class="CardSprite" :src="spriteSrc" @load="onSpriteLoad" />
         <view v-if="!spriteLoaded" class="CardSpriteFallback">

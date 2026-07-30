@@ -1,10 +1,8 @@
 /**
  * WCAG relative luminance and contrast, used to pick ink against an arbitrary background.
  *
- * Ported unchanged from the design document. The comparison is deliberately between two
- * measured contrast ratios rather than a luminance cut-off: a mid-tone like Rock's
- * #AFA981 sits right at the crossover, and a fixed threshold hands it white — the worse
- * of the two by a factor of more than three.
+ * Two measured ratios, not a luminance cut-off: a mid-tone like Rock's #AFA981 sits at the
+ * crossover, where a fixed threshold picks the worse of the two by more than a factor of three.
  */
 
 /** The two ink candidates. Nothing else is ever used as ink over an unknown surface. */

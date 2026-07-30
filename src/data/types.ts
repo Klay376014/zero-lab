@@ -1,9 +1,3 @@
-/**
- * The five type reference tables.
- *
- * Keying every table on {@link TypeName} rather than `string` means a type missing from
- * one table is a compile error, not a hole that shows up as a blank glyph at runtime.
- */
 import type { Lang } from './i18n.js'
 
 export const TYPE_ORDER = [
@@ -38,10 +32,7 @@ export const TYPE_ZH: Record<TypeName, string> = {
   Fairy: '妖精',
 }
 
-/**
- * Cards are narrow and two types must fit. Three-letter codes are both what the era's
- * status screens did and the only thing that fits on the grid.
- */
+/** Three-letter codes: two types have to fit on a narrow card. */
 export const TYPE_ABBR: Record<TypeName, string> = {
   Normal: 'NRM', Fire: 'FIR', Water: 'WTR', Electric: 'ELC', Grass: 'GRS', Ice: 'ICE',
   Fighting: 'FGT', Poison: 'PSN', Ground: 'GRD', Flying: 'FLY', Psychic: 'PSY',
@@ -49,10 +40,7 @@ export const TYPE_ABBR: Record<TypeName, string> = {
   Fairy: 'FRY',
 }
 
-/**
- * 18 type marks, hand-plotted on an 8x8 grid — the only honest way to signal type when
- * the palette has no colour left to spend on it.
- */
+/** 18 type marks, hand-plotted on an 8x8 grid. */
 export const GLYPHS: Record<TypeName, GlyphRows> = {
   Normal: ['..####..', '.#....#.', '#......#', '#..##..#', '#..##..#', '#......#', '.#....#.', '..####..'],
   Fire: ['...##...', '..####..', '..####..', '.######.', '.######.', '##.##.##', '#..##..#', '.######.'],
@@ -79,18 +67,12 @@ export function isTypeName(name: string): name is TypeName {
   return name in GLYPHS
 }
 
-/**
- * The glyph bitmap for `name`, falling back to Normal for an unrecognised type so an
- * upstream type rename shows a mark rather than a blank.
- */
+/** The glyph bitmap for `name`, falling back to Normal for an unrecognised type. */
 export function glyphRows(name: string): GlyphRows {
   return isTypeName(name) ? GLYPHS[name] : GLYPHS.Normal
 }
 
-/**
- * The series colour for `name`, or undefined when unrecognised. The caller substitutes a
- * token — the neutral ink — because only the theme layer knows the active palette.
- */
+/** The series colour for `name`, or undefined when unrecognised; only the theme layer substitutes. */
 export function typeColor(name: string): string | undefined {
   return isTypeName(name) ? TYPE_COLORS[name] : undefined
 }

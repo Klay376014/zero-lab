@@ -1,14 +1,5 @@
 <script setup lang="ts">
-/**
- * The buttons that switch which of a species' forms the panel describes.
- *
- * Grouped by kind rather than listed flat. Twenty Vivillon patterns in one undifferentiated
- * row cannot be read; the same twenty under a named group can. The group order is fixed so the
- * base form is always first and Megas always last, whatever order the dataset happens to use.
- *
- * Reports the chosen form to its caller instead of writing the selection itself, so the panel
- * stays the one place that knows how a form change is applied.
- */
+/** The buttons that switch which of a species' forms the panel describes, grouped by kind. */
 import { computed } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
@@ -30,13 +21,7 @@ const emit = defineEmits<{
 /** Base first, Megas last. Fixed here rather than taken from the dataset's own order. */
 const KIND_ORDER: readonly FormKind[] = ['base', 'other', 'regional', 'mega']
 
-/**
- * The species' first form's type combination, as the signature a form is compared against.
- *
- * A mark on a button means "this form retypes the Pokémon". Stamping all twenty Vivillon
- * patterns with the Bug/Flying pair the species already has would be pure noise, so a button
- * carries marks only when its signature differs from this one.
- */
+/** The base form's type combination. A button carries marks only when its own differs. */
 const baseSignature = computed(() => (props.species.f[0]?.t ?? []).join('/'))
 
 /** The groups that have at least one form, in the fixed kind order. */
@@ -79,11 +64,8 @@ const groups = computed(() => KIND_ORDER.flatMap((kind) => {
           >
             {{ entry.label }}
           </text>
-          <!--
-            Drawn for the surface this button actually presents: a mark carries its fill inside
-            itself, so a selected button's mark has to be drawn against the accent rather than
-            against the surface, or it disappears into it.
-          -->
+          <!-- A mark carries its fill inside itself, so a selected button's must be drawn
+               against the accent or it disappears into it. -->
           <TypeGlyph
             v-for="type in entry.types"
             :key="type"

@@ -1,11 +1,4 @@
 <script setup lang="ts">
-/**
- * The grid's controls: search, type filter, generation filter, sort order, reset.
- *
- * Sits outside the card area's scrolling container so it stays put while cards scroll. It
- * holds no state of its own — everything is read from and written to the shared query state,
- * so the grid and this bar can never disagree about what is being asked for.
- */
 import { computed } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
@@ -26,15 +19,8 @@ function pickType(type: TypeName): void {
 }
 
 /**
- * What a type chip is painted, which decides what surface its mark is drawn for.
- *
- * Selection has to be carried by the background rather than the border, because POCKET
- * resolves its accent and line tokens to the same tone — a border could not tell the two
- * states apart without spending a fifth colour the four-tone contract does not have.
- *
- * Unselected, MODERN spends the type's own colour here; this is the surface the theme layer
- * calls a type chip, and the mark inverts to whichever ink measures higher against it.
- * POCKET keeps the plain surface token and the mark stays dark on it.
+ * What a type chip is painted. Selection is carried by the background, not the border: POCKET
+ * resolves accent and line to the same tone, so a border cannot tell the two states apart.
  */
 function chipBackground(type: TypeName): Record<string, string> {
   if (typeFilter.value === type) return {}
@@ -55,10 +41,8 @@ function pickSort(order: SortOrder): void {
 }
 
 /**
- * The platform documents the input event's value at the top level rather than under a detail
- * object, which is where a web habit would look for it. Both are read because this project
- * has already found two places where the platform's prose and its shipped behaviour disagree
- * (see design/HANDOFF.md §12.6 and §12.13); whichever arrives, the search string is set.
+ * Both shapes are read: the platform documents the value at the top level, and its prose and
+ * shipped behaviour have disagreed before (design/HANDOFF.md §12.6, §12.13).
  */
 function onSearchInput(event: { value?: string, detail?: { value?: string } }): void {
   search.value = event.value ?? event.detail?.value ?? ''
@@ -67,21 +51,10 @@ function onSearchInput(event: { value?: string, detail?: { value?: string } }): 
 /**
  * The search field's three colours, written onto the element rather than left to `var()`.
  *
- * The native text field does not repaint when a colour it is already showing changes. Every
- * other element in the tree picks its colours up from the root view's custom properties and
- * follows the mode immediately; this one keeps what it had when it was created. Two things
- * were measured on a device, in this order:
- *
- *   1. Colours in the stylesheet as `var(--ink)` etc. — field stays a mode behind.
- *   2. The same colours bound here as inline style — field still stays a mode behind.
- *
- * So the update reaching the element is not enough; what the field was showing at creation is
- * what it keeps. The one thing that did repaint it was toggling language, which rewrites the
- * `placeholder` **attribute** — a different update path from style. Rather than lean on that
- * side effect, the element is keyed on the mode (see the template) so a mode change builds a
- * fresh field, and these colours are written directly so the new one needs no cascade to
- * resolve them. Nothing here picks a different colour from the stylesheet it replaced — the
- * tokens are the same ones `var(--ink)`, `var(--surface)` and `var(--line)` resolve to.
+ * Measured on device: the native text field keeps the colours it was created with, and neither
+ * a stylesheet nor an inline style update repaints it. Hence the mode key in the template —
+ * creation is the only point that applies them. The tokens are the same ones `var(--ink)`,
+ * `var(--surface)` and `var(--line)` resolve to.
  */
 const inputStyle = computed<Record<string, string>>(() => ({
   color: tokens.value.ink,
@@ -94,18 +67,8 @@ const inputStyle = computed<Record<string, string>>(() => ({
   <view class="QueryBar">
     <view class="QueryRow">
       <text class="Label">{{ t('search', lang) }}</text>
-      <!--
-        Keyed on the mode so a mode change discards this field and builds a new one. A native
-        text field keeps the colours it was created with and neither a stylesheet nor an inline
-        style update repaints it — see the note on `inputStyle` for what was measured. Creation
-        is the only point that reliably applies them, so the mode has to be part of the
-        element's identity.
-
-        What it costs: switching mode mid-typing drops focus and closes the keyboard. The text
-        itself survives — `search` lives in the shared query state, and the new field is bound
-        to it, so the results do not flinch. Focus is not worth a second mechanism for; mode is
-        a display control nobody reaches for with a half-typed query.
-      -->
+      <!-- Keyed on the mode so a mode change builds a fresh field; see `inputStyle`. Costs
+           focus when the mode changes mid-typing, which the shared `search` state survives. -->
       <input
         :key="mode.id"
         class="QueryInput"
@@ -119,11 +82,6 @@ const inputStyle = computed<Record<string, string>>(() => ({
       </view>
     </view>
 
-    <!--
-      The type row carries the mark as well as the name: the eighteen marks are how this
-      interface names a type everywhere else, so the filter that selects one should look like
-      the thing it selects.
-    -->
     <view class="QueryRow QueryRowWrap">
       <text class="Label">{{ t('type', lang) }}</text>
       <view

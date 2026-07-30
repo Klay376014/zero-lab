@@ -1,11 +1,3 @@
-/**
- * The two colour modes and the ten semantic tokens each resolves.
- *
- * POCKET keeps a four-tone greyscale chrome and leaves the artwork alone, so the sprites
- * are the only colour on screen. MODERN spends colour everywhere. The asymmetry — POCKET
- * derives its tokens from a ramp, MODERN declares them — is deliberate: the ramp is also
- * the colour source for the sprite placeholder and, later, the ambience layer.
- */
 import { typeColor } from '../data/types.js'
 import { inkOn } from './contrast.js'
 
@@ -63,16 +55,10 @@ export function tokensOf(mode: Mode): Tokens {
 }
 
 /**
- * Which surface a glyph is about to be drawn onto. A glyph is a shape with its fill
- * written in, so it cannot inherit anything — the fill has to be chosen against the
- * surface beneath it, or it vanishes.
- *
- * `panel` and `surface2` are the learnset table's two row backgrounds: an unmarked row sits
- * on the panel's own background, a bonus-marked row on the secondary surface. A caller names
- * the surface its glyph actually sits on and never a near neighbour — POCKET resolves `panel`
- * and `surface` to the same tone, but MODERN gives them different values, so borrowing one
- * for the other reports a background the glyph is not on and makes the measured contrast
- * mean nothing.
+ * Which surface a glyph is about to be drawn onto. A caller names the surface its glyph
+ * actually sits on, never a near neighbour: POCKET resolves `panel` and `surface` to the same
+ * tone but MODERN does not, and borrowing one for the other makes the contrast check
+ * measure against a background the glyph is not on.
  */
 export type GlyphSurface = 'surface' | 'accent' | 'typechip' | 'panel' | 'surface2'
 
@@ -87,12 +73,8 @@ export function glyphOn(mode: Mode, type: string, surface: GlyphSurface): string
 }
 
 /**
- * The background a glyph on `surface` will actually sit on, for contrast checking.
- *
- * Kept in step with {@link glyphOn} by hand: extending only the fill selection leaves the
- * contrast measurement computing against a background the glyph is not on, which yields
- * numbers that look ordinary and mean nothing. Both functions change together or neither
- * does.
+ * The background a glyph on `surface` will actually sit on, for contrast checking. Kept in
+ * step with {@link glyphOn} by hand — both change together or neither does.
  */
 export function glyphBackdrop(mode: Mode, type: string, surface: GlyphSurface): string {
   const tokens = tokensOf(mode)

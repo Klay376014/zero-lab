@@ -1,20 +1,5 @@
-/**
- * Every user-facing string of this slice's screen, plus the bilingual name resolution.
- *
- * The strings live in one table so the language toggle can never leave half the screen in
- * the other language. Scope is every screen that exists: the grid, its query bar, the detail
- * panel and the learnset table.
- *
- * Values are carried over from design/pipeline/template.html's own I18N table rather than
- * written fresh, so the two do not drift into two different vocabularies for the same
- * control.
- *
- * `Strings` holds plain strings only, and `t()` therefore returns a plain string. The panel
- * and the learnset table also need list, per-kind and per-class lookups and two strings that
- * take a number; each of those has its own named accessor below. Widening `t()`'s return to
- * cover them would put a type assertion at every call site and give up what the interface is
- * for.
- */
+// Values are carried over from design/pipeline/template.html's own I18N table, so the two do
+// not drift into different vocabularies for the same control.
 import { GEN_ROMAN } from './dex.js'
 import type { Ability, Form, FormKind, Move, MoveClass, Species } from './dex.js'
 
@@ -75,11 +60,8 @@ export interface Strings {
   /** Sort the learnset by move type. */
   readonly mvType: string
   /**
-   * Toggle that keeps only the moves receiving the same-type attack bonus.
-   *
-   * The Chinese label reads 屬修 — the type modifier — rather than the more literal 本系. The
-   * artefacts and comments still name the concept 本系加成; only the control is labelled this
-   * way, because a four-character concept name does not fit a chip beside three sort buttons.
+   * Toggle that keeps only the moves receiving the same-type attack bonus. The concept is
+   * 本系加成 in the artefacts; only this control reads 屬修, which fits the chip.
    */
   readonly mvStab: string
   /** Shown in place of rows when the active sort and filter leave none. */
@@ -162,10 +144,7 @@ export function t(key: keyof Strings, lang: Lang): string {
   return I18N[lang][key]
 }
 
-/**
- * A name and the same name in the other language. Both are always present: the toggle
- * changes which one leads, it does not hide the other.
- */
+/** A name and the same name in the other language. The toggle changes which one leads. */
 export interface NamePair {
   /** The name in the active language. */
   readonly lead: string
@@ -180,10 +159,7 @@ export function speciesName(species: Species, lang: Lang): NamePair {
     : { lead: species.m, alt: species.mz }
 }
 
-/**
- * The form's label pair for `lang`. A base form carries no upstream label, so its lead
- * falls back to the localised base-form string and its alt is empty.
- */
+/** The form's label pair for `lang`. A base form carries no upstream label. */
 export function formLabel(form: Form, lang: Lang): NamePair {
   const pair = lang === 'zh'
     ? { lead: form.lz, alt: form.l }
@@ -192,13 +168,7 @@ export function formLabel(form: Form, lang: Lang): NamePair {
   return { lead: t('baseForm', lang), alt: '' }
 }
 
-/**
- * The ability's name pair for `lang`.
- *
- * Two of the 200 abilities carry no Chinese name, so the lead falls back to the name that
- * does exist rather than rendering an empty heading — and the alt is then empty, because
- * repeating the lead beside itself says nothing.
- */
+/** The ability's name pair for `lang`. Two of the 200 carry no Chinese name. */
 export function abilityName(ability: Ability, lang: Lang): NamePair {
   const pair = lang === 'zh'
     ? { lead: ability.z, alt: ability.n }
@@ -208,12 +178,8 @@ export function abilityName(ability: Ability, lang: Lang): NamePair {
 }
 
 /**
- * The ability's description in `lang`, falling back to the other language, and empty when
- * the dataset carries neither.
- *
- * The fallback lives here rather than in the component so that the rule for which language
- * leads is stated once. An empty return is the signal to omit the description entirely —
- * 19 abilities have no Chinese description, and an empty area reads as a rendering fault.
+ * The ability's description in `lang`, falling back to the other language. Empty when the
+ * dataset carries neither, which is the signal to omit the description entirely.
  */
 export function abilityDescription(ability: Ability, lang: Lang): string {
   return lang === 'zh' ? (ability.d || ability.de) : (ability.de || ability.d)
@@ -241,38 +207,19 @@ export function formsOfLabel(count: number, lang: Lang): string {
   return count > 1 ? `${count} forms` : `${count} form`
 }
 
-/**
- * The learnset table's six column headings for `lang`, in column order.
- *
- * The first is empty: that column carries the type glyph, and a heading over an 8x8 mark
- * would be wider than the mark it labels.
- */
+/** The learnset table's six column headings for `lang`. The first is empty: it is the glyph column. */
 export function moveHeads(lang: Lang): readonly string[] {
   return MOVE_HEADS[lang]
 }
 
-/**
- * The one-token abbreviation for a damage class in `lang`.
- *
- * Abbreviated rather than spelled out because the column is 28px wide and the full names do
- * not fit at any type size the row uses. The design document put the full name in a hover
- * tooltip; touch devices have no hover, and the class is a closed set of three whose row
- * already carries the type as a glyph, so no substitute is offered.
- */
+/** The one-token abbreviation for a damage class in `lang`. The column is 28px wide. */
 export function damageClassAbbr(cls: MoveClass, lang: Lang): string {
   return DAMAGE_CLASS_ABBR[lang][cls]
 }
 
 /**
- * The move's name in `lang`, falling back to English when Chinese leads and the dataset
- * carries no Chinese name.
- *
- * Returns a bare string rather than a {@link NamePair}: the table has one name column, and
- * the other language is reached by the language toggle, which swaps the whole table at once.
- * Two names per row across a hundred rows is the noise the single column exists to avoid.
- *
- * Two of the 496 moves have no Chinese name. An empty cell in a table reads as missing data
- * rather than as a missing translation, so the English name stands in.
+ * The move's name in `lang`. Two of the 496 moves have no Chinese name and fall back to
+ * English. A bare string, not a {@link NamePair}: the table has one name column.
  */
 export function moveName(move: Move, lang: Lang): string {
   return lang === 'zh' ? (move.z || move.n) : move.n

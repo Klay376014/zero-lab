@@ -1,9 +1,3 @@
-/**
- * Which mode and which language are leading, shared app-wide.
- *
- * Module-level refs rather than props or provide/inject: every component that draws needs
- * the active mode, and threading it through would put a prop on the entire tree.
- */
 import { computed, ref } from 'vue-lynx'
 
 import type { Lang } from '../data/i18n.js'
@@ -20,13 +14,12 @@ export const mode = computed<Mode>(() => MODES[modeIndex.value % MODES.length]!)
 export const tokens = computed<Tokens>(() => tokensOf(mode.value))
 
 /**
- * The tokens as inline CSS custom properties, for the root view's style binding. Lynx has
- * no document element to write them onto, so the outermost view carries them and the rest
- * of the tree reads them through `var(--token)`.
+ * The tokens as inline CSS custom properties for the root view's style binding — Lynx has no
+ * document element to write them onto.
  *
- * Names are hyphenated because the style layer hyphenates custom property names on the way
- * out: a token bound as `--accentInk` lands on the element as `--accent-ink`, and any
- * stylesheet still asking for `var(--accentInk)` silently resolves to nothing.
+ * Hyphenated because the style layer hyphenates custom property names on the way out: a token
+ * bound as `--accentInk` lands as `--accent-ink`, and `var(--accentInk)` then resolves to
+ * nothing, silently.
  */
 export const tokenStyle = computed<Record<string, string>>(() => {
   const style: Record<string, string> = {}

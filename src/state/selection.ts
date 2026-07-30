@@ -1,16 +1,5 @@
-/**
- * Which species the detail panel is open on, and which of its forms it shows.
- *
- * Module-level refs, for the same reason the display and query state use them. Kept apart
- * from the query state deliberately: a query is a statement about the whole set and its
- * result is a pure derivation, while a selection is a statement about one item and is
- * mutable. Putting the selection in `query.ts` would make `results` no longer purely
- * derived.
- *
- * This module is the only place that clamps the form index. Every caller hands it an index
- * from somewhere else — the query layer's form matching, or a switcher button — and none of
- * them should have to know how many forms the species has.
- */
+// Kept out of query.ts so that `results` stays a pure derivation. This is the only place
+// that clamps a form index.
 import { ref } from 'vue-lynx'
 
 import type { Species } from '../data/dex.js'
@@ -18,14 +7,7 @@ import type { Species } from '../data/dex.js'
 const selected = ref<Species | null>(null)
 const selectedFormIndex = ref(0)
 
-/**
- * `index` brought inside the range `species` allows.
- *
- * Clamped rather than rejected. An out-of-range index means the selection and the query
- * layer have gone out of step, and showing the species' first form is a better outcome than
- * a panel that fails to open — the caller has no recovery for the latter, and the user sees
- * a control that did nothing.
- */
+/** `index` brought inside the range `species` allows. Clamped rather than rejected. */
 function clamp(species: Species, index: number): number {
   const last = species.f.length - 1
   if (!(index > 0)) return 0 // also catches NaN, which Math.min would carry through

@@ -1,11 +1,4 @@
 <script setup lang="ts">
-/**
- * One form's ability slots.
- *
- * Takes the slots and nothing else. Resolving a slot to an ability is the data layer's job —
- * 360 forms share 200 abilities, so the slots hold indices — and this component only asks for
- * the ability behind each one.
- */
 import { computed } from 'vue-lynx'
 
 import type { AbilityRef } from '../data/dex.js'
@@ -17,17 +10,7 @@ const props = defineProps<{
   abilities: readonly AbilityRef[]
 }>()
 
-/**
- * The slots resolved for rendering.
- *
- * Assembled here rather than resolved three times in the template: the name pair, the
- * description and the hidden marker all come from the same slot, and looking it up once per
- * row keeps the template readable.
- *
- * An empty description is carried through as an empty string and the row omits that block
- * entirely — 19 of the 200 abilities have no Chinese description, and an empty area under a
- * name reads as a rendering fault rather than as missing data.
- */
+/** The slots resolved for rendering. An empty description omits that block entirely. */
 const rows = computed(() => props.abilities.map((ref) => {
   const ability = abilityOf(ref)
   return {

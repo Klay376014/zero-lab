@@ -32,11 +32,8 @@ import { selected, selectedFormIndex } from './state/selection.js'
       </view>
     </view>
 
-    <!--
-      A sibling of the shell rather than a descendant of the screen: the overlay is positioned
-      against this root view, so anything between them would confine it. Mounted only while a
-      species is selected — see the panel's own note on why that is not a hidden element.
-    -->
+    <!-- A sibling of the shell: the overlay is positioned against this root view, so anything
+         between them would confine it. -->
     <SpeciesDetail
       v-if="selected"
       :species="selected"
