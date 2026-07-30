@@ -150,17 +150,40 @@
   flex-wrap: wrap;
 }
 
+/*
+ * The three colours this rule would otherwise carry — `color`, `background-color` and
+ * `border-color` — are bound as inline style in QueryBar.vue instead. The native text field
+ * keeps whatever it resolved at creation and does not repaint when the root view's custom
+ * properties change, so declaring them here would paint the field correctly on first mount and
+ * then leave it a mode behind. See the note on `inputStyle`.
+ */
 .QueryInput {
   flex: 1;
   font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
   font-size: 13px;
-  color: var(--ink);
-  background-color: var(--surface);
   border-width: 1px;
   border-style: solid;
-  border-color: var(--line);
   padding: 3px 6px;
   margin-right: 6px;
+}
+
+/*
+ * The placeholder was the one colour on this field nobody chose: with no rule for it the native
+ * text field spends its own default grey, which reads as a mid tone on POCKET's light surface
+ * and nearly disappears on MODERN's dark one.
+ *
+ * `--ink2` is the token the field's own `搜尋` label already uses, so the hint and the label
+ * that introduces it now sit at the same weight in both modes — 6.09 against MODERN's surface,
+ * 6.69 against POCKET's. Both are secondary-text tones by construction, a step below the
+ * `--ink` the typed value is drawn in, which is the distinction a placeholder is for.
+ *
+ * Unlike the three colours above, this one cannot be written as inline style — a pseudo-element
+ * has no element to write onto. It resolves at creation like any class rule, which is enough
+ * only because the field is rebuilt on every mode change (see `inputStyle`). If that key is
+ * ever removed, this goes stale with it.
+ */
+.QueryInput::placeholder {
+  color: var(--ink2);
 }
 
 .Label {

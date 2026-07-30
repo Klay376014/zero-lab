@@ -6,11 +6,13 @@
  * holds no state of its own — everything is read from and written to the shared query state,
  * so the grid and this bar can never disagree about what is being asked for.
  */
+import { computed } from 'vue-lynx'
+
 import TypeGlyph from './TypeGlyph.vue'
 import { t } from '../data/i18n.js'
 import { TYPE_ORDER, typeColor } from '../data/types.js'
 import type { TypeName } from '../data/types.js'
-import { lang, mode } from '../state/display.js'
+import { lang, mode, tokens } from '../state/display.js'
 import { genFilter, resetQuery, search, sortOrder, typeFilter } from '../state/query.js'
 import type { SortOrder } from '../state/query.js'
 import type { GlyphSurface } from '../theme/modes.js'
@@ -61,14 +63,53 @@ function pickSort(order: SortOrder): void {
 function onSearchInput(event: { value?: string, detail?: { value?: string } }): void {
   search.value = event.value ?? event.detail?.value ?? ''
 }
+
+/**
+ * The search field's three colours, written onto the element rather than left to `var()`.
+ *
+ * The native text field does not repaint when a colour it is already showing changes. Every
+ * other element in the tree picks its colours up from the root view's custom properties and
+ * follows the mode immediately; this one keeps what it had when it was created. Two things
+ * were measured on a device, in this order:
+ *
+ *   1. Colours in the stylesheet as `var(--ink)` etc. — field stays a mode behind.
+ *   2. The same colours bound here as inline style — field still stays a mode behind.
+ *
+ * So the update reaching the element is not enough; what the field was showing at creation is
+ * what it keeps. The one thing that did repaint it was toggling language, which rewrites the
+ * `placeholder` **attribute** — a different update path from style. Rather than lean on that
+ * side effect, the element is keyed on the mode (see the template) so a mode change builds a
+ * fresh field, and these colours are written directly so the new one needs no cascade to
+ * resolve them. Nothing here picks a different colour from the stylesheet it replaced — the
+ * tokens are the same ones `var(--ink)`, `var(--surface)` and `var(--line)` resolve to.
+ */
+const inputStyle = computed<Record<string, string>>(() => ({
+  color: tokens.value.ink,
+  backgroundColor: tokens.value.surface,
+  borderColor: tokens.value.line,
+}))
 </script>
 
 <template>
   <view class="QueryBar">
     <view class="QueryRow">
       <text class="Label">{{ t('search', lang) }}</text>
+      <!--
+        Keyed on the mode so a mode change discards this field and builds a new one. A native
+        text field keeps the colours it was created with and neither a stylesheet nor an inline
+        style update repaints it — see the note on `inputStyle` for what was measured. Creation
+        is the only point that reliably applies them, so the mode has to be part of the
+        element's identity.
+
+        What it costs: switching mode mid-typing drops focus and closes the keyboard. The text
+        itself survives — `search` lives in the shared query state, and the new field is bound
+        to it, so the results do not flinch. Focus is not worth a second mechanism for; mode is
+        a display control nobody reaches for with a half-typed query.
+      -->
       <input
+        :key="mode.id"
         class="QueryInput"
+        :style="inputStyle"
         :value="search"
         :placeholder="t('searchPlaceholder', lang)"
         @input="onSearchInput"
