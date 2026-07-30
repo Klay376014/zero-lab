@@ -16,6 +16,7 @@ English side by side, and type marks hand-plotted on an 8×8 grid.
 | `design/HANDOFF.md` | The document that matters. Data provenance, derivation rules, design decisions and their reasons, and the measured Lynx platform facts (§12). |
 | `src/` | The Vue Lynx port, complete: data layer, colour modes, type glyph, the species grid with its query bar, the detail panel, and the learnset table. |
 | `openspec/` | [Spectra](https://github.com/spectra-app/spectra) specs the port is built against. |
+| `ROADMAP.md` | What the port does not carry over from the study, and what has been decided against. Read this rather than re-deriving the gap from the handoff. |
 
 ## Running
 

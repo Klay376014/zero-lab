@@ -1119,6 +1119,32 @@
   color: var(--accent-ink);
 }
 
+/* The rows' own scrolling region, applied only above the row threshold the component names —
+   which is why this is the only rule the region has. Below the threshold the container carries no
+   height, grows to its content and scrolls nothing, so a short learnset gets no empty box.
+
+   A definite height rather than a maximum. A scrolling container bounded only from above grows to
+   its content and scrolls nothing at all, which is the same failure this project has recorded
+   against the panel body — one that looks like a stylesheet that did not take effect.
+
+   36vh against the panel body's own 60vh, which are the two bounds this value sits between: three
+   fifths of the body, so the sections around the table still have somewhere to scroll into view,
+   and — at a measured row of 24px — 10 data rows at 667px and 12 at 812px. The threshold of twelve
+   rows in LearnsetTable.vue is that second figure: the height and the threshold are one decision,
+   and moving one without the other produces a table that is bounded but has nothing to scroll.
+
+   Measured with the pixel face loaded (375 × 812, #475): window 292px against 2520px of rows, and
+   the header's six columns at 30/48/235/257/289/321 against the same six on every row — the
+   scrolling container reserves no scrollbar width here, so the header stays aligned with the rows
+   it now sits outside of.
+
+   The design document's own 400px is not usable here: it was tuned for a browser no narrower than
+   500px, and at 667px it is the entire panel body, which would leave the panel showing nothing but
+   the move table. */
+.MoveTableBound {
+  height: 36vh;
+}
+
 .MoveRow {
   display: flex;
   flex-direction: row;

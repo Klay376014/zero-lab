@@ -51,8 +51,15 @@ finishes.** So `propose → apply` in the workflow diagram has a park in between
 
 # This project
 
-A finished design study in `design/` and a completed Vue Lynx port of it in `src/`. Read
-`README.md` for the layout.
+A finished design study in `design/` and a Vue Lynx port of it in `src/` — complete as to the
+study's main features, but not the whole study. Read `README.md` for the layout.
+
+**For "what is still missing", read `ROADMAP.md`, not `HANDOFF.md`.** The port's specs were
+written one batch at a time, so anything the study has that no batch claimed is absent from the
+specs, from §12.16's deviation list, and from `pnpm run check` alike — the gap is not derivable
+from any of them. `ROADMAP.md` holds it, along with a section of things already decided against
+and why, so the same proposal is not made twice. Finishing an item means writing its behaviour
+into `openspec/specs/` and removing it from there.
 
 ## Before changing anything under `src/`
 

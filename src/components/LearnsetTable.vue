@@ -8,12 +8,23 @@
  * component has no other use for. The panel resolves the section — the same arrangement as
  * the ability list, which receives the slots.
  *
- * Every row is rendered into the panel's own scrolling container. There is deliberately no
- * scrolling container and no maximum height here: two nested scrolling layers compete for one
- * gesture, and the panel's spec allows exactly one. The platform's list binding is likewise
- * unused — it appends only at the tail and reports neither removals nor reorders, so a
- * sequence that both sorts and filters would keep stale rows and pair cells with the wrong
- * content.
+ * The rows sit in a scrolling container of their own, which the panel's spec permits as its one
+ * exemption — every other section inside the panel is still forbidden one, because two nested
+ * scrolling layers compete for the same gesture and this platform's scroll-view exposes no
+ * attribute that arbitrates between them. The exemption is spent here because the longest learnset
+ * otherwise dominates the panel: 105 rows ran 2520px inside a 487px window, and the column header
+ * scrolled away with them. What the bound buys is a header that stays and a table that can be
+ * scanned in place; the panel's own height is unchanged, because the panel body was always 60vh.
+ *
+ * That the exemption holds is not something the style checks can see. They read the stylesheet
+ * and the theme source, so a count of scrolling containers — a property of this template — is
+ * invisible to them. It is left unchecked deliberately: the symptom of getting it wrong is that
+ * something does not scroll, which is seen immediately, and those checks exist for the failures
+ * that pass silently.
+ *
+ * The platform's list binding is unused — it appends only at the tail and reports neither
+ * removals nor reorders, so a sequence that both sorts and filters would keep stale rows and
+ * pair cells with the wrong content.
  */
 import { computed } from 'vue-lynx'
 
@@ -101,6 +112,28 @@ const rows = computed<Row[]>(() => {
 
 const heads = computed(() => moveHeads(lang.value))
 
+/**
+ * The displayed row count above which the table bounds its own height and scrolls.
+ *
+ * This constant and `MoveTableBound`'s height in the stylesheet are one decision and have to move
+ * together. A row measures 24px, so that height holds 10 data rows on a 667px-tall viewport and
+ * 12 on an 812px one. Twelve is therefore also the threshold, which is what keeps the one state
+ * this pairing must not produce out of reach on either viewport: a bounded table with nothing to
+ * scroll. Thirteen rows is the first bounded case, and 13 × 24 exceeds the window on both.
+ */
+const BOUND_ABOVE_ROWS = 12
+
+/**
+ * Whether the table carries its own height, and so its own scrolling.
+ *
+ * Read from the rows on screen rather than the species' move total, so the same-type filter drops
+ * the bound when it takes the table below the threshold. Bounding unconditionally would put a
+ * roughly 290px empty box between the abilities and the foot of the panel on a species with one
+ * move — and empty space at the foot of the panel reads as the panel ending, while an empty box
+ * in the middle of it reads as something broken.
+ */
+const bounded = computed(() => rows.value.length > BOUND_ABOVE_ROWS)
+
 /** The three orders, paired with the string key that labels each. */
 const SORTS = [
   { key: 'name', label: 'mvName' },
@@ -165,9 +198,14 @@ function figureClass(value: number | null): string {
     </view>
 
     <!--
-      The column header shares the row's own column classes, which is what keeps it aligned
-      with the figures below it. It sits in the flow rather than stuck to the top of a
-      scrolling region: this table has no scrolling region of its own to stick to.
+      Outside the rows' scrolling container, so that it stays put while they scroll — a reader who
+      has reached the fiftieth row otherwise has six unlabelled columns. Placed outside rather than
+      stuck to the top with sticky positioning, which is the panel header's arrangement and needs
+      no promise from the platform about a positioning mode.
+
+      It shares the rows' own column classes, and that sharing is what aligns it with the figures
+      below. Being on the other side of a scrolling boundary is the one thing that can break that:
+      a scrollbar reserving width inside the container would shift the rows and not the header.
     -->
     <view class="MoveRow MoveHead">
       <view class="MoveGlyphCell" />
@@ -178,36 +216,46 @@ function figureClass(value: number | null): string {
       <text class="MoveFigurePp">{{ heads[5] }}</text>
     </view>
 
-    <view
-      v-for="row in rows"
-      :key="row.move.n"
-      :class="row.stab ? 'MoveRow MoveRowStab' : 'MoveRow'"
-    >
-      <view class="MoveGlyphCell">
-        <TypeGlyph :type="row.move.ty" :surface="row.stab ? 'surface2' : 'panel'" />
-      </view>
-      <!--
-        The line limit is an attribute on the element, not a style property. Declaring
-        text-maxline in the stylesheet is silently inert — the name wraps on device and the
-        stylesheet looks as though it handled it.
-      -->
-      <text class="MoveName" text-maxline="1">{{ row.name }}</text>
-      <!--
-        A real node, because the platform has no generated-content property: the design
-        document's pseudo-element star would never appear. The name column absorbs its width,
-        so a starred row's figure columns stay aligned with an unstarred one's.
-      -->
-      <text v-if="row.stab" class="MoveStar">★</text>
-      <text class="MoveClass">{{ row.abbr }}</text>
-      <text :class="figureClass(row.move.pw)">{{ figure(row.move.pw) }}</text>
-      <text :class="figureClass(row.move.ac)">{{ figure(row.move.ac) }}</text>
-      <text class="MoveFigurePp">{{ row.move.pp }}</text>
-    </view>
-
     <!--
-      An empty result is what the bonus filter does to a species whose only move is a same-type
-      status move. It says so in words rather than leaving a gap, and reports nothing.
+      The height arrives as a class rather than an inline style, and on this element rather than on
+      a component whose root it would have to fall through to — where a binding lands is only
+      certain when it is written on the element itself.
     -->
-    <text v-if="rows.length === 0" class="MoveNone">{{ t('mvNone', lang) }}</text>
+    <scroll-view
+      :class="bounded ? 'MoveTableBound' : undefined"
+      scroll-orientation="vertical"
+    >
+      <view
+        v-for="row in rows"
+        :key="row.move.n"
+        :class="row.stab ? 'MoveRow MoveRowStab' : 'MoveRow'"
+      >
+        <view class="MoveGlyphCell">
+          <TypeGlyph :type="row.move.ty" :surface="row.stab ? 'surface2' : 'panel'" />
+        </view>
+        <!--
+          The line limit is an attribute on the element, not a style property. Declaring
+          text-maxline in the stylesheet is silently inert — the name wraps on device and the
+          stylesheet looks as though it handled it.
+        -->
+        <text class="MoveName" text-maxline="1">{{ row.name }}</text>
+        <!--
+          A real node, because the platform has no generated-content property: the design
+          document's pseudo-element star would never appear. The name column absorbs its width,
+          so a starred row's figure columns stay aligned with an unstarred one's.
+        -->
+        <text v-if="row.stab" class="MoveStar">★</text>
+        <text class="MoveClass">{{ row.abbr }}</text>
+        <text :class="figureClass(row.move.pw)">{{ figure(row.move.pw) }}</text>
+        <text :class="figureClass(row.move.ac)">{{ figure(row.move.ac) }}</text>
+        <text class="MoveFigurePp">{{ row.move.pp }}</text>
+      </view>
+
+      <!--
+        An empty result is what the bonus filter does to a species whose only move is a same-type
+        status move. It says so in words rather than leaving a gap, and reports nothing.
+      -->
+      <text v-if="rows.length === 0" class="MoveNone">{{ t('mvNone', lang) }}</text>
+    </scroll-view>
   </view>
 </template>
