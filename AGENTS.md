@@ -9,15 +9,15 @@ You are an expert in JavaScript, Rspeedy, and Vue Lynx application development. 
 
 ## Commands
 
-- `npm run dev` - Start the dev server
+- `pnpm dev` - Start the dev server
 
-- `npm run build` - Build the app for production
+- `pnpm build` - Build the app for production
 
-- `npm run check` - Assert style invariants that fail silently if broken. Exits non-zero on
+- `pnpm check` - Assert style invariants that fail silently if broken. Exits non-zero on
   violation. Run it after touching any stylesheet: the things it checks are the ones that
   produce no error and no visible defect other than the interface quietly not answering.
 
-- `npm run preview` - Preview the production build locally
+- `pnpm preview` - Preview the production build locally
 
 - `npm exec rspeedy inspect` - Inspect the Rspeedy config and Rspack config of the project.
 
