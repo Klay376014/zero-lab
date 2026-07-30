@@ -87,6 +87,10 @@ export interface Ability {
   readonly de: string
 }
 
+/**
+ * What the dataset says about itself. The six counts that have a matching invariant are
+ * asserted at load, so a figure read from here is a figure {@link EXPECTED} protects.
+ */
 export interface DexMeta {
   readonly species: number
   readonly formEntries: number
@@ -152,6 +156,16 @@ assertCount('mega forms', megaCount)
 assertCount('regional forms', regionalCount)
 assertCount('move table entries', dex.moves.length)
 assertCount('ability entries', dex.abilities.length)
+
+// The same six invariants against the meta block. The assertions above prove the collections
+// are intact; these prove the dataset's own header agrees with them. Without this pair a
+// figure read from meta and rendered on screen would carry no assertion at all.
+assertCount('species count', dex.meta.species)
+assertCount('form entries', dex.meta.formEntries)
+assertCount('mega forms', dex.meta.megas)
+assertCount('regional forms', dex.meta.regional)
+assertCount('move table entries', dex.meta.moves)
+assertCount('ability entries', dex.meta.abilities)
 
 export { dex }
 

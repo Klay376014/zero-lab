@@ -9,6 +9,7 @@
  */
 import { ref, watch } from 'vue-lynx'
 
+import DexFooter from './DexFooter.vue'
 import SpeciesCard from './SpeciesCard.vue'
 import { t } from '../data/i18n.js'
 import { lang } from '../state/display.js'
@@ -77,5 +78,9 @@ function onCellTap(result: Result): void {
         <SpeciesCard :species="result.species" :form-index="result.formIndex" />
       </view>
     </view>
+
+    <!-- Inside this container so the same gesture reaches it, and unconditional: provenance
+         does not depend on what the query matched. -->
+    <DexFooter />
   </scroll-view>
 </template>

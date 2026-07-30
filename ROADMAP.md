@@ -6,16 +6,16 @@
 第六個 change（`bound-learnset-scroll`）已 archive —— 它不是補這份清單裡的缺口，而是推翻了
 C 節的一項決定，見「曾列在 C 節、已被推翻」。
 
-進行中：`surface-dataset-facts`（已 park）涵蓋 A2 與 A7。做完後兩項從 A 節移走，行為寫進
-`openspec/specs/dataset-statements/`。
+第七個 change（`surface-dataset-facts`）已 archive：A7 全數交付並移出本清單，A2 只交付了版權
+那一段。行為寫在 `openspec/specs/dataset-statements/`。
 
 **這份檔案管什麼**：設計稿有、移植版沒有的東西，以及移植版整體缺的非功能能力。
 **這份檔案不管什麼**：平台事實（`design/HANDOFF.md` §12）、資料來源與推導規則（同檔 §5–§7）、
 已完成功能的行為（`openspec/specs/`）。三者都還是各自的權威，這裡只在需要時指路。
 
-最後對照：2026-07-30，對照的是 `bound-learnset-scroll` archive 之後的樹（前一次對照是 `afc4d05`）。
-A 節原有十項、B 節六項都還沒有實作過。本次變動：A1 氛圍層評估後決定不做，移至 C 節（§12.20），
-A 節剩九項。
+最後對照：2026-07-30，對照的是 `surface-dataset-facts` archive 之後的樹。B 節六項仍未動過。
+A 節變動：A1 氛圍層決定不做並移至 C 節（§12.20）；A7 tally 已交付並移出；A2 縮減為只剩五段
+來源說明。**A 節現為八項，且 A2 帶著一個待決定事項。**
 
 ---
 
@@ -32,6 +32,9 @@ A 節剩九項。
 `sortName`、`count` 與四個 tally 鍵，於是畫面上沒有任何東西指出功能不見了。**§12.18 只寫了
 前一半。**
 
+`surface-dataset-facts` 補回了 `footer`、`count` 與四個 tally 鍵。仍缺 `megaOnly`、`multiOnly`
+（A5）與 `sortName`（A6）—— 這三個鍵是否存在，仍然是那兩項有沒有被做的最快指標。
+
 ---
 
 ## A. 功能差距
@@ -39,15 +42,18 @@ A 節剩九項。
 兩項排在前面，因為它們各自有「文件或 spec 已經預告、但沒有交付」的性質 —— 那比單純的少做一個
 功能更貴，會讓後人相信它已經存在。（原本是三項，A1 氛圍層已結清為「不做」，移至 C 節。）
 
-### A2. footer 六段來源與版權說明 —— ⚠️ 對外聲明，未交付
+### A2. footer 的五段來源說明 —— ⚠️ 版權部分已交付，來源部分未交付
+
+`surface-dataset-facts` 已交付 footer 的**字型／版權**一段（`dataset-statements` spec）。設計稿另外
+五段來源說明**經討論決議不做**，這一項因此只剩那五段。
 
 | | |
 |---|---|
-| 設計稿 | i18n 表的 `footer` 鍵，六段：陣容與形態／招式／種族值與特性／中文名稱／圖像／字型與版權 |
-| 移植版 | `i18n.ts` 沒有 `footer` 鍵，`App.vue` 沒有對應區塊 |
-| 為什麼要補 | 這是畫面上**唯一**聲明資料來源、非商業用途與 © 的地方。`README.md` 有，但那不是使用者會看到的東西。另外 `HANDOFF.md` §8 那條「第六世代之後是渲染圖，**已在 footer 誠實說明**」在移植版並不成立 |
-| 成本 | 最低的一項 —— 內容原文都在 `template.html` 的 I18N 表裡，搬字串加一個 `<scroll-view>` 內的區塊即可。散文面已內嵌，字型分工照 §9（標籤 Silkscreen、內文 Literata） |
-| ⚠️ 注意 | 六段裡有 `__ROSTER__` 佔位字，是 `build.py` 在建置期填入的來源 URL。移植版沒有那個替換步驟，要嘛寫死、要嘛從 `dex.json` 帶過來 |
+| 設計稿 | i18n 表的 `footer` 鍵六段，其中五段講來源：陣容與形態／招式／種族值與特性／中文名稱／圖像 |
+| 移植版 | 只有第六段（字型／版權）。`dataset-statements` spec 明文要求 footer **不宣稱任何資料來源** |
+| 還沒解決什麼 | ①畫面上仍然沒有任何資料來源聲明，`README.md` 有但使用者看不到 ②`HANDOFF.md` §8 那條「第六世代之後是渲染圖，**已在 footer 誠實說明**」在移植版**仍然不成立** |
+| ⚠️ 待決定 | 「不做」是永久決定還是暫緩。**若是永久**，這一項要整段移到 C 節、寫上理由，並同時修掉 §8 那句話 —— 否則 HANDOFF 會繼續宣稱一件不存在的事，就是 A1 當初那個狀態。**若是暫緩**，留在這裡即可 |
+| 成本 | 內容原文都在 `template.html` 的 I18N 表裡。`__ROSTER__` 佔位字**不是障礙** —— `build.py:21` 填的就是 `meta.roster`，該欄位在 `dex.json` 裡，執行期直接讀（此結論已於 `surface-dataset-facts` 查證） |
 
 ### A3. `prefers-reduced-motion` —— ⚠️ 檢查項還留著，平台未量
 
@@ -81,14 +87,6 @@ A 節剩九項。
 
 `dex-query` spec 用「closed set containing **at least** national number and base-stat total」
 把兩種排序合法化了，補第三種不違反既有 spec。
-
-### A7. masthead 的 tally 四個計數
-
-| | |
-|---|---|
-| 設計稿 | 種類／形態／MEGA／招式四個計數（208 / 360 / 75 / 496） |
-| 移植版 | `App.vue:19` 只有 `{{ results.length }} / 208` |
-| 順帶兩個小缺陷 | ①`208` 是**寫死的字面值**，不是 `dex.species.length` —— 而資料層的不變式正好斷言這個數字，寫死等於把它抄了第二份 ②設計稿的 `count(n,tot)` 是本地化字串（「n / 208 種類」），移植版是裸斜線，`i18n.ts` 沒有 `count` 鍵 |
 
 ### A8. 種族值排序時卡片不顯示 BST 數字
 

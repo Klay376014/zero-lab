@@ -117,6 +117,40 @@
   margin-top: 6px;
 }
 
+/* ---------- masthead tally ---------- */
+
+.Tally {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 9px;
+}
+
+/* Inverts to the accent pair rather than gaining a new colour, so POCKET's four-tone contract
+   holds. The block carries the fill; the two text nodes carry the ink themselves, because a
+   colour set on a view does not reach a text node inside it. */
+.TallyItem {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--accent);
+  padding: 3px 6px;
+  margin-right: 9px;
+}
+
+.TallyFigure {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--accent-ink);
+}
+
+.TallyLabel {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--accent-ink);
+}
+
 /* ---------- controls ---------- */
 
 .MastheadRow {
@@ -967,6 +1001,44 @@
 /* Prose, so no pixel face is named here and none is embedded for it — see the warning rule's
    note. Line height carries the reading rhythm the design document set. */
 .AbilityDesc {
+  font-family: Lit, "PingFang TC", "PingFang SC", "Songti TC", "Noto Serif TC", serif;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink2);
+  margin-top: 3px;
+}
+
+/* ---------- dex footer ----------
+
+   Font split follows the existing rule and adds none: the heading is a label and takes the
+   pixel face, the body is prose and takes the prose face. Same division as an ability's name
+   and its description. Chinese in either role falls through the declared stack, because
+   neither face carries CJK. */
+
+.DexFooter {
+  display: flex;
+  flex-direction: column;
+  border-top-width: 3px;
+  border-top-style: solid;
+  border-top-color: var(--line);
+  margin-top: 12px;
+  padding: 12px 3px 0;
+}
+
+.FooterSegment {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.FooterHeading {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.FooterBody {
   font-family: Lit, "PingFang TC", "PingFang SC", "Songti TC", "Noto Serif TC", serif;
   font-size: 13px;
   line-height: 20px;

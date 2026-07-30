@@ -12,6 +12,11 @@ export interface Strings {
   readonly type: string
   /** Form label shown for a species' base form, which carries no upstream label. */
   readonly baseForm: string
+  // Masthead tally. Labels only — the figures come from the dataset's meta block.
+  readonly tSpecies: string
+  readonly tForms: string
+  readonly tMega: string
+  readonly tMoves: string
   // Query bar.
   readonly search: string
   /** Placeholder inside the search field. */
@@ -73,6 +78,10 @@ export const I18N: Record<Lang, Strings> = {
     lang: '中文',
     type: '型別',
     baseForm: '基本形態',
+    tSpecies: '種類',
+    tForms: '形態',
+    tMega: 'MEGA',
+    tMoves: '招式',
     search: '搜尋',
     searchPlaceholder: '名稱 / 編號 / 型別 / 形態',
     gen: '世代',
@@ -106,6 +115,10 @@ export const I18N: Record<Lang, Strings> = {
     lang: 'EN',
     type: 'Type',
     baseForm: 'Base Form',
+    tSpecies: 'SPECIES',
+    tForms: 'FORMS',
+    tMega: 'MEGA',
+    tMoves: 'MOVES',
     search: 'Search',
     searchPlaceholder: 'Name / no. / type / form',
     gen: 'Gen',
@@ -207,6 +220,33 @@ export function formsOfLabel(count: number, lang: Lang): string {
   return count > 1 ? `${count} forms` : `${count} form`
 }
 
+/**
+ * "19 / 208 species" and its Chinese equivalent. Names the unit rather than leaving a bare
+ * ratio, which reads identically in both languages while the rest of the screen changes.
+ *
+ * `total` is the dataset's own species count, passed in rather than read here, so that this
+ * module keeps depending on the dataset only for the generation numerals.
+ */
+export function resultCountLabel(matched: number, total: number, lang: Lang): string {
+  return lang === 'zh' ? `${matched} / ${total} 種類` : `${matched} / ${total} species`
+}
+
+/** One footer segment: what it is about, and what it says. */
+export interface FooterSegment {
+  readonly heading: string
+  readonly body: string
+}
+
+/**
+ * The footer's segments for `lang`.
+ *
+ * A sequence rather than one pair, although the footer currently states one thing: the shape
+ * is what the component renders, and a segment added later needs no change on either side.
+ */
+export function footerSegments(lang: Lang): readonly FooterSegment[] {
+  return FOOTER[lang].map(([heading, body]) => ({ heading, body }))
+}
+
 /** The learnset table's six column headings for `lang`. The first is empty: it is the glyph column. */
 export function moveHeads(lang: Lang): readonly string[] {
   return MOVE_HEADS[lang]
@@ -223,6 +263,26 @@ export function damageClassAbbr(cls: MoveClass, lang: Lang): string {
  */
 export function moveName(move: Move, lang: Lang): string {
   return lang === 'zh' ? (move.z || move.n) : move.n
+}
+
+/**
+ * What the footer states, as heading/body pairs.
+ *
+ * The design study carried six segments here — the roster, moves, stats and abilities, Chinese
+ * naming, artwork, and this one. Only the font and copyright segment is carried over; the five
+ * provenance segments were dropped by decision, and design.md records what that costs.
+ *
+ * Two statements are rewritten from the study's wording because they are true there and not
+ * here: this port embeds two font families rather than one, and it is a port rather than a
+ * design study.
+ */
+const FOOTER: Record<Lang, readonly (readonly [string, string])[]> = {
+  zh: [
+    ['字型／版權', 'Silkscreen 與 Literata（皆 OFL）已內嵌。Pokémon © Nintendo / Creatures Inc. / GAME FREAK inc.　本作品為非商業用途。'],
+  ],
+  en: [
+    ['Font / rights', 'Silkscreen and Literata (both OFL) are embedded. Pokémon © Nintendo / Creatures Inc. / GAME FREAK inc. This work is non-commercial.'],
+  ],
 }
 
 const STAT_LABELS: Record<Lang, readonly [string, string, string, string, string, string]> = {
