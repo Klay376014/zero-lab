@@ -2,6 +2,7 @@
 import { computed } from 'vue-lynx'
 
 import './App.css'
+import { onPressEnd, onPressStart } from './interaction/press.js'
 import DexGrid from './components/DexGrid.vue'
 import QueryBar from './components/QueryBar.vue'
 import SpeciesDetail from './components/SpeciesDetail.vue'
@@ -24,6 +25,7 @@ const tally = computed(() => [
   { key: 'mega', figure: dex.meta.megas, label: t('tMega', lang.value) },
   { key: 'moves', figure: dex.meta.moves, label: t('tMoves', lang.value) },
 ])
+
 </script>
 
 <template>
@@ -34,10 +36,26 @@ const tally = computed(() => [
           <text class="Title">CHAMPIONS DEX</text>
           <view class="MastheadRow">
             <text class="Sub">{{ resultCountLabel(results.length, dex.meta.species, lang) }}</text>
-            <view class="Chip" @tap="cycleMode">
+            <!-- Press feedback is bound on the element, never on a component, so the landing
+                 point is certain rather than dependent on attribute fall-through. All three
+                 touch bindings go together: cancel is what releases a press that became a
+                 scroll. -->
+            <view
+              class="Chip"
+              :main-thread-bindtouchstart="onPressStart"
+              :main-thread-bindtouchend="onPressEnd"
+              :main-thread-bindtouchcancel="onPressEnd"
+              @tap="cycleMode"
+            >
               <text class="ChipText">{{ mode.id }}</text>
             </view>
-            <view class="Chip" @tap="toggleLang">
+            <view
+              class="Chip"
+              :main-thread-bindtouchstart="onPressStart"
+              :main-thread-bindtouchend="onPressEnd"
+              :main-thread-bindtouchcancel="onPressEnd"
+              @tap="toggleLang"
+            >
               <text class="ChipText">{{ t('lang', lang) }}</text>
             </view>
           </view>
