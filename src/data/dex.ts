@@ -8,6 +8,9 @@
  * The JSON boundary is deliberately `unknown` — see the note in src/shims-vue.d.ts.
  */
 import rawDex from './dex.json'
+// Type-only elsewhere in this module's dependents, but a value here. Safe from the cycle that
+// would otherwise form through i18n: types.ts imports nothing at runtime.
+import { typeName } from './types.js'
 
 /** Where a form comes from in the roster table. */
 export type FormKind = 'base' | 'other' | 'regional' | 'mega'
@@ -204,6 +207,42 @@ export function allTypes(species: Species): string[] {
     }
   }
   return seen
+}
+
+/**
+ * Everything about a species that the search string is matched against, lower-cased.
+ *
+ * One string rather than a field-by-field comparison, because a multi-token query has to be
+ * able to name two different things at once: `mega charizard` matches nothing if each token
+ * must find one field that holds both.
+ *
+ * Carries the four things the search field's placeholder names — name, number, type, form —
+ * plus the category and generation that travel with them. The number appears twice because
+ * the cards print it zero-padded and a reader is as likely to type what they saw.
+ *
+ * The bare generation numeral is deliberately absent, although the design document's own
+ * haystack carries it. A search for `V` would then reach 125 of the 208 species — every name
+ * holding the letter — which on screen is indistinguishable from a search that is not
+ * working. The `gen<n>` token reaches the same set with nothing to collide with.
+ *
+ * Built on demand rather than cached. Recomputing 208 of these per keystroke is the same
+ * bargain the result sequence already makes; if it ever registers on device, this is the one
+ * place that would memoise, because the value depends only on the dataset.
+ */
+export function searchHaystack(species: Species): string {
+  const types = allTypes(species)
+  return [
+    species.m,
+    species.mz,
+    species.gz,
+    String(species.d),
+    String(species.d).padStart(4, '0'),
+    `gen${species.g}`,
+    ...species.f.map((form) => form.l),
+    ...species.f.map((form) => form.lz),
+    ...types,
+    ...types.map((type) => typeName(type, 'zh')),
+  ].join(' ').toLowerCase()
 }
 
 /** Whether any of a species' forms is a Mega evolution. */
