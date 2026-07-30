@@ -147,10 +147,21 @@ function proseCorpus() {
   const dex = JSON.parse(readFileSync(DEX, 'utf8'))
   for (const ability of dex.abilities) text.push(ability.de, ability.d)
   for (const species of dex.species) text.push(species.n)
-  // Every quoted literal in the string table, single or double quoted, escapes left as written:
+  // Every literal in the string table — single quoted, double quoted, or a template literal.
+  //
+  // Template literals are matched deliberately. They were missed until a footer string was
+  // written with backticks and the whole segment left the corpus while this check went on
+  // reporting ok: a gap that reads exactly like coverage. They differ from the other two in
+  // two ways, so they get their own pattern: they may span newlines, and they may carry
+  // `${...}` interpolations, which are code rather than text the face has to draw.
+  //
+  // Escapes are left as written in all three, and a literal carrying a backslash is skipped:
   // an escape sequence contributes no character the face has to draw.
-  for (const [, literal] of readFileSync(STRINGS, 'utf8').matchAll(/'([^'\\\n]*)'|"([^"\\\n]*)"/g)) {
-    text.push(literal)
+  const source = readFileSync(STRINGS, 'utf8')
+  const literals = /'([^'\\\n]*)'|"([^"\\\n]*)"|`([^`\\]*)`/g
+  for (const [, single, double, template] of source.matchAll(literals)) {
+    if (template !== undefined) text.push(template.replaceAll(/\$\{[^}]*\}/g, ''))
+    else text.push(single ?? double)
   }
 
   const chars = new Set()
