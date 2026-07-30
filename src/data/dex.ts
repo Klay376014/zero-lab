@@ -196,14 +196,36 @@ export function bestBst(species: Species): number {
   return best
 }
 
-/** Every type appearing on any of a species' forms, in first-seen order. */
-export function allTypes(species: Species): string[] {
+/**
+ * Derivations of a species that the query recomputes for every species on every keystroke.
+ *
+ * Both are pure functions of `dex`, which is loaded once and is readonly throughout — so a
+ * species' answer can never change, and the first one computed is the one to keep. Keyed on
+ * the species object rather than its number because the objects are the identities the query
+ * already holds; there are 208 of them and they live as long as the module does.
+ *
+ * This is memoisation, not a cache in the sense of something that can miss twice: nothing
+ * evicts, because nothing invalidates.
+ */
+const typesBySpecies = new Map<Species, readonly string[]>()
+const haystackBySpecies = new Map<Species, string>()
+
+/**
+ * Every type appearing on any of a species' forms, in first-seen order.
+ *
+ * The array is shared with every other caller and must not be mutated — hence the readonly
+ * return type, which is what stops that at the type level.
+ */
+export function allTypes(species: Species): readonly string[] {
+  const hit = typesBySpecies.get(species)
+  if (hit !== undefined) return hit
   const seen: string[] = []
   for (const form of species.f) {
     for (const type of form.t) {
       if (!seen.includes(type)) seen.push(type)
     }
   }
+  typesBySpecies.set(species, seen)
   return seen
 }
 
@@ -212,10 +234,15 @@ export function allTypes(species: Species): string[] {
  *
  * The bare generation numeral is deliberately absent: a search for `V` would reach 125 of the
  * 208 species. The `gen<n>` token reaches the same set with nothing to collide with.
+ *
+ * Note what the string does *not* depend on: the active language. Both names are always in it,
+ * so a language change does not invalidate anything here.
  */
 export function searchHaystack(species: Species): string {
+  const hit = haystackBySpecies.get(species)
+  if (hit !== undefined) return hit
   const types = allTypes(species)
-  return [
+  const haystack = [
     species.m,
     species.mz,
     species.gz,
@@ -227,6 +254,8 @@ export function searchHaystack(species: Species): string {
     ...types,
     ...types.map((type) => typeName(type, 'zh')),
   ].join(' ').toLowerCase()
+  haystackBySpecies.set(species, haystack)
+  return haystack
 }
 
 /** Whether any of a species' forms is a Mega evolution. */
