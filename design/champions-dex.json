@@ -26788,7 +26788,7 @@
   {
    "d": 983,
    "m": "Kingambit",
-   "mz": "仆刀將軍",
+   "mz": "仆斬將軍",
    "gz": "大刀寶可夢",
    "g": 9,
    "v": "1.0.2",
@@ -27346,7 +27346,7 @@
   },
   {
    "n": "Chilling Water",
-   "z": "泼冷水",
+   "z": "潑冷水",
    "ty": "Water",
    "dc": "Special",
    "pw": 50,
@@ -29713,7 +29713,7 @@
   },
   {
    "n": "Pounce",
-   "z": "虫扑",
+   "z": "虫撲",
    "ty": "Bug",
    "dc": "Physical",
    "pw": 50,
@@ -30460,7 +30460,7 @@
   },
   {
    "n": "Last Respects",
-   "z": "扫墓",
+   "z": "掃墓",
    "ty": "Ghost",
    "dc": "Physical",
    "pw": 50,
@@ -30469,7 +30469,7 @@
   },
   {
    "n": "Wave Crash",
-   "z": "波动冲",
+   "z": "波動衝",
    "ty": "Water",
    "dc": "Physical",
    "pw": 120,
@@ -30631,7 +30631,7 @@
   },
   {
    "n": "Bitter Blade",
-   "z": "悔念剑",
+   "z": "悔念劍",
    "ty": "Fire",
    "dc": "Physical",
    "pw": 90,
@@ -30856,7 +30856,7 @@
   },
   {
    "n": "Triple Arrows",
-   "z": "三连箭",
+   "z": "三連箭",
    "ty": "Fighting",
    "dc": "Physical",
    "pw": 90,
@@ -30928,7 +30928,7 @@
   },
   {
    "n": "Lumina Crash",
-   "z": "琉光冲激",
+   "z": "琉光衝激",
    "ty": "Psychic",
    "dc": "Special",
    "pw": 80,
@@ -31018,7 +31018,7 @@
   },
   {
    "n": "Salt Cure",
-   "z": "盐腌",
+   "z": "鹽醃",
    "ty": "Rock",
    "dc": "Physical",
    "pw": 40,
@@ -31063,7 +31063,7 @@
   },
   {
    "n": "Headlong Rush",
-   "z": "突飞猛扑",
+   "z": "突飛猛撲",
    "ty": "Ground",
    "dc": "Physical",
    "pw": 120,
@@ -31072,7 +31072,7 @@
   },
   {
    "n": "Shelter",
-   "z": "闭关",
+   "z": "閉關",
    "ty": "Steel",
    "dc": "Status",
    "pw": null,
@@ -31162,7 +31162,7 @@
   },
   {
    "n": "Shed Tail",
-   "z": "断尾",
+   "z": "斷尾",
    "ty": "Normal",
    "dc": "Status",
    "pw": null,
@@ -31180,7 +31180,7 @@
   },
   {
    "n": "Comeuppance",
-   "z": "复仇",
+   "z": "復仇",
    "ty": "Dark",
    "dc": "Physical",
    "pw": null,
@@ -31225,7 +31225,7 @@
   },
   {
    "n": "Kowtow Cleave",
-   "z": "仆刀",
+   "z": "仆斬",
    "ty": "Dark",
    "dc": "Physical",
    "pw": 85,
@@ -31351,7 +31351,7 @@
   },
   {
    "n": "Population Bomb",
-   "z": "鼠数儿",
+   "z": "鼠數兒",
    "ty": "Normal",
    "dc": "Physical",
    "pw": 20,
@@ -31360,7 +31360,7 @@
   },
   {
    "n": "Tidy Up",
-   "z": "大扫除",
+   "z": "大掃除",
    "ty": "Normal",
    "dc": "Status",
    "pw": null,
@@ -31369,7 +31369,7 @@
   },
   {
    "n": "Axe Kick",
-   "z": "下压踢",
+   "z": "下壓踢",
    "ty": "Fighting",
    "dc": "Physical",
    "pw": 120,
@@ -31387,7 +31387,7 @@
   },
   {
    "n": "Flower Trick",
-   "z": "千变万花",
+   "z": "千變萬花",
    "ty": "Grass",
    "dc": "Physical",
    "pw": 70,
@@ -31414,7 +31414,7 @@
   },
   {
    "n": "Barb Barrage",
-   "z": "毒千针",
+   "z": "毒千針",
    "ty": "Poison",
    "dc": "Physical",
    "pw": 60,
@@ -31531,7 +31531,7 @@
   },
   {
    "n": "Ceaseless Edge",
-   "z": "秘剑・千重涛",
+   "z": "秘劍・千重濤",
    "ty": "Dark",
    "dc": "Physical",
    "pw": 65,
@@ -31540,7 +31540,7 @@
   },
   {
    "n": "Spicy Extract",
-   "z": "辣椒精华",
+   "z": "辣椒精華",
    "ty": "Grass",
    "dc": "Status",
    "pw": null,
@@ -31567,7 +31567,7 @@
   },
   {
    "n": "Torch Song",
-   "z": "闪焰高歌",
+   "z": "閃焰高歌",
    "ty": "Fire",
    "dc": "Special",
    "pw": 80,
@@ -31585,7 +31585,7 @@
   },
   {
    "n": "Chilly Reception",
-   "z": "冷笑话",
+   "z": "冷笑話",
    "ty": "Ice",
    "dc": "Status",
    "pw": null,
@@ -31603,7 +31603,7 @@
   },
   {
    "n": "Dire Claw",
-   "z": "克命爪",
+   "z": "剋命爪",
    "ty": "Poison",
    "dc": "Physical",
    "pw": 80,
@@ -31630,7 +31630,7 @@
   },
   {
    "n": "Gigaton Hammer",
-   "z": "巨力锤",
+   "z": "巨力錘",
    "ty": "Steel",
    "dc": "Physical",
    "pw": 160,
@@ -31684,7 +31684,7 @@
   },
   {
    "n": "Infernal Parade",
-   "z": "群魔乱舞",
+   "z": "群魔亂舞",
    "ty": "Ghost",
    "dc": "Special",
    "pw": 65,
@@ -31729,7 +31729,7 @@
   },
   {
    "n": "Bitter Malice",
-   "z": "冤冤相报",
+   "z": "冤冤相報",
    "ty": "Ghost",
    "dc": "Special",
    "pw": 75,
