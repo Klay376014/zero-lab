@@ -6,9 +6,9 @@ design/ 已有一份可重現的 CHAMPIONS DEX 設計稿：單檔 HTML（含內�
 
 - image-rendering 支援 pixelated，但文件明確寫「只作用於元素本身，不作用於子元素」，也不支援 inherit。設計稿是在 .card 上宣告一次由子孫繼承。
 - 三個內嵌字型都是 WOFF2（檔頭 d09GMg 確認）。Lynx 的 font-face 在 Android 只支援 TTF / OTF / TTC；且 font-face 不支援 font-weight，設計稿以同一個 Silk 家族掛 400 / 700 兩筆的作法無法成立。
-- box-shadow 文件明文列 inset 為不支援。卡片斜角、螢幕內框、MODERN 型別鈕按下態三處都靠 inset。
+- box-shadow 文件明文列 inset 為不支援。卡片斜角、螢幕內框、MODERN 屬性鈕按下態三處都靠 inset。
 
-另外 Lynx 元素清單沒有 canvas，設計稿的型別字符、抖動 tile、sprite 佔位圖三者都由 canvas 產生。
+另外 Lynx 元素清單沒有 canvas，設計稿的屬性字符、抖動 tile、sprite 佔位圖三者都由 canvas 產生。
 
 專案的 lynx.config.ts 已開啟 enableCSSInlineVariables 與 enableCSSInheritance，模式 token 走 CSS 變數這條路不需要額外設定。
 
@@ -18,7 +18,7 @@ design/ 已有一份可重現的 CHAMPIONS DEX 設計稿：單檔 HTML（含內�
 
 - 資料層在 src/ 可用，且與 design/ 的產物同源、可偵測漂移
 - POCKET 與 MODERN 兩組 token 可切換，卡片在兩個模式 × 兩個語系下都正確
-- 型別字符不靠 canvas 也能呈現，且在卡片表面與選中表面都可見
+- 屬性字符不靠 canvas 也能呈現，且在卡片表面與選中表面都可見
 - 像素字型在 Lynx 註冊成功，名稱／標籤／數字維持像素字型分工
 - 上述三個平台事實在 web 與 LynxExplorer 各實測一次，結果回寫 design/HANDOFF.md
 
@@ -42,11 +42,11 @@ design/pipeline/build.py 已從 dex3.json 產生 design/champions-dex.json（ind
 
 src/data/dex.json 進版控，讓 src/ 不跑 pipeline 也能建置；並以「重跑 pipeline 後檔案位元相同」作為漂移偵測手段。
 
-### JSON 邊界不啟用 resolveJsonModule，型別責任收在資料層並以載入期斷言把關
+### JSON 邊界不啟用 resolveJsonModule，屬性責任收在資料層並以載入期斷言把關
 
-200KB JSON 若交給 resolveJsonModule，TypeScript 會為它推導巨大的字面量型別，型別檢查時間不可接受。改以 *.json 的模組宣告回傳 unknown，由 src/data/dex.ts 斷言後匯出具名型別。
+200KB JSON 若交給 resolveJsonModule，TypeScript 會為它推導巨大的字面量屬性，屬性檢查時間不可接受。改以 *.json 的模組宣告回傳 unknown，由 src/data/dex.ts 斷言後匯出具名屬性。
 
-型別安全的實質保障不在 tsc 而在載入期斷言：種類數、形態條目數、Mega 數、地區形態數、招式數、特性數六項對上 HANDOFF「資料層的驗證不變式」的值。斷言失敗直接丟錯，不做靜默降級 —— 資料集是建置期產物，執行期對不上代表 pipeline 或版控出了問題。
+屬性安全的實質保障不在 tsc 而在載入期斷言：種類數、形態條目數、Mega 數、地區形態數、招式數、特性數六項對上 HANDOFF「資料層的驗證不變式」的值。斷言失敗直接丟錯，不做靜默降級 —— 資料集是建置期產物，執行期對不上代表 pipeline 或版控出了問題。
 
 ### image-rendering: pixelated 逐元素宣告，並在驗證載具放大兩倍才看得出差異
 
@@ -72,13 +72,13 @@ src 用 base64 data URI 或打包後的資源路徑兩者 Lynx 都宣稱支援�
 
 POCKET 的四色階契約不受影響：兩個顏色都取自現有色階，沒有引入新顏色。
 
-### 型別字符改用 SVG 方塊網格，取代 canvas
+### 屬性字符改用 SVG 方塊網格，取代 canvas
 
 Lynx 的 svg 元素接受 content 屬性（SVG XML 字串）或 src，並在背景執行緒解析、繪成單一 native view。文件沒有保證可以把 rect 當成 Vue 模板的子節點寫，所以 TypeGlyph 由程式組出 SVG 字串再餵給 content，而不是在模板裡展開 64 個 rect。
 
 8×8 點陣以水平連續段合併成 rect，字串長度可控。viewBox 為 0 0 8 8，元素固定 16px —— 維持設計稿「字符固定 16px 不隨字級縮放」的決定，因為 8×8 只有整數倍才能在最近鄰放大下保持銳利。
 
-填色沿用 glyphOn(type, bg) 的三種表面語意（surface / accent / typechip）。字符是繪製時就把顏色烘進去，不能繼承 currentColor —— 這個限制在 SVG content 字串下同樣成立，因為顏色是寫在字串裡的。以 (模式, 型別, 表面) 為鍵記憶化字串。
+填色沿用 glyphOn(type, bg) 的三種表面語意（surface / accent / typechip）。字符是繪製時就把顏色烘進去，不能繼承 currentColor —— 這個限制在 SVG content 字串下同樣成立，因為顏色是寫在字串裡的。以 (模式, 屬性, 表面) 為鍵記憶化字串。
 
 ### 模式 token 以根節點 inline CSS 變數注入
 
@@ -90,17 +90,17 @@ POCKET 的 token 由四階灰（tones）推導而來、MODERN 直接給定 token
 
 inkOn 是比較 #101010 與 #ffffff 對「該背景」的實際 WCAG 對比值再取高者，不是拿亮度比固定門檻。HANDOFF 記錄岩石的 #AFA981 正好落在交界，固定門檻會判給白色（對比 2.33），而黑色其實是 9.0。relLum / contrast / inkOn 三個函式邏輯不動地搬到 src/theme/contrast.ts。
 
-### sprite 載入失敗改用型別字符替代圖塊
+### sprite 載入失敗改用屬性字符替代圖塊
 
-sprite 是唯一的外部依賴（raw.githubusercontent.com）。設計稿的 canvas 佔位圖無法移植，改為：載入失敗時顯示一個 --surface2 底、中央放 48px 型別字符的 view。
+sprite 是唯一的外部依賴（raw.githubusercontent.com）。設計稿的 canvas 佔位圖無法移植，改為：載入失敗時顯示一個 --surface2 底、中央放 48px 屬性字符的 view。
 
 Lynx 的 image 錯誤事件在原生層是 binderror，但 Vue Lynx 的綁定寫法文件未明載，列入實測項；若實測無法取得錯誤事件，本切片改以「預設先顯示替代圖塊、載入成功事件到達後才換成 sprite」的反向策略達成同樣的可觀察行為。
 
 ### 本切片以 App.vue 作為驗證載具，不建立網格
 
-App.vue 改成一個縱向排列的驗證畫面：模式切換、語系切換、三到四張卡片（挑邊界案例）、一組 18 個型別字符的色板、以及 96px 與 192px 並排的同一張 sprite。
+App.vue 改成一個縱向排列的驗證畫面：模式切換、語系切換、三到四張卡片（挑邊界案例）、一組 18 個屬性字符的色板、以及 96px 與 192px 並排的同一張 sprite。
 
-挑選的卡片要能踩到卡片契約的邊界：一個雙型別且有多形態與 MEGA 的（#3 妙蛙花）、一個名稱最長的（Crabominable / 赫拉克羅斯）、一個單型別無形態的。
+挑選的卡片要能踩到卡片契約的邊界：一個雙屬性且有多形態與 MEGA 的（#3 妙蛙花）、一個名稱最長的（Crabominable / 赫拉克羅斯）、一個單屬性無形態的。
 
 這個載具不是產品畫面，是本切片的驗收介面；網格切片會取代它。同時移除 starter 的 flappy 範例（useFlappy、lib/flappy 與三個 logo 素材），避免留下無人引用的死程式。
 
@@ -108,13 +108,13 @@ App.vue 改成一個縱向排列的驗證畫面：模式切換、語系切換、
 
 **行為（完成後可觀察到什麼）**
 
-啟動 app 後看到一個像素風驗證畫面。切換模式鈕會讓整個畫面在 POCKET（四階灰介面 + 全彩 sprite）與 MODERN（深色介面 + 型別色）之間換色；切換語系鈕會讓卡片的主要名稱在中英之間互換，而另一個語言始終留在畫面上。卡片顯示編號、世代羅馬數字、MEGA 星號徽章、96px sprite、主／副名稱、形態標籤、型別字符與縮寫、形態數徽章。18 個型別字符在卡片表面與選中（accent）表面都清晰可見。並排的 96px / 192px sprite 呈現銳利的像素格而非模糊插值。
+啟動 app 後看到一個像素風驗證畫面。切換模式鈕會讓整個畫面在 POCKET（四階灰介面 + 全彩 sprite）與 MODERN（深色介面 + 屬性色）之間換色；切換語系鈕會讓卡片的主要名稱在中英之間互換，而另一個語言始終留在畫面上。卡片顯示編號、世代羅馬數字、MEGA 星號徽章、96px sprite、主／副名稱、形態標籤、屬性字符與縮寫、形態數徽章。18 個屬性字符在卡片表面與選中（accent）表面都清晰可見。並排的 96px / 192px sprite 呈現銳利的像素格而非模糊插值。
 
 **介面與資料形狀**
 
-- src/data/dex.ts 匯出 Dex / Species / Form / Move / Ability 型別與 dex 實例。Species 欄位沿用資料集鍵名：d（全國編號）、m / mz（英／中種類名）、gz（中文分類）、g（世代）、f（形態陣列）、sec（學習表段落引用）。Form 欄位：l / lz（英／中形態名，基本形態為空字串）、k（base | other | regional | mega）、t（型別陣列）、s（sprite 檔名）、st（六項種族值陣列）、ab（特性引用，第二元素存在表示隱藏特性）、si（學習表段落索引）
+- src/data/dex.ts 匯出 Dex / Species / Form / Move / Ability 屬性與 dex 實例。Species 欄位沿用資料集鍵名：d（全國編號）、m / mz（英／中種類名）、gz（中文分類）、g（世代）、f（形態陣列）、sec（學習表段落引用）。Form 欄位：l / lz（英／中形態名，基本形態為空字串）、k（base | other | regional | mega）、t（屬性陣列）、s（sprite 檔名）、st（六項種族值陣列）、ab（特性引用，第二元素存在表示隱藏特性）、si（學習表段落索引）
 - src/data/dex.ts 匯出衍生存取器：bst(form)、bestBst(species)、allTypes(species)、hasMega(species)
-- src/data/types.ts 匯出 TYPE_ORDER、TYPE_COLORS、TYPE_ZH、TYPE_ABBR、GLYPHS，鍵為 18 個英文型別名
+- src/data/types.ts 匯出 TYPE_ORDER、TYPE_COLORS、TYPE_ZH、TYPE_ABBR、GLYPHS，鍵為 18 個英文屬性名
 - src/data/i18n.ts 匯出 I18N（zh / en 兩組）與 t(key)，範圍限本切片畫面用到的鍵
 - src/theme/contrast.ts 匯出 relLum(hex)、contrast(a, b)、inkOn(bgHex)
 - src/theme/modes.ts 匯出 MODES 與 tokensOf(mode)，後者回傳 bg / shell / panel / surface / surface2 / ink / ink2 / line / accent / accentInk 十個鍵；另匯出 glyphOn(type, bg)，bg 為 surface | accent | typechip
@@ -125,8 +125,8 @@ App.vue 改成一個縱向排列的驗證畫面：模式切換、語系切換、
 **失敗模式**
 
 - 資料集不合六項不變式：src/data/dex.ts 在載入期丟錯並印出「哪一項、期望值、實際值」。不靜默降級
-- sprite 載入失敗：顯示型別字符替代圖塊，不顯示破圖、不留空白。此路徑不視為錯誤，console 不報錯
-- 未知型別名：GLYPHS 與 TYPE_COLORS 皆回退到 Normal / ink，與設計稿一致
+- sprite 載入失敗：顯示屬性字符替代圖塊，不顯示破圖、不留空白。此路徑不視為錯誤，console 不報錯
+- 未知屬性名：GLYPHS 與 TYPE_COLORS 皆回退到 Normal / ink，與設計稿一致
 - 字型註冊失敗：文字會落到系統字型。這一項不可靜默通過 —— 驗收要求目視確認拉丁字是像素字型
 
 **驗收條件**
@@ -134,7 +134,7 @@ App.vue 改成一個縱向排列的驗證畫面：模式切換、語系切換、
 - 執行 npm run build 成功，且 TypeScript 無錯誤
 - 執行 npm run dev，在 web 環境確認：console 零錯誤、兩個模式 × 兩個語系四種組合的卡片無破版、192px sprite 為銳利像素格、拉丁字為像素字型
 - 以 LynxExplorer 掃碼開啟同一份，逐項重跑上述 web 檢查表，並額外確認斜角在原生渲染下可見
-- 18 個型別字符 × 兩種表面 = 36 個組合逐一目視可見；卡片表面與 accent 表面各至少檢查一個深色與一個淺色型別
+- 18 個屬性字符 × 兩種表面 = 36 個組合逐一目視可見；卡片表面與 accent 表面各至少檢查一個深色與一個淺色屬性
 - 三個平台事實的實測結果（成立／不成立／退路是否啟用）寫入 design/HANDOFF.md
 - 重跑 design/pipeline 的資料產生步驟後 src/data/dex.json 位元不變
 
