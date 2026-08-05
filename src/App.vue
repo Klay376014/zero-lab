@@ -4,11 +4,13 @@ import { computed } from 'vue-lynx'
 import './App.css'
 import { onPressEnd, onPressStart } from './interaction/press.js'
 import DexGrid from './components/DexGrid.vue'
+import MoveLearners from './components/MoveLearners.vue'
 import QueryBar from './components/QueryBar.vue'
 import SpeciesDetail from './components/SpeciesDetail.vue'
 import { dex } from './data/dex.js'
 import { resultCountLabel, t } from './data/i18n.js'
 import { cycleMode, lang, mode, toggleLang, tokenStyle } from './state/display.js'
+import { openMove } from './state/moveLearners.js'
 import { results } from './state/query.js'
 import { selected, selectedFormIndex } from './state/selection.js'
 
@@ -78,10 +80,27 @@ const tally = computed(() => [
 
     <!-- A sibling of the shell: the overlay is positioned against this root view, so anything
          between them would confine it. -->
+    <!-- Keyed on the species so that replacing one with another — which the learner list does
+         without the panel closing in between — is an unmount and a mount rather than a content
+         update in place. That is what makes the panel's three mount consequences hold for a
+         replacement too, the load-bearing one being that the content starts at the top: a
+         reader arriving from the learnset table would otherwise land partway down the new
+         species' panel. Reaching the same result by writing the scroll position is forbidden.
+
+         The key is the species' number, not the form index: switching form deliberately keeps
+         the scroll position, and replacing the selection with the species already selected
+         must not remount. -->
     <SpeciesDetail
       v-if="selected"
+      :key="selected.d"
       :species="selected"
       :form-index="selectedFormIndex"
     />
+
+    <!-- A sibling of the detail overlay, not a section inside it. The list carries its own
+         scrolling container, and the panel is allowed exactly two — placing it inside would be
+         a third, and the style check cannot see that. Later in source order so it draws above
+         the panel without either layer declaring a stacking order. -->
+    <MoveLearners v-if="openMove !== null" :move-index="openMove" />
   </view>
 </template>

@@ -18,6 +18,7 @@ import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang } from '../state/display.js'
 import { bonusOnly, moveSort } from '../state/learnset.js'
 import type { MoveSort } from '../state/learnset.js'
+import { openMoveLearners } from '../state/moveLearners.js'
 
 const props = defineProps<{
   /** Indices into the shared move table, in the dataset's own order. */
@@ -28,6 +29,12 @@ const props = defineProps<{
 
 /** One rendered row: the move, its name in the leading language, and whether it is marked. */
 interface Row {
+  /**
+   * Where this move sits in the shared move table. Carried on the row rather than looked up
+   * from the row's position when it is tapped: the three sort orders and the bonus filter each
+   * make a given position a different move, so a position identifies nothing on its own.
+   */
+  readonly index: number
   readonly move: Move
   readonly name: string
   readonly abbr: string
@@ -43,6 +50,7 @@ const all = computed<Row[]>(() => {
   return props.moves.map((index) => {
     const move = moveOf(index)
     return {
+      index,
       move,
       name: moveName(move, lang.value),
       abbr: damageClassAbbr(move.dc, lang.value),
@@ -105,6 +113,11 @@ function pickSort(key: MoveSort): void {
 
 function toggleBonusOnly(): void {
   bonusOnly.value = !bonusOnly.value
+}
+
+/** Show which other species learn this row's move. */
+function openLearners(row: Row): void {
+  openMoveLearners(row.index)
 }
 
 /** The learnset's size, and the filtered size beside it while the filter is on. */
@@ -174,10 +187,20 @@ function figureClass(value: number | null): string {
       :class="bounded ? 'MoveTableBound' : undefined"
       scroll-orientation="vertical"
     >
+      <!-- A control, so all three touch bindings go together. Cancel is not defensive here: a
+           row sits inside the panel's scrolling container *and* this table's own bounded one,
+           so a press that turns into a scroll ends as a cancellation with no release, and a row
+           left displaced by it does not recover on its own. The move carried out is the row's
+           own, never its position — the three sort orders and the bonus filter each make a
+           position mean a different move. -->
       <view
         v-for="row in rows"
         :key="row.move.n"
         :class="row.stab ? 'MoveRow MoveRowStab' : 'MoveRow'"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="openLearners(row)"
       >
         <view class="MoveGlyphCell">
           <TypeGlyph :type="row.move.ty" :surface="row.stab ? 'surface2' : 'panel'" />

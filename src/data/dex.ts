@@ -304,6 +304,66 @@ export function learnsetOf(species: Species, form: Form): readonly number[] {
   return species.sec[form.si] ?? []
 }
 
+/**
+ * Every species that learns the move at `index`, in the dataset's own species order.
+ *
+ * Memoised on the same terms as {@link allTypes}: `dex` is loaded once and is readonly, so a
+ * move's answer cannot change and nothing evicts. Keyed by move index rather than by the move
+ * object because the index is what a learnset section already holds.
+ *
+ * Built on demand rather than all at once at load. The relation is 12,939 pairs across 496
+ * moves, and the launch path is the one path this project has measured as slower than
+ * intuition — a move nobody opens should cost nothing. See design/HANDOFF.md §12.14.
+ *
+ * Every section is searched, not just the one the base form points at. Fifteen species carry
+ * sections that differ between forms; restricting the search to base forms would drop 174 of
+ * the 12,939 pairs, all of them regional forms — Alolan Ninetales' Ice moves among them.
+ *
+ * The array is shared with every other caller and must not be mutated, which the readonly
+ * return type is what stops.
+ */
+const learnersByMove = new Map<number, readonly Species[]>()
+
+export function learnersOf(index: number): readonly Species[] {
+  const hit = learnersByMove.get(index)
+  if (hit !== undefined) return hit
+  // Range check before the walk, so an out-of-range index raises the move table's own
+  // diagnostic rather than being reported a second way as an empty result.
+  moveOf(index)
+  const found: Species[] = []
+  for (const species of dex.species) {
+    if (species.sec.some((section) => section.includes(index))) found.push(species)
+  }
+  learnersByMove.set(index, found)
+  return found
+}
+
+/** The index of a species' base form, or 0 for the rare species that declares none. */
+function baseFormIndex(species: Species): number {
+  const found = species.f.findIndex((form) => form.k === 'base')
+  return found < 0 ? 0 : found
+}
+
+/**
+ * Which form to open when a species is reached by way of the move at `index`.
+ *
+ * The base form when it knows the move, otherwise the first form that does. Opening the base
+ * form unconditionally would be wrong on 174 pairs in a way nothing on screen would show: the
+ * reader arrives from a move and is given a form whose learnset does not contain it — no
+ * error, no empty state, just a different set of moves.
+ *
+ * Returns the base form when no section holds the move rather than throwing. That state is
+ * unreachable for a species that came from {@link learnersOf}, and a throw inside a computed
+ * surfaces on this platform as unexplained broken layout rather than as an error.
+ */
+export function formIndexForMove(species: Species, index: number): number {
+  const base = baseFormIndex(species)
+  const baseForm = species.f[base]
+  if (baseForm !== undefined && learnsetOf(species, baseForm).includes(index)) return base
+  const owner = species.f.findIndex((form) => learnsetOf(species, form).includes(index))
+  return owner < 0 ? base : owner
+}
+
 /** The move at `index` in the shared move table. */
 export function moveOf(index: number): Move {
   const move = dex.moves[index]

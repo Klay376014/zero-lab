@@ -71,6 +71,9 @@ export interface Strings {
   readonly mvStab: string
   /** Shown in place of rows when the active sort and filter leave none. */
   readonly mvNone: string
+  // Learner list.
+  /** Heading of the list of species that learn the opened move. */
+  readonly mlTitle: string
 }
 
 export const I18N: Record<Lang, Strings> = {
@@ -110,6 +113,7 @@ export const I18N: Record<Lang, Strings> = {
     mvType: '屬性',
     mvStab: '★ 屬修',
     mvNone: '沒有符合的招式。',
+    mlTitle: '也會這個招式的寶可夢',
   },
   en: {
     lang: 'EN',
@@ -149,6 +153,7 @@ export const I18N: Record<Lang, Strings> = {
     mvType: 'Type',
     mvStab: '★ STAB',
     mvNone: 'No moves match.',
+    mlTitle: 'ALSO LEARNED BY',
   },
 }
 
@@ -215,6 +220,16 @@ export function genOfLabel(gen: number, lang: Lang): string {
 }
 
 /** "3 forms" and its Chinese equivalent. English pluralises; Chinese has no plural. */
+/**
+ * How many species learn the opened move. A whole localised string rather than a count beside
+ * a key, on the same grounds as {@link resultCountLabel}: the two languages put the measure
+ * word and the noun in different places, and composing one from a fragment gets that wrong.
+ */
+export function learnerCountLabel(count: number, lang: Lang): string {
+  // "species" is its own plural, so English needs no count-dependent branch here.
+  return lang === 'zh' ? `${count} 隻` : `${count} species`
+}
+
 export function formsOfLabel(count: number, lang: Lang): string {
   if (lang === 'zh') return `${count} 個形態`
   return count > 1 ? `${count} forms` : `${count} form`
