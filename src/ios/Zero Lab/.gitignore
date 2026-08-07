@@ -1,0 +1,17 @@
+# CocoaPods — regenerate with `pod install` (Podfile.lock is committed, this isn't)
+Pods/
+
+# Build artifact copied in from `pnpm run build` (dist/main.lynx.bundle) — regenerate, don't commit
+Zero Lab/main.lynx.bundle
+
+# Xcode user/machine-local state
+Zero Lab.xcodeproj/xcuserdata/
+Zero Lab.xcworkspace/xcuserdata/
+Zero Lab.xcworkspace/xcshareddata/swiftpm/
+*.xcuserstate
+
+# Build products
+DerivedData/
+build/
+
+.DS_Store

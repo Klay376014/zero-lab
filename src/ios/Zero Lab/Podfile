@@ -1,0 +1,28 @@
+platform :ios, '13.0'
+
+target 'Zero Lab' do
+  pod 'Lynx', '4.0.1', :subspecs => ['Framework']
+  pod 'PrimJS', '4.0.0', :subspecs => ['quickjs', 'napi']
+  pod 'LynxService', '4.0.1', :subspecs => ['Image', 'Log', 'Http']
+  pod 'XElement', '4.0.1', :subspecs => ['Input', 'SVG']
+  pod 'SDWebImage', '5.15.5'
+  pod 'SDWebImageWebPCoder', '0.11.0'
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+      ['OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS'].each do |key|
+        flags = config.build_settings[key] || ['$(inherited)']
+        flags = [flags] unless flags.is_a?(Array)
+        config.build_settings[key] = flags + [
+          '-Wno-nontrivial-memaccess',
+          '-Wno-c99-designator',
+          '-Wno-deprecated-declarations',
+          '-Wno-deprecated-implementations',
+        ]
+      end
+    end
+  end
+end
