@@ -17,6 +17,7 @@ English side by side, and type marks hand-plotted on an 8×8 grid.
 | `src/` | The Vue Lynx port, complete: data layer, colour modes, type glyph, the species grid with its query bar, the detail panel, and the learnset table. |
 | `openspec/` | [Spectra](https://github.com/spectra-app/spectra) specs the port is built against. |
 | `ROADMAP.md` | What the port does not carry over from the study, and what has been decided against. Read this rather than re-deriving the gap from the handoff. |
+| `src/ios/Zero Lab/` | Native iOS shell that embeds the built bundle for offline, on-device installs — see "Installing on a physical iOS device" below. |
 
 ## Running
 
@@ -39,6 +40,29 @@ LynxExplorer.app/Contents/MacOS/LynxExplorer --url='http://<host>:<port>/main.ly
 Its limits are recorded in §12.9 — it draws no SVG at all, so it cannot verify the type
 glyphs. That is a defect in the desktop build rather than platform behaviour: on a physical
 iOS device the same glyphs render correctly (§12.10).
+
+## Installing on a physical iOS device
+
+`src/ios/Zero Lab/` is a minimal native shell — a `LynxView` that loads `main.lynx.bundle`
+straight from the app bundle — so the app runs standalone on an iPhone with no dev server,
+no App Store submission, and no LynxExplorer. It needs Xcode and an Apple ID (a free
+personal-team signature works) on whichever Mac deploys it.
+
+`Pods/` and the copied `main.lynx.bundle` are gitignored inside that folder — they're build
+artifacts, same reasoning as the root `dist/`. Regenerate them on a fresh clone:
+
+```bash
+pnpm install
+pnpm run build
+cp dist/main.lynx.bundle "src/ios/Zero Lab/Zero Lab/main.lynx.bundle"
+cd src/ios/Zero Lab
+pod install   # needs CocoaPods — `brew install cocoapods`, not `gem install`
+```
+
+Open `Zero Lab.xcworkspace` (not the `.xcodeproj`), pick an Apple ID under Signing &
+Capabilities, connect a device with Developer Mode enabled (Settings → Privacy & Security),
+and run. A free Apple ID's signature expires after 7 days — reconnect and re-run to renew
+it; a paid Apple Developer Program account lasts a year.
 
 ## Checks
 
