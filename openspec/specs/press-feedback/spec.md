@@ -147,7 +147,11 @@ code:
 ---
 ### Requirement: Press feedback covers the control set and excludes the card sequence and the veil
 
-Press feedback SHALL be carried by the mode button, the language button, the query reset button, every type filter button, every generation filter button, every sort button, every form button, every move sort button, the same-type-bonus button, the detail panel's close button, every move row in the learnset table, and the learner list's close button.
+Press feedback SHALL be carried by the mode button, the language button, the query reset button, the sort cycle button, every type filter button, every form button, every move sort button, the same-type-bonus button, the detail panel's close button, every move row in the learnset table, and the learner list's close button.
+
+The control set names one sort button, not several. The query bar states the sort order as a single button whose text is the order in force, so there is exactly one control to press and exactly one to displace.
+
+No generation filter button appears in the control set, because the query bar presents no control that selects a generation.
 
 The species cards SHALL NOT carry press feedback. Binding three main-thread events to each of the two hundred and eight cells would add those bindings to the one path this project has measured as slower than expected — the first paint of the full card sequence — and a card already answers a press by opening the detail panel.
 
@@ -156,6 +160,12 @@ The learner list's species entries SHALL NOT carry press feedback, for the same 
 The detail panel's veil SHALL NOT carry press feedback. A pressed appearance on the veil would present it as a control, when its only behaviour is to dismiss the panel.
 
 The learner list's veil SHALL NOT carry press feedback, for the same reason as the detail panel's veil.
+
+#### Scenario: The sort cycle button is pressed
+
+- **WHEN** the query bar's sort button is pressed
+- **THEN** the button is displaced by the press mark
+- **AND** the sort order advances to the next member of the sort set on release
 
 #### Scenario: A card is pressed
 
@@ -194,19 +204,15 @@ The learner list's veil SHALL NOT carry press feedback, for the same reason as t
 | species cards in the grid | 208          | no               | the measured first-paint path; a card announces itself      |
 | learner list entries      | 207          | no               | same measure; an entry announces itself                     |
 | move rows in one section  | 105          | yes              | the row has no other signal that it became a control        |
+| type filter buttons       | 18           | yes              | bounded, and each is a control with no other press signal   |
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: optimize-query-bar
+updated: 2026-08-08
 code:
-  - design/champions-dex.html
-  - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
+  - ROADMAP.md
   - src/data/i18n.ts
-  - design/champions-dex.json
+  - src/state/query.ts
+  - src/App.css
+  - src/components/QueryBar.vue
 -->

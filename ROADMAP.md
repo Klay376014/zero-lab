@@ -53,14 +53,15 @@ A3 排在最前面，因為它有「文件已經預告、但沒有交付」的�
 | 未知 | **§12 從未量過 Lynx 是否支援這個 media query。** 這是設計稿的宣告裡唯一還沒被問過的平台問題 —— 其他都問過了 |
 | 要做的話 | 先量。失敗模式正是 §12.17 記的第三類坑（宣告寫得下去、不報錯、行為沒發生），所以判別方式要是「無條件、無限循環的探針」而不是看樣式表。若不支援，退路是讀系統設定的 JS API（若有）或承認做不到並寫進 §12 |
 
-### A4. 屬性與世代篩選從「可多選」縮為「單選」
+### A4. 屬性篩選從「可多選」縮為「單選」
 
 | | |
 |---|---|
-| 設計稿 | `state.types` 與 `state.gens` 都是 `Set`，可同時選多個 |
-| 移植版 | `src/state/query.ts` 是 `TypeName \| null` 與 `number \| null` |
+| 設計稿 | `state.types` 是 `Set`，可同時選多個屬性 |
+| 移植版 | `src/state/query.ts` 是 `TypeName \| null` |
 | 為什麼算漏記 | `dex-query` spec 通篇用單數（「the type filter」），所以不違規 —— 但這是**行為縮減**，沒有任何一處寫它是刻意的 |
-| 要做的話 | 多選會帶出一個設計稿沒答的問題：多個屬性是 AND 還是 OR。設計稿的 `match()` 是 OR（任一命中）。改動範圍是 `query.ts` 兩個 ref 與 `QueryBar.vue` 的選中判斷，加上 `dex-query` spec 的兩條需求 |
+| 要做的話 | 多選會帶出一個設計稿沒答的問題：多個屬性是 AND 還是 OR。設計稿的 `match()` 是 OR（任一命中）。改動範圍是 `query.ts` 一個 ref 與 `QueryBar.vue` 的選中判斷，加上 `dex-query` spec 的一條需求 |
+| 註 | 設計稿的世代多選（`state.gens`）不再適用 —— `optimize-query-bar` 已把世代篩選整個移除，見該 change 的 `dex-query` delta |
 
 ### A5. `★ 僅 MEGA` 與 `僅多形態` 兩顆篩選鈕
 
@@ -76,17 +77,16 @@ A3 排在最前面，因為它有「文件已經預告、但沒有交付」的�
 `dex-query` spec 用「closed set containing **at least** national number and base-stat total」
 把兩種排序合法化了，補第三種不違反既有 spec。
 
+**但排序控制項要一起改。** `optimize-query-bar` 之後排序是單顆循環晶片（按一下推進到集合的
+下一個成員），這在二元集合上成立、在三元上會開始難用：要按兩下才到得了最後一項，而且畫面上
+看不出總共有幾個選項。要補第三種排序，就要把排序控制項改成可展開的選單 —— 那會佔回一部分
+`optimize-query-bar` 省下的垂直空間，兩件事要一起評估，不能只加成員。
+
 ### A8. 種族值排序時卡片不顯示 BST 數字
 
 設計稿在 `state.sort === 'bst'` 時把 `bestBst(sp)` 印在卡片屬性列右側（`.bs`），移植版沒有。
 `bestBst` 已存在於 `src/data/dex.ts`，只在 `query.ts` 的排序裡用到。少了它，種族值排序的結果
 無法在畫面上驗證 —— 使用者看到順序卻看不到依據。
-
-### A9. 查詢列的世代鈕是阿拉伯數字
-
-`QueryBar.vue:109` 印 `{{ gen }}`，設計稿是 `GEN_ROMAN[i]`（I–IX）。**卡片與詳情面板是對的**
-（`genNumeral` / `genOfLabel` 都走 `GEN_ROMAN`），所以這是同一份資料在三處顯示、其中一處不
-一致。§9 的年代語彙論述適用。一行的改動。
 
 ### A10. 離線探測與整批佔位
 
@@ -106,7 +106,7 @@ A3 排在最前面，因為它有「文件已經預告、但沒有交付」的�
 |---|---|---|
 | **自動化測試** | 只有 `scripts/check-styles.mjs`、`scripts/check-contrast.mjs` 與 `tsc` | spec 裡上百條 Scenario 與 Example（`dragon` 19 筆、`gen5` 29 筆、六欄左緣 195/223/267/311…）**沒有一條是機器驗的**，全是文件裡的數字。資料層的六項不變式是載入期斷言，沒有 test runner |
 | **CI** | 沒有 `.github/` | 四項 check 靠人記得跑 |
-| **無障礙** | 移植版零 a11y 屬性 | 設計稿有 `aria-pressed`（模式／語系／世代／屬性／排序鈕）、`aria-current`（選中的卡片）、`role="dialog"` + `aria-modal`、`label for`。Lynx 的 accessibility 屬性**沒查過**。這個主題 HANDOFF 全文未提 |
+| **無障礙** | 移植版零 a11y 屬性 | 設計稿有 `aria-pressed`（模式／語系／屬性／排序鈕）、`aria-current`（選中的卡片）、`role="dialog"` + `aria-modal`、`label for`。Lynx 的 accessibility 屬性**沒查過**。這個主題 HANDOFF 全文未提。**`optimize-query-bar` 之後多了一筆**：搜尋輸入框不再有可見標籤，它的身分現在只由 placeholder 承載 —— 處理這個主題時它需要一個 accessibilityLabel，而不是靠 placeholder 兼任 |
 | **效能與記憶體數字** | 只有定性結論 | §12.13／§12.17 的「無卡頓」沒有任何數字，而 §12.14 自己說「208 張卡的首次繪製比直覺慢得多」。真的要優化時沒有基線 |
 | **Android** | 兩筆掛帳（§10：字符渲染、字型註冊） | §12.17 末尾說「依專案當前決定不在範圍內」，§10 那張「開工前必須確認的兩件事」的表卻還開著第 2 筆。**兩處敘述矛盾，需要挑一個** |
 | **驗收截圖** | `shots/` 停在 13 張 | §12.17 兩項與 §12.19 三項 iOS 結清項目都沒有截圖（兩節都自己承認）。重跑回歸的條件各寫在該節末尾。**手勢類的驗收本來就拍不出來** —— §12.19 那三項是「哪一層吃到手勢」，靜態截圖無法呈現，要留證據得錄影 |

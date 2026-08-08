@@ -5,8 +5,15 @@ import type { Species } from '../data/dex.js'
 import { TYPE_ORDER, typeName } from '../data/types.js'
 import type { TypeName } from '../data/types.js'
 
+/**
+ * The sort set, in the order the sort control advances through it. Declared as the sequence
+ * rather than as a union so that the type and the cycle cannot disagree: adding a member here
+ * is the only edit needed to make the control reach it.
+ */
+export const SORT_ORDERS = ['number', 'stats'] as const
+
 /** How the result sequence is ordered. */
-export type SortOrder = 'number' | 'stats'
+export type SortOrder = typeof SORT_ORDERS[number]
 
 /** One row of the result sequence: a species, and the index of the form its card draws. */
 export interface Result {
@@ -16,8 +23,7 @@ export interface Result {
 
 const search = ref('')
 const typeFilter = ref<TypeName | null>(null)
-const genFilter = ref<number | null>(null)
-const sortOrder = ref<SortOrder>('number')
+const sortOrder = ref<SortOrder>(SORT_ORDERS[0])
 
 /** Whether `species` matches every one of `tokens`, which are already lower-cased. */
 function matchesSearch(species: Species, tokens: readonly string[]): boolean {
@@ -35,11 +41,6 @@ function tokenise(search: string): string[] {
 function matchesType(species: Species, type: TypeName | null): boolean {
   if (type === null) return true
   return allTypes(species).includes(type)
-}
-
-/** Whether `species` was introduced in `gen`. */
-function matchesGen(species: Species, gen: number | null): boolean {
-  return gen === null || species.g === gen
 }
 
 /**
@@ -94,12 +95,10 @@ function sortRows(rows: Result[], order: SortOrder): Result[] {
 export const results = computed<Result[]>(() => {
   const tokens = tokenise(search.value)
   const type = typeFilter.value
-  const gen = genFilter.value
   const rows: Result[] = []
   for (const species of dex.species) {
     if (!matchesSearch(species, tokens)) continue
     if (!matchesType(species, type)) continue
-    if (!matchesGen(species, gen)) continue
     rows.push({ species, formIndex: matchingFormIndex(species, type, tokens) })
   }
   return sortRows(rows, sortOrder.value)
@@ -109,8 +108,19 @@ export const results = computed<Result[]>(() => {
 export function resetQuery(): void {
   search.value = ''
   typeFilter.value = null
-  genFilter.value = null
-  sortOrder.value = 'number'
+  sortOrder.value = SORT_ORDERS[0]
 }
 
-export { genFilter, search, sortOrder, typeFilter }
+/**
+ * Advance the sort order to the next member of the sort set, wrapping at the end.
+ *
+ * The query bar states the sort order as a single control carrying the name of the order in
+ * force, rather than one control per member: a full row spent on a two-member choice costs
+ * more vertical space than the card grid can afford on a handheld.
+ */
+export function cycleSort(): void {
+  const next = (SORT_ORDERS.indexOf(sortOrder.value) + 1) % SORT_ORDERS.length
+  sortOrder.value = SORT_ORDERS[next]!
+}
+
+export { search, sortOrder, typeFilter }

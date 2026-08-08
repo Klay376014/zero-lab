@@ -17,15 +17,13 @@ export interface Strings {
   readonly tForms: string
   readonly tMega: string
   readonly tMoves: string
-  // Query bar.
-  readonly search: string
-  /** Placeholder inside the search field. */
+  // Query bar. No key introduces the search field and none names a generation: the field
+  // carries only its placeholder, and no control selects a generation.
+  /** Placeholder inside the search field — the only thing naming what the search reaches. */
   readonly searchPlaceholder: string
-  readonly gen: string
-  readonly sort: string
-  /** Sort by national number. */
+  /** Sort by national number. Doubles as the sort control's text when that order is in force. */
   readonly sortDex: string
-  /** Sort by the strongest form's base-stat total. */
+  /** Sort by the strongest form's base-stat total. Doubles as the sort control's text. */
   readonly sortBst: string
   /** Clears every filter and the search string. */
   readonly reset: string
@@ -85,10 +83,7 @@ export const I18N: Record<Lang, Strings> = {
     tForms: '形態',
     tMega: 'MEGA',
     tMoves: '招式',
-    search: '搜尋',
     searchPlaceholder: '名稱 / 編號 / 屬性 / 形態',
-    gen: '世代',
-    sort: '排序',
     sortDex: '編號',
     sortBst: '種族值',
     reset: '清除篩選',
@@ -123,10 +118,7 @@ export const I18N: Record<Lang, Strings> = {
     tForms: 'FORMS',
     tMega: 'MEGA',
     tMoves: 'MOVES',
-    search: 'Search',
     searchPlaceholder: 'Name / no. / type / form',
-    gen: 'Gen',
-    sort: 'Sort',
     sortDex: 'No.',
     sortBst: 'Stats',
     reset: 'Clear',

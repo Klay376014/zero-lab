@@ -191,11 +191,18 @@
   margin-bottom: 6px;
 }
 
-/* The type row is eighteen marks and the generation row is nine chips; both need more than
-   one line on a handheld, and wrapping is what makes the bar's height follow its content
-   instead of clipping it. */
-.QueryRowWrap {
+/* The eighteen type marks, nine to a line over two lines. The container wraps; the label that
+   introduces it stays outside, because a label inside would consume part of the first line and
+   break the marks 8 + 10.
+
+   Nine to a line is not left to the wrap point: each cell is an exact ninth of this container,
+   so the ninth cell fills the line and the tenth has nowhere to go but the next one. That makes
+   the second line's nth cell start at the same offset as the first line's nth. */
+.TypeChips {
+  display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  flex: 1;
 }
 
 /*
@@ -282,20 +289,42 @@
   color: var(--accent-ink);
 }
 
+/* One mark's share of the line. A ninth exactly, so nine fill a line and the tenth wraps —
+   the same arrangement as `.DexCell`, and for the same platform reason: the box model counts
+   padding inside a declared width, which is why the gutter is padding and not margin. A
+   margin would sit outside the ninth and push it onto its own line. 2px all round makes a 4px
+   gap between marks and a 2px inset at the ends of each line.
+
+   Never give up width to fit another mark in: shrinking is how a wrapping line silently turns
+   nine into ten squeezed ones instead of wrapping. */
+.TypeCell {
+  display: flex;
+  flex-direction: column;
+  width: 11.111%;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
 /* The mark alone names the type — no abbreviation, because eighteen chips with three letters
    each will not fit a handheld row and the mark is the primary name everywhere else.
 
    The unselected background is the surface token here and is overridden inline with the
    type's own colour in the mode that spends colour; the mark's fill is chosen by the theme
-   layer for whichever of those it lands on, never recoloured here. */
+   layer for whichever of those it lands on, never recoloured here.
+
+   The vertical padding is 5px rather than the 2px this rule carried while the chip was sized
+   by its content: at 2px the target was 22 by 22, which is under any platform's minimum and
+   was the worst of it on this bar. The mark itself stays at sixteen pixels — it is the
+   padding that grew, not the glyph, which scales only by whole multiples. */
 .TypeChip {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   background-color: var(--surface);
   border-width: 1px;
   border-style: solid;
   border-color: var(--line);
-  padding: 2px;
-  margin-right: 3px;
-  margin-bottom: 3px;
+  padding: 5px 0;
 }
 
 .TypeChipOn {

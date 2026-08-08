@@ -7,12 +7,8 @@ import { TYPE_ORDER, typeColor } from '../data/types.js'
 import type { TypeName } from '../data/types.js'
 import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang, mode, tokens } from '../state/display.js'
-import { genFilter, resetQuery, search, sortOrder, typeFilter } from '../state/query.js'
-import type { SortOrder } from '../state/query.js'
+import { cycleSort, resetQuery, search, sortOrder, typeFilter } from '../state/query.js'
 import type { GlyphSurface } from '../theme/modes.js'
-
-/** The nine generations the roster spans. */
-const GENERATIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const
 
 /** Toggling an active filter clears it, so a filter never needs a separate clear control. */
 function pickType(type: TypeName): void {
@@ -33,13 +29,10 @@ function chipSurface(type: TypeName): GlyphSurface {
   return typeFilter.value === type ? 'accent' : 'typechip'
 }
 
-function pickGen(gen: number): void {
-  genFilter.value = genFilter.value === gen ? null : gen
-}
-
-function pickSort(order: SortOrder): void {
-  sortOrder.value = order
-}
+/** The sort control's text: the name of the order in force, not a choice between names. */
+const sortLabel = computed<string>(() => (
+  t(sortOrder.value === 'stats' ? 'sortBst' : 'sortDex', lang.value)
+))
 
 /**
  * Both shapes are read: the platform documents the value at the top level, and its prose and
@@ -67,7 +60,22 @@ const inputStyle = computed<Record<string, string>>(() => ({
 <template>
   <view class="QueryBar">
     <view class="QueryRow">
-      <text class="Label">{{ t('search', lang) }}</text>
+      <!-- The sort order is stated, not chosen from: one control carrying the name of the
+           order in force. Two buttons would be a second row, and a row is worth more to the
+           card grid than a two-member choice laid out flat. -->
+      <view
+        class="Chip ChipOn"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="cycleSort"
+      >
+        <text class="ChipText ChipTextOn">{{ sortLabel }}</text>
+      </view>
+      <!-- No label introduces this field. Its placeholder names the four things the search
+           reaches, and at 13px that string needs the width a label would have taken — the
+           placeholder is the higher-value occupant, and a lone field with a placeholder does
+           not need a second thing saying what it is. -->
       <!-- Keyed on the mode so a mode change builds a fresh field; see `inputStyle`. Costs
            focus when the mode changes mid-typing, which the shared `search` state survives. -->
       <input
@@ -91,60 +99,34 @@ const inputStyle = computed<Record<string, string>>(() => ({
       </view>
     </view>
 
-    <view class="QueryRow QueryRowWrap">
-      <text class="Label">{{ t('type', lang) }}</text>
-      <view
-        v-for="type in TYPE_ORDER"
-        :key="type"
-        class="TypeChip"
-        :class="typeFilter === type ? 'TypeChipOn' : undefined"
-        :style="chipBackground(type)"
-        :main-thread-bindtouchstart="onPressStart"
-        :main-thread-bindtouchend="onPressEnd"
-        :main-thread-bindtouchcancel="onPressEnd"
-        @tap="pickType(type)"
-      >
-        <TypeGlyph :type="type" :surface="chipSurface(type)" />
-      </view>
-    </view>
-
-    <view class="QueryRow QueryRowWrap">
-      <text class="Label">{{ t('gen', lang) }}</text>
-      <view
-        v-for="gen in GENERATIONS"
-        :key="gen"
-        class="Chip"
-        :class="genFilter === gen ? 'ChipOn' : undefined"
-        :main-thread-bindtouchstart="onPressStart"
-        :main-thread-bindtouchend="onPressEnd"
-        :main-thread-bindtouchcancel="onPressEnd"
-        @tap="pickGen(gen)"
-      >
-        <text class="ChipText" :class="genFilter === gen ? 'ChipTextOn' : undefined">{{ gen }}</text>
-      </view>
-    </view>
-
+    <!-- The label sits outside the wrapping container, not inside it as a first child. Inside,
+         it would consume part of the first line and the eighteen marks would break 8 + 10
+         instead of 9 + 9 — the break position has to be a property of the container alone. -->
     <view class="QueryRow">
-      <text class="Label">{{ t('sort', lang) }}</text>
-      <view
-        class="Chip"
-        :class="sortOrder === 'number' ? 'ChipOn' : undefined"
-        :main-thread-bindtouchstart="onPressStart"
-        :main-thread-bindtouchend="onPressEnd"
-        :main-thread-bindtouchcancel="onPressEnd"
-        @tap="pickSort('number')"
-      >
-        <text class="ChipText" :class="sortOrder === 'number' ? 'ChipTextOn' : undefined">{{ t('sortDex', lang) }}</text>
-      </view>
-      <view
-        class="Chip"
-        :class="sortOrder === 'stats' ? 'ChipOn' : undefined"
-        :main-thread-bindtouchstart="onPressStart"
-        :main-thread-bindtouchend="onPressEnd"
-        :main-thread-bindtouchcancel="onPressEnd"
-        @tap="pickSort('stats')"
-      >
-        <text class="ChipText" :class="sortOrder === 'stats' ? 'ChipTextOn' : undefined">{{ t('sortBst', lang) }}</text>
+      <text class="Label">{{ t('type', lang) }}</text>
+      <view class="TypeChips">
+        <!-- Two views per mark, for the same reason `.DexCell` wraps `.Card`: the cell owns
+             the proportional width and the gutter, the chip owns the border and the fill.
+             One view cannot do both — the gutter has to be padding so that it counts inside
+             the proportion, and padding on the chip would put its border at the outer edge
+             and leave the marks touching. -->
+        <view
+          v-for="type in TYPE_ORDER"
+          :key="type"
+          class="TypeCell"
+          :main-thread-bindtouchstart="onPressStart"
+          :main-thread-bindtouchend="onPressEnd"
+          :main-thread-bindtouchcancel="onPressEnd"
+          @tap="pickType(type)"
+        >
+          <view
+            class="TypeChip"
+            :class="typeFilter === type ? 'TypeChipOn' : undefined"
+            :style="chipBackground(type)"
+          >
+            <TypeGlyph :type="type" :surface="chipSurface(type)" />
+          </view>
+        </view>
       </view>
     </view>
   </view>

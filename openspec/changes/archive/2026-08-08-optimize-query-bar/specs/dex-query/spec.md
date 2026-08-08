@@ -1,10 +1,4 @@
-# dex-query Specification
-
-## Purpose
-
-What the grid is asked for, and what it answers with. Covers the shared search, type filter and sort order and their independence from one another, the absence of any control that selects a generation and the search token that reaches one anyway, matching against both languages at all times so that switching which language leads never changes what is reachable, the type filter judged across all of a species' forms, pairing each result with the form that actually matched the filter, ranking by each species' strongest form rather than its base form, and the two-row query bar that states the sort order as its current value rather than laying its members out flat.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Query state is shared and independently settable
 
@@ -34,19 +28,6 @@ The query state SHALL NOT carry a generation filter, and the query bar SHALL NOT
 - **THEN** no control that selects a generation is present
 - **AND** the result sequence is unaffected by any generation
 
-
-<!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
-code:
-  - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/App.css
-  - src/components/QueryBar.vue
--->
-
----
 ### Requirement: Search matches across both languages at all times
 
 The search string SHALL be matched against a per-species haystack regardless of which language is leading, because switching which language leads changes presentation and MUST NOT change which species are reachable. Latin matching SHALL be case-insensitive. A partial name SHALL match.
@@ -120,20 +101,7 @@ The search string SHALL be split on whitespace, and a species SHALL match only w
 
 The 25 for 龍 is the specified outcome, not a defect to fix. The Chinese type name and the Chinese species names occupy one haystack, and partial name matching is required above; the six extra species are 暴鯉龍, 化石翼龍, 戰槌龍, 護城龍, 龍頭地鼠 and 冰雪巨龍.
 
-
-<!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
-code:
-  - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/App.css
-  - src/components/QueryBar.vue
--->
-
----
-### Requirement: The type filter is evaluated across all of a species' forms
+### Requirement: Type and generation filters are evaluated across all of a species' forms
 
 The type filter SHALL match a species when any of its forms carries the selected type, using the data layer's existing across-forms type accessor, so that a species whose only match is an alternate form remains reachable. When both the type filter and a search string are active, a species SHALL be in the result sequence only when it satisfies both.
 
@@ -158,141 +126,8 @@ No generation filter takes part in this conjunction, because the query state car
 | Dragon      | yes                 | only Mega Charizard X carries it                    |
 | Water       | no                  | no form carries it                                  |
 
+## ADDED Requirements
 
-<!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
-code:
-  - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/App.css
-  - src/components/QueryBar.vue
--->
-
----
-### Requirement: A filtered card displays the form that matched the filter
-
-The form index paired with a species in the result sequence SHALL be resolved by the first of these four rules that yields a form, so that the card answers whatever the query identified most specifically rather than always showing the base form.
-
-1. Take the search tokens the species' own two names do not already satisfy. When any remain and one of the species' forms has a label containing all of them, the paired index SHALL name the first such form.
-2. Otherwise, when any remaining token is **exactly** a type name in either language, the paired index SHALL name the first form carrying that type.
-3. Otherwise, when a type filter is active, the paired index SHALL be the first form carrying the selected type.
-4. Otherwise the paired index SHALL be the base form.
-
-Rule 1 SHALL discard the tokens the species names already satisfy before testing form labels. A Mega form's label embeds the species name, so testing the raw tokens would make a plain species-name query select that Mega — searching Charizard would answer with Mega Charizard X.
-
-Rule 2 SHALL compare whole tokens against type names rather than as substrings, so that a token which merely contains a type name is not read as naming that type.
-
-A card whose species matched on an alternate form SHALL NOT display the base form when a rule above names another, because a grid answering a Dragon query with Fire and Flying artwork reads as broken.
-
-#### Scenario: The matching form is displayed
-
-- **WHEN** a type filter is active and a species matched on a non-base form
-- **THEN** the paired form index names that form
-- **AND** the card renders that form's artwork, form label, and types
-
-#### Scenario: No query and no type filter displays the base form
-
-- **WHEN** no search string and no type filter are active
-- **THEN** every paired form index names the base form
-
-#### Scenario: A form label in the query selects that form
-
-- **WHEN** the search string holds a token naming a form that the species' names do not contain
-- **THEN** the paired form index names the first form whose label contains every such token
-
-#### Scenario: A plain species name keeps the base form
-
-- **WHEN** the search string is a species' name and nothing more
-- **THEN** the paired form index names the base form, even for a species whose Mega label embeds that name
-
-##### Example: the same species under different type filters
-
-| Type filter | Form displayed for Charizard | Types shown on the card |
-| ----------- | ---------------------------- | ----------------------- |
-| none        | base                         | Fire, Flying            |
-| Fire        | base                         | Fire, Flying            |
-| Dragon      | Mega Charizard X             | Fire, Dragon            |
-
-##### Example: the same species under different search strings, no type filter
-
-| Search string    | Form displayed   | Rule that decided it                                  |
-| ---------------- | ---------------- | ----------------------------------------------------- |
-| charizard        | base             | 4 — the name satisfies every token, none remain       |
-| 噴火龍           | base             | 4 — as above                                          |
-| mega charizard   | Mega Charizard X | 1 — mega remains and the label carries it             |
-| mega charizard y | Mega Charizard Y | 1 — mega and y both remain, and only that label has both |
-| dragon           | Mega Charizard X | 2 — dragon remains and names a type this form carries |
-| 龍               | base             | 4 — 龍 is inside 噴火龍, so no token remains          |
-| fire             | base             | 2 — fire remains and the base form already carries it |
-
-The last two rows are the point of the token-discarding step: 龍 is part of this species' own name, so the card answers with the species, while dragon can only be a type, so the card answers with the form carrying it.
-
-
-<!-- @trace
-source: widen-dex-query-search
-updated: 2026-07-30
-code:
-  - scripts/check-contrast.mjs
-  - src/components/SpeciesDetail.vue
-  - src/data/dex.ts
-  - src/state/learnset.ts
-  - README.md
-  - src/theme/modes.ts
-  - design/HANDOFF.md
-  - src/components/LearnsetTable.vue
-  - package.json
-  - src/App.css
-  - src/state/query.ts
-  - src/data/i18n.ts
-  - scripts/check-styles.mjs
--->
-
----
-### Requirement: Sorting by base stats uses each species' strongest form
-
-The base-stat sort order SHALL rank species by the highest base-stat total across all of that species' forms, using the data layer's existing strongest-form accessor, and SHALL NOT rank by the base form's total. Ranking by the base form buries every Mega form beneath unevolved totals. The sort order SHALL be a closed set containing at least national number and base-stat total. Base-stat total SHALL order from highest to lowest.
-
-#### Scenario: Base-stat sort is descending by strongest form
-
-- **WHEN** the sort order is base-stat total
-- **THEN** each entry's strongest-form total is greater than or equal to the total of the entry after it
-
-#### Scenario: National number sort is ascending
-
-- **WHEN** the sort order is national number
-- **THEN** each entry's national number is less than the national number of the entry after it
-
-##### Example: strongest form decides the rank
-
-| Species      | Base form total | Strongest form total | Sort value used |
-| ------------ | --------------- | -------------------- | --------------- |
-| Venusaur     | 525             | 625                  | 625             |
-| Charizard    | 534             | 634                  | 634             |
-| Crabominable | 478             | 578                  | 578             |
-| Ditto        | 288             | 288                  | 288             |
-
-##### Example: resulting order for those four species
-
-- **GIVEN** the four species above and no active filters
-- **WHEN** the sort order is base-stat total
-- **THEN** the order is Charizard, Venusaur, Crabominable, Ditto
-
-<!-- @trace
-source: port-champions-dex-grid
-updated: 2026-07-29
-code:
-  - src/components/QueryBar.vue
-  - design/HANDOFF.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/components/DexGrid.vue
-  - src/App.css
-  - src/App.vue
--->
-
----
 ### Requirement: The query bar occupies two rows and states the sort order as its current value
 
 The query bar SHALL present its controls in exactly two rows. The first row SHALL carry the sort control, the search field, and the reset control, in that order. The second row SHALL carry the type filter's label followed by the eighteen type filter buttons.
@@ -344,13 +179,7 @@ The eighteen type filter buttons SHALL be laid out nine to a row across exactly 
 | 2           | national number     | national number    |
 | 3           | base-stat total     | base-stat total    |
 
-<!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
-code:
-  - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/App.css
-  - src/components/QueryBar.vue
--->
+## RENAMED Requirements
+
+- FROM: `### Requirement: Type and generation filters are evaluated across all of a species' forms`
+- TO: `### Requirement: The type filter is evaluated across all of a species' forms`
