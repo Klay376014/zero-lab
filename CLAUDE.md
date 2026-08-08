@@ -104,6 +104,7 @@ web preview.
   under `openspec/` are always English**, because they use SHALL/MUST.
 - `spectra task done` takes a **1-based sequential index across the whole tasks file**, not the
   `1.1` heading number.
-- `openspec/LANGUAGE.md` does not exist yet. `/spectra-discuss` looks for it and continues
-  silently without it. Its first entry would be the same-type attack bonus: the concept is
-  「本系加成」 throughout the artifacts, while the control in the UI is labelled 「★ 屬修」.
+- `openspec/LANGUAGE.md` now exists (57 lines) and `/spectra-discuss` reads it before every
+  discussion. Its first entry is the same-type attack bonus: the concept is 「本系加成」 throughout
+  the artifacts, while the control in the UI is labelled 「★ 屬修」 — a width compromise, not a
+  second concept. Add an entry whenever one concept picks up a second name.
