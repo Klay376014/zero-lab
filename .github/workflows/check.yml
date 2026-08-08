@@ -1,0 +1,39 @@
+# 跑的是 CLAUDE.md「Verifying a change」那兩行，一字不改。
+#
+# 為什麼值得有：這四項 check 斷言的都是「不報錯、但行為沒發生」那一類失效
+# （被自己的 base rule 取消的選中態、平台忽略的 inset 陰影、subset 字型畫不出的
+# 字、每個字符在每個表面上的實測對比）。這種失效在 code review 看不出來，
+# 只有跑過才知道 —— 所以它不能靠人記得跑。
+#
+# 裝置驗收不在這裡，也不該在這裡：§12 的平台事實幾乎都是實機量出來的，
+# 有三筆是實機推翻了 web preview 才發現的。CI 綠燈不等於裝置驗收過。
+
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # package.json 的 engines 只寫 >=18，這裡釘 22 是為了讓 CI 的失敗
+          # 可重現。要升版就改這一行，不要放任 latest 漂移。
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: 四項不變式
+        run: pnpm run check
+
+      - name: 型別
+        run: npm exec tsc -- --noEmit -p src/tsconfig.json
