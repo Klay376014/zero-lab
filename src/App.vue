@@ -61,15 +61,6 @@ const tally = computed(() => [
               <text class="ChipText">{{ t('lang', lang) }}</text>
             </view>
           </view>
-
-          <!-- Its own row rather than beside the title: four blocks and the title do not fit a
-               handheld width. Inside the masthead, so it stays put while the cards scroll. -->
-          <view class="Tally">
-            <view v-for="item in tally" :key="item.key" class="TallyItem">
-              <text class="TallyFigure">{{ item.figure }}</text>
-              <text class="TallyLabel">{{ item.label }}</text>
-            </view>
-          </view>
         </view>
 
         <QueryBar />

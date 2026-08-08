@@ -105,7 +105,6 @@ const dexNo = computed(() => `No.${String(props.species.d).padStart(4, '0')}`)
 /** The line under the names: number, generation, form count, category — parts that apply. */
 const identity = computed(() => {
   const parts = [dexNo.value, genOfLabel(props.species.g, lang.value)]
-  if (props.species.f.length > 1) parts.push(formsOfLabel(props.species.f.length, lang.value))
   if (lang.value === 'zh' && props.species.gz) parts.push(props.species.gz)
   return parts.join('　・　')
 })
