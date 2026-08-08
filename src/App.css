@@ -534,6 +534,34 @@
   margin-left: 2px;
 }
 
+/* The type row's trailing group: base-stat figure, then form-count badge. Either may be
+   absent, and the row's height is the same when both are.
+
+   `margin-left: auto` sits here rather than on the members. Two members each claiming the
+   free space would put one at each end of it instead of side by side at the trailing edge,
+   which is exactly what the previous single-member arrangement would have decayed into.
+
+   The space between the members is a margin, not `gap`: this sheet declares `gap` nowhere
+   and it has never been measured on this platform, whereas `margin-left: auto` is already
+   load-bearing here. That is a choice to use the proven mechanism, not a claim that `gap`
+   is unsupported — nobody has asked. */
+.CardTypesTrail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Shown only while sorting by base stats, so the number that decided the order is visible.
+   A digit wider than the abbreviations beside it, because it is the reason for the order
+   rather than another attribute of the species. */
+.CardBst {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 11px;
+  color: var(--ink);
+  margin-right: 3px;
+}
+
 /* A drawn badge rather than a box-drawing character: the pixel face has no glyph for
    those, so they fall back to the system face and break the grid. */
 .CardFormCount {
@@ -543,7 +571,6 @@
   color: var(--panel);
   padding-left: 3px;
   padding-right: 3px;
-  margin-left: auto;
   flex: none;
 }
 

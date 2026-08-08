@@ -3,10 +3,11 @@ import { computed, ref, watch } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
 import type { Species } from '../data/dex.js'
-import { genNumeral, megaForms, spriteUrl } from '../data/dex.js'
+import { bestBst, genNumeral, megaForms, spriteUrl } from '../data/dex.js'
 import { formLabel, speciesName } from '../data/i18n.js'
 import { typeAbbr } from '../data/types.js'
 import { lang } from '../state/display.js'
+import { sortOrder } from '../state/query.js'
 
 const props = defineProps<{
   species: Species
@@ -30,6 +31,22 @@ const megaBadge = computed(() => {
 
 /** Shown only for species that have more than one form, where the number tells you something. */
 const formCount = computed(() => (props.species.f.length > 1 ? String(props.species.f.length) : ''))
+
+/**
+ * The base-stat figure, shown only while the grid is ordered by it — so the number that decided
+ * this card's position is on the card rather than left to be inferred from the order.
+ *
+ * `bestBst` takes the species, not the drawn form, because that is the value the sort compares.
+ * Printing the drawn form's own total instead would put a number on the card that cannot explain
+ * the position the card sits in: a base form ordered by its Mega's total would look misplaced.
+ *
+ * The sort order is read from application state rather than taken as a prop. It is ambient
+ * display state, the same as the active language this component already reads directly — routing
+ * it through the grid would make one component fetch two values of the same kind two ways.
+ */
+const bstFigure = computed(() => (
+  sortOrder.value === 'stats' ? String(bestBst(props.species)) : ''
+))
 
 const names = computed(() => speciesName(props.species, lang.value))
 const label = computed(() => formLabel(form.value, lang.value))
@@ -78,7 +95,13 @@ function onSpriteLoad(): void {
           <TypeGlyph :type="type" surface="surface" />
           <text class="CardTypeAbbr">{{ typeAbbr(type) }}</text>
         </view>
-        <text v-if="formCount" class="CardFormCount">{{ formCount }}</text>
+        <!-- One group rather than two independently right-aligned members: if each claimed
+             the free space for itself, one would land at each end of it instead of the two
+             sitting together at the trailing edge. -->
+        <view class="CardTypesTrail">
+          <text v-if="bstFigure" class="CardBst">{{ bstFigure }}</text>
+          <text v-if="formCount" class="CardFormCount">{{ formCount }}</text>
+        </view>
       </view>
     </view>
   </view>

@@ -2,13 +2,17 @@
 
 ## Purpose
 
-The presentation contract for a single species card. Covers element order and badge rules, both languages staying on the card at once, layout stability when optional rows are empty and when names are overlong, nearest-neighbour sprite upscaling declared per element, the guarantee that artwork is never recoloured, the glyph-tile fallback when artwork fails to load, the bevel built from per-side border colours instead of an unsupported inset shadow, in-place updates on mode and language change, and the species-plus-form-index input contract.
+The presentation contract for a single species card. Covers element order and badge rules, the type row's trailing group and the base-stat figure that appears in it exactly while the grid is ordered by base stats, both languages staying on the card at once, layout stability when optional rows are empty and when names are overlong, nearest-neighbour sprite upscaling declared per element, the guarantee that artwork is never recoloured, the glyph-tile fallback when artwork fails to load, the bevel built from per-side border colours instead of an unsupported inset shadow, in-place updates on mode and language change, and the species-plus-form-index input contract.
 
 ## Requirements
 
 ### Requirement: Card composition
 
-A species card SHALL render, in order: a header row carrying the zero-padded national number on the left and the Mega badge followed by the generation numeral on the right; the form's sprite; the leading species name; the alternate species name; the form label; and a type row carrying one glyph and one three-letter abbreviation per type, with the form-count badge aligned to its trailing edge.
+A species card SHALL render, in order: a header row carrying the zero-padded national number on the left and the Mega badge followed by the generation numeral on the right; the form's sprite; the leading species name; the alternate species name; the form label; and a type row carrying one glyph and one three-letter abbreviation per type, with a trailing group aligned to the type row's trailing edge.
+
+The trailing group SHALL contain, in order, the base-stat figure and the form-count badge. Each member SHALL be rendered only when its own condition holds, and the group SHALL reserve no space for a member that is absent. When both members are absent the type row SHALL occupy the same height as it does when both are present.
+
+The trailing group SHALL be aligned to the trailing edge by a mechanism already proven on this platform. Individual members SHALL NOT each claim the free space, because two members both claiming it would place one at the leading edge of the remaining space and one at the trailing edge rather than grouping them together.
 
 #### Scenario: National number is zero-padded to four digits
 
@@ -36,6 +40,12 @@ A species card SHALL render, in order: a header row carrying the zero-padded nat
 - **WHEN** a species has exactly one form
 - **THEN** no form-count badge is rendered
 
+#### Scenario: Trailing group keeps its members in a fixed order
+
+- **WHEN** both the base-stat figure and the form-count badge are rendered
+- **THEN** the base-stat figure precedes the form-count badge
+- **AND** both sit at the type row's trailing edge as one group
+
 ##### Example: header and badge output for concrete species
 
 | Species   | Number shown | Generation | Mega badge | Form-count badge | Type row      |
@@ -47,71 +57,12 @@ A species card SHALL render, in order: a header row carrying the zero-padded nat
 
 
 <!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
+source: surface-bst-on-cards
+updated: 2026-08-08
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
   - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
-  - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
-  - src/data/i18n.ts
-  - src/index.ts
+  - ROADMAP.md
+  - src/components/SpeciesCard.vue
 -->
 
 ---
@@ -903,4 +854,52 @@ code:
   - src/state/query.ts
   - src/theme/modes.ts
   - design/HANDOFF.md
+-->
+
+---
+### Requirement: Base-stat figure is shown exactly when it decides the order
+
+A card SHALL render the base-stat figure when, and only when, the active sort order is by base stats. Under any other sort order the figure SHALL NOT be rendered.
+
+The figure SHALL be the highest base-stat total across all of the species' forms, and SHALL be the same value the sort uses to order that card. It SHALL NOT be the base-stat total of the form the card is currently drawing, because a card showing one figure while being ordered by another gives the reader a number that does not explain the position it sits in.
+
+The card SHALL obtain the active sort order from application state rather than from a component input. Taking a species entry and a form index as inputs governs which species and which form the card draws; it does not govern ambient display state, which the card already reads directly for the active language.
+
+#### Scenario: Figure appears under base-stat sort
+
+- **WHEN** the active sort order is by base stats
+- **THEN** every visible card renders its base-stat figure in the type row's trailing group
+
+#### Scenario: Figure disappears under number sort
+
+- **WHEN** the active sort order changes from base stats to national number
+- **THEN** no card renders a base-stat figure
+- **AND** the cards are not unmounted and recreated
+
+#### Scenario: Figure reflects the strongest form, not the drawn form
+
+- **WHEN** a card draws a species' base form while that species has a stronger Mega form
+- **THEN** the figure shown is the Mega form's base-stat total
+
+#### Scenario: Figure is consistent with the order it explains
+
+- **WHEN** the grid is sorted by base stats
+- **THEN** reading the figures from the first card onward yields a sequence that never increases
+
+##### Example: trailing group contents by sort order and form count
+
+| Species  | Forms | Sort order | Base-stat figure | Form-count badge |
+| -------- | ----- | ---------- | ---------------- | ---------------- |
+| Venusaur | 2     | base stats | shown            | 2                |
+| Venusaur | 2     | number     | absent           | 2                |
+| Ditto    | 1     | base stats | shown            | absent           |
+| Ditto    | 1     | number     | absent           | absent           |
+
+<!-- @trace
+source: surface-bst-on-cards
+updated: 2026-08-08
+code:
+  - src/App.css
+  - ROADMAP.md
+  - src/components/SpeciesCard.vue
 -->
