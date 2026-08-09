@@ -13,13 +13,24 @@ C 節的一項決定，見「曾列在 C 節、已被推翻」。
 **這份檔案不管什麼**：平台事實（`design/HANDOFF.md` §12）、資料來源與推導規則（同檔 §5–§7）、
 已完成功能的行為（`openspec/specs/`）。三者都還是各自的權威，這裡只在需要時指路。
 
-最後對照：2026-08-08，對照的是 `optimize-query-bar` archive 之後的樹（`c617a76`）。當時的 A 節六項
-與 B 節六項**逐項重驗，全部仍然成立**：`src/` 零 `@media`、`typeFilter` 仍是 `TypeName | null`、
-`i18n.ts` 仍無 `megaOnly`／`multiOnly`／`sortName`、`bestBst` 只在 `query.ts` 的排序裡用到、
-`src/` 零 a11y 屬性、仍無 test runner 與 `.github/`。
+最後對照：2026-08-09，對照的是 `widen-dex-query-filters` archive 之後的樹。
 
-**同日兩項結清：A3 經實機量測後移入 C 節（§12.23）；A8 已交付並移出（`surface-bst-on-cards`，
-行為寫在 `openspec/specs/species-card/`）。A 節現為四項：A4、A5、A6、A10。**
+**A 節現為兩項：A6、A10。** 四項在 2026-08-08 至 08-09 之間結清：
+
+| 項目 | 結果 | 行為寫在 |
+|---|---|---|
+| A3 `prefers-reduced-motion` | 實機量測後判定不做，移入 C 節 | §12.23 |
+| A8 卡片 BST 數字 | 已交付（`surface-bst-on-cards`） | `openspec/specs/species-card/` |
+| A4 屬性多選 | 已交付（`widen-dex-query-filters`），多值為 OR | `openspec/specs/dex-query/` |
+| A5 兩顆篩選鈕 | 同上，查詢列因此增為三列 | 同上 |
+
+前一次對照（2026-08-08，`optimize-query-bar` 之後，`c617a76`）：當時的 A 節六項與 B 節六項逐項
+重驗全部仍然成立。B 節六項至今仍未動過，**但其中「自動化測試」一列已因本次發現而擴大** ——
+見該列。
+
+> 更正：2026-07-30 到 2026-08-08 之間，這裡寫著「A 節現為七項：A3–A6、A8–A10」。
+> **A9 從來不存在**，實際是六項。編號不重編的規則本來就會產生缺號（見「維護方式」），
+> 而那次把缺號當成了實有項目。數項目請數 `### A` 標題，不要數區間端點。
 
 > 更正：這一行在 2026-07-30 到 2026-08-08 之間寫著「A 節現為七項：A3–A6、A8–A10」。
 > **A9 從來不存在**，實際是六項。編號不重編的規則本來就會產生缺號（見「維護方式」），
@@ -46,8 +57,8 @@ C 節的一項決定，見「曾列在 C 節、已被推翻」。
 `sortName`、`count` 與四個 tally 鍵，於是畫面上沒有任何東西指出功能不見了。**§12.18 只寫了
 前一半。**
 
-`surface-dataset-facts` 補回了 `footer`、`count` 與四個 tally 鍵。仍缺 `megaOnly`、`multiOnly`
-（A5）與 `sortName`（A6）—— 這三個鍵是否存在，仍然是那兩項有沒有被做的最快指標。
+`surface-dataset-facts` 補回了 `footer`、`count` 與四個 tally 鍵；`widen-dex-query-filters` 補回
+`megaOnly` 與 `multiOnly`。**只剩 `sortName`** —— 這個鍵是否存在，仍然是 A6 有沒有被做的最快指標。
 
 ---
 
@@ -55,22 +66,7 @@ C 節的一項決定，見「曾列在 C 節、已被推翻」。
 
 「文件已經預告、但沒有交付」的項目原本有三項，那比單純的少做一個功能更貴，會讓後人相信它
 已經存在。**三項現在都結清了**：A1 氛圍層（§12.20）、A2 五段來源說明（§12.21）與 A3
-`prefers-reduced-motion`（§12.23）都已判定不做並移至 C 節。剩下的 A 節四項沒有一項被文件預告過。
-
-### A4. 屬性篩選從「可多選」縮為「單選」
-
-| | |
-|---|---|
-| 設計稿 | `state.types` 是 `Set`，可同時選多個屬性 |
-| 移植版 | `src/state/query.ts` 是 `TypeName \| null` |
-| 為什麼算漏記 | `dex-query` spec 通篇用單數（「the type filter」），所以不違規 —— 但這是**行為縮減**，沒有任何一處寫它是刻意的 |
-| 要做的話 | 多選會帶出一個設計稿沒答的問題：多個屬性是 AND 還是 OR。設計稿的 `match()` 是 OR（任一命中）。改動範圍是 `query.ts` 一個 ref 與 `QueryBar.vue` 的選中判斷，加上 `dex-query` spec 的一條需求 |
-| 註 | 設計稿的世代多選（`state.gens`）不再適用 —— `optimize-query-bar` 已把世代篩選整個移除，見該 change 的 `dex-query` delta |
-
-### A5. `★ 僅 MEGA` 與 `僅多形態` 兩顆篩選鈕
-
-設計稿 `state.mega` / `state.multi`，移植版零出現（連 i18n 鍵都沒有）。純加法，
-`query.ts` 兩個布林 + `QueryBar.vue` 兩顆鈕 + spec 一條需求。
+`prefers-reduced-motion`（§12.23）都已判定不做並移至 C 節。剩下的 A 節兩項沒有一項被文件預告過。
 
 ### A6. 名稱排序
 
@@ -110,6 +106,7 @@ C 節的一項決定，見「曾列在 C 節、已被推翻」。
 | 項目 | 現況 | 影響 |
 |---|---|---|
 | **自動化測試** | 只有 `scripts/check-styles.mjs`、`scripts/check-contrast.mjs` 與 `tsc` | spec 裡上百條 Scenario 與 Example（`dragon` 19 筆、`gen5` 29 筆、六欄左緣 195/223/267/311…）**沒有一條是機器驗的**，全是文件裡的數字。資料層的六項不變式是載入期斷言，沒有 test runner |
+| **`.vue` 完全沒有型別檢查** | `vue-tsc` 未安裝 | 2026-08-09 發現。`src/tsconfig.json` 的 `include` 有 `./**/*.vue`，還配了 `vueCompilerOptions.plugins`，**但 CLAUDE.md 記載的 `npm exec tsc` 看不懂 `.vue`** —— 需要 `vue-tsc`。實測：把 `query.ts` 的 `typeFilter` 改名後，四處引用它的 `QueryBar.vue` 仍然 `tsc` exit 0。**設定看起來完備、指令照跑、零檔案被檢查**，正是 §12.17 那類失效搬到工具鏈上。目前唯一會在 `.vue` 出錯時失敗的是 `pnpm run build`，但它只驗編譯不驗型別。補法是裝 `vue-tsc` 並在 `package.json` 的 check 與 `.github/workflows/check.yml` 裡取代 `tsc` |
 | **CI** | 沒有 `.github/` | 四項 check 靠人記得跑 |
 | **無障礙** | 移植版零 a11y 屬性 | 設計稿有 `aria-pressed`（模式／語系／屬性／排序鈕）、`aria-current`（選中的卡片）、`role="dialog"` + `aria-modal`、`label for`。Lynx 的 accessibility 屬性**沒查過**。這個主題 HANDOFF 全文未提。**`optimize-query-bar` 之後多了一筆**：搜尋輸入框不再有可見標籤，它的身分現在只由 placeholder 承載 —— 處理這個主題時它需要一個 accessibilityLabel，而不是靠 placeholder 兼任 |
 | **效能與記憶體數字** | 只有定性結論 | §12.13／§12.17 的「無卡頓」沒有任何數字，而 §12.14 自己說「208 張卡的首次繪製比直覺慢得多」。真的要優化時沒有基線 |

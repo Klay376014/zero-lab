@@ -1,10 +1,4 @@
-# dex-query Specification
-
-## Purpose
-
-What the grid is asked for, and what it answers with. Covers the shared search, type filter selection, Mega-only and multi-form-only filters and sort order and their independence from one another, the absence of any control that selects a generation and the search token that reaches one anyway, matching against both languages at all times so that switching which language leads never changes what is reachable, the type filter judged across all of a species' forms with several selected types combining disjunctively while every other filter narrows, the two boolean filters that admit only species having a Mega form or more than one form, pairing each result with the form that actually matched the filter, ranking by each species' strongest form rather than its base form, and the three-row query bar that states the sort order as its current value rather than laying its members out flat.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Query state is shared and independently settable
 
@@ -30,104 +24,6 @@ The query state SHALL NOT carry a generation filter, and the query bar SHALL NOT
 - **WHEN** the result sequence is read
 - **THEN** every element names one species and one form index
 
-
-<!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
-code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
-  - ROADMAP.md
-  - src/data/i18n.ts
--->
-
----
-### Requirement: Search matches across both languages at all times
-
-The search string SHALL be matched against a per-species haystack regardless of which language is leading, because switching which language leads changes presentation and MUST NOT change which species are reachable. Latin matching SHALL be case-insensitive. A partial name SHALL match.
-
-The haystack SHALL carry: the Traditional Chinese and English species names, the Chinese category, the national number in both its bare and its four-digit zero-padded form, a generation token of the form `gen<n>`, every form's Traditional Chinese and English label, and every type carried by any of the species' forms under both its English and its Traditional Chinese name. These are the four things the search field's placeholder names — name, number, type, form — plus the category and generation that travel with them.
-
-The generation token SHALL remain in the haystack even though no control selects a generation. It is a search capability in its own right, not the surviving half of a removed filter: the haystack is the one place the dataset's own fields are made reachable by typing, and generation is one of those fields. Nothing in the interface advertises the token, and no requirement elsewhere depends on it. A future proposal that removes it MUST argue against this paragraph rather than treat it as a leftover.
-
-The haystack SHALL NOT carry a bare roman numeral for the generation. A single-letter token matched as a substring reaches most of the dataset, which is indistinguishable on screen from a search that is not working.
-
-The search string SHALL be split on whitespace, and a species SHALL match only when **every** token appears in its haystack. A multi-token query SHALL NOT be matched as one substring, because no single field holds two tokens that name different things.
-
-#### Scenario: Either language matches the same species
-
-- **WHEN** the search string is one species' English name
-- **THEN** that species is in the result sequence
-- **AND** searching that species' Traditional Chinese name instead produces the same result sequence
-
-#### Scenario: Leading language does not change the result set
-
-- **WHEN** the leading language is switched while a search string is active
-- **THEN** the result sequence is unchanged
-
-#### Scenario: A national number reaches its species
-
-- **WHEN** the search string is a species' national number, in either its bare or its zero-padded form
-- **THEN** that species is in the result sequence
-
-#### Scenario: A type name reaches every species carrying it on any form
-
-- **WHEN** the search string is an English type name
-- **THEN** the result sequence holds exactly the species the type filter would select for that type
-
-#### Scenario: Every token must match
-
-- **WHEN** the search string holds two tokens naming different things
-- **THEN** only species whose haystack contains both are in the result sequence
-
-#### Scenario: A generation token still reaches its species
-
-- **WHEN** the search string is a generation token of the form `gen<n>`
-- **THEN** the result sequence holds exactly the species introduced in that generation
-
-##### Example: cross-language and partial matching, unchanged from before
-
-| Search string | Matches Charizard | Notes                          |
-| ------------- | ----------------- | ------------------------------ |
-| charizard     | yes               | English name, lower case       |
-| CHARIZARD     | yes               | matching ignores letter case   |
-| 噴火龍        | yes               | Traditional Chinese name       |
-| char          | yes               | partial Latin name             |
-| 噴火          | yes               | partial Traditional Chinese    |
-| ditto         | no                | names a different species      |
-
-##### Example: measured result counts over the 208-species dataset
-
-| Search string | Hits | What it equals                                                        |
-| ------------- | ---- | --------------------------------------------------------------------- |
-| 475           | 1    | Gallade, by national number                                           |
-| 0475          | 1    | the same species, by the zero-padded number                           |
-| dragon        | 19   | exactly the species the Dragon type filter selects                    |
-| 龍            | 25   | those 19, plus 6 whose Chinese name contains 龍 without the type      |
-| mega          | 73   | every species carrying a Mega form (75 Mega forms over 73 species)    |
-| 超級          | 73   | the same 73 species, by the Chinese Mega label                        |
-| gen5          | 29   | every species introduced in the fifth generation                      |
-| alola         | 2    | Raichu and Ninetales, by form label                                   |
-| 阿羅拉        | 2    | the same two, by the Chinese form label                               |
-| 火焰寶可夢    | 2    | Charizard and Infernape, by Chinese category                          |
-| mega charizard | 1   | both tokens must match; Charizard alone satisfies them                |
-| gen5 dragon   | 1    | Hydreigon — the only fifth-generation Dragon                          |
-
-The 25 for 龍 is the specified outcome, not a defect to fix. The Chinese type name and the Chinese species names occupy one haystack, and partial name matching is required above; the six extra species are 暴鯉龍, 化石翼龍, 戰槌龍, 護城龍, 龍頭地鼠 and 冰雪巨龍.
-
-
-<!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
-code:
-  - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/App.css
-  - src/components/QueryBar.vue
--->
-
----
 ### Requirement: The type filter is evaluated across all of a species' forms
 
 The type filter SHALL match a species when any of its forms carries any of the selected types, using the data layer's existing across-forms type accessor, so that a species whose only match is an alternate form remains reachable. An empty selection SHALL match every species.
@@ -180,18 +76,6 @@ No generation filter takes part in this conjunction, because the query state car
 | Fire + Water | 52    | the union, since 3 species carry both         |
 | none         | 208   | an empty selection matches every species      |
 
-
-<!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
-code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
-  - ROADMAP.md
-  - src/data/i18n.ts
--->
-
----
 ### Requirement: A filtered card displays the form that matched the filter
 
 The form index paired with a species in the result sequence SHALL be resolved by the first of these five rules that yields a form, so that the card answers whatever the query identified most specifically rather than always showing the base form.
@@ -272,61 +156,8 @@ A card whose species matched on an alternate form SHALL NOT display the base for
 
 The last two rows are the point of the token-discarding step: 龍 is part of this species' own name, so the card answers with the species, while dragon can only be a type, so the card answers with the form carrying it.
 
+## ADDED Requirements
 
-<!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
-code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
-  - ROADMAP.md
-  - src/data/i18n.ts
--->
-
----
-### Requirement: Sorting by base stats uses each species' strongest form
-
-The base-stat sort order SHALL rank species by the highest base-stat total across all of that species' forms, using the data layer's existing strongest-form accessor, and SHALL NOT rank by the base form's total. Ranking by the base form buries every Mega form beneath unevolved totals. The sort order SHALL be a closed set containing at least national number and base-stat total. Base-stat total SHALL order from highest to lowest.
-
-#### Scenario: Base-stat sort is descending by strongest form
-
-- **WHEN** the sort order is base-stat total
-- **THEN** each entry's strongest-form total is greater than or equal to the total of the entry after it
-
-#### Scenario: National number sort is ascending
-
-- **WHEN** the sort order is national number
-- **THEN** each entry's national number is less than the national number of the entry after it
-
-##### Example: strongest form decides the rank
-
-| Species      | Base form total | Strongest form total | Sort value used |
-| ------------ | --------------- | -------------------- | --------------- |
-| Venusaur     | 525             | 625                  | 625             |
-| Charizard    | 534             | 634                  | 634             |
-| Crabominable | 478             | 578                  | 578             |
-| Ditto        | 288             | 288                  | 288             |
-
-##### Example: resulting order for those four species
-
-- **GIVEN** the four species above and no active filters
-- **WHEN** the sort order is base-stat total
-- **THEN** the order is Charizard, Venusaur, Crabominable, Ditto
-
-<!-- @trace
-source: port-champions-dex-grid
-updated: 2026-07-29
-code:
-  - src/components/QueryBar.vue
-  - design/HANDOFF.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/components/DexGrid.vue
-  - src/App.css
-  - src/App.vue
--->
-
----
 ### Requirement: The query bar occupies three rows and states the sort order as its current value
 
 The query bar SHALL present its controls in exactly three rows. The first row SHALL carry the sort control, the search field, and the reset control, in that order. The second row SHALL carry the type filter's label followed by the eighteen type filter buttons. The third row SHALL carry the Mega-only and multi-form-only filter buttons.
@@ -390,18 +221,6 @@ Every filter button SHALL show its selected state by a means that survives both 
 | 2           | national number     | national number    |
 | 3           | base-stat total     | base-stat total    |
 
-
-<!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
-code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
-  - ROADMAP.md
-  - src/data/i18n.ts
--->
-
----
 ### Requirement: The Mega-only and multi-form-only filters narrow the result sequence
 
 The query state SHALL carry two independent boolean filters. When the Mega-only filter is set, the result sequence SHALL hold only species having at least one Mega form. When the multi-form-only filter is set, the result sequence SHALL hold only species having more than one form. When a filter is not set it SHALL exclude nothing.
@@ -441,12 +260,10 @@ Each SHALL combine conjunctively with the search string and with the type filter
 
 The last row is worth stating because it looks like a fault: setting the multi-form filter on top of the Mega filter changes nothing. Every Mega species is by construction multi-form, since the Mega form is additional to a base form, so the Mega set is contained in the multi-form set. A count that does not move here is correct.
 
-<!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
-code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
-  - ROADMAP.md
-  - src/data/i18n.ts
--->
+## REMOVED Requirements
+
+### Requirement: The query bar occupies two rows and states the sort order as its current value
+
+**Reason**: The query bar now carries a third row for the Mega-only and multi-form-only filters, so a requirement whose name asserts two rows cannot remain. Its content is carried forward in full by the added requirement `The query bar occupies three rows and states the sort order as its current value`, which keeps every clause about the sort control, the unlabelled search field, and the eighteen type buttons' nine-and-nine layout, and adds the third row plus the selected-state rule the new buttons share with the type buttons.
+
+**Migration**: Read `The query bar occupies three rows and states the sort order as its current value`. Nothing that the two-row requirement demanded has been dropped; the row count changed and clauses were added. This is written as a removal plus an addition rather than a rename because `spectra archive` does not apply a `RENAMED Requirements` block — it reports `renamed: 0` without erroring, which previously left this very requirement family with a heading that contradicted its own body.

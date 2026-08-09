@@ -7,26 +7,32 @@ import { TYPE_ORDER, typeColor } from '../data/types.js'
 import type { TypeName } from '../data/types.js'
 import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang, mode, tokens } from '../state/display.js'
-import { cycleSort, resetQuery, search, sortOrder, typeFilter } from '../state/query.js'
+import {
+  cycleSort,
+  isTypeSelected,
+  megaOnly,
+  multiOnly,
+  resetQuery,
+  search,
+  sortOrder,
+  toggleMegaOnly,
+  toggleMultiOnly,
+  toggleType,
+} from '../state/query.js'
 import type { GlyphSurface } from '../theme/modes.js'
-
-/** Toggling an active filter clears it, so a filter never needs a separate clear control. */
-function pickType(type: TypeName): void {
-  typeFilter.value = typeFilter.value === type ? null : type
-}
 
 /**
  * What a type chip is painted. Selection is carried by the background, not the border: POCKET
  * resolves accent and line to the same tone, so a border cannot tell the two states apart.
  */
 function chipBackground(type: TypeName): Record<string, string> {
-  if (typeFilter.value === type) return {}
+  if (isTypeSelected(type)) return {}
   if (!mode.value.typeColor) return {}
   return { backgroundColor: typeColor(type) ?? '' }
 }
 
 function chipSurface(type: TypeName): GlyphSurface {
-  return typeFilter.value === type ? 'accent' : 'typechip'
+  return isTypeSelected(type) ? 'accent' : 'typechip'
 }
 
 /** The sort control's text: the name of the order in force, not a choice between names. */
@@ -117,16 +123,52 @@ const inputStyle = computed<Record<string, string>>(() => ({
           :main-thread-bindtouchstart="onPressStart"
           :main-thread-bindtouchend="onPressEnd"
           :main-thread-bindtouchcancel="onPressEnd"
-          @tap="pickType(type)"
+          @tap="toggleType(type)"
         >
           <view
             class="TypeChip"
-            :class="typeFilter === type ? 'TypeChipOn' : undefined"
+            :class="isTypeSelected(type) ? 'TypeChipOn' : undefined"
             :style="chipBackground(type)"
           >
             <TypeGlyph :type="type" :surface="chipSurface(type)" />
           </view>
         </view>
+      </view>
+    </view>
+
+    <!-- A row of its own rather than a tail on the row above. The eighteen type buttons break
+         nine and nine as a property of their container alone — the reason the label that
+         introduces them sits outside it — and anything appended to that row puts the break
+         position back in question.
+
+         A row costs the card grid vertical space, which is why the generation filter was
+         removed and why the sort order is one cycling control rather than one button per
+         member. That reasoning was weighed again for these two and the row was accepted; see
+         the change's proposal. -->
+    <view class="QueryRow">
+      <view
+        class="Chip"
+        :class="megaOnly ? 'ChipOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="toggleMegaOnly"
+      >
+        <text class="ChipText" :class="megaOnly ? 'ChipTextOn' : undefined">
+          {{ t('megaOnly', lang) }}
+        </text>
+      </view>
+      <view
+        class="Chip"
+        :class="multiOnly ? 'ChipOn' : undefined"
+        :main-thread-bindtouchstart="onPressStart"
+        :main-thread-bindtouchend="onPressEnd"
+        :main-thread-bindtouchcancel="onPressEnd"
+        @tap="toggleMultiOnly"
+      >
+        <text class="ChipText" :class="multiOnly ? 'ChipTextOn' : undefined">
+          {{ t('multiOnly', lang) }}
+        </text>
       </view>
     </view>
   </view>

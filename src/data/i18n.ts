@@ -25,6 +25,10 @@ export interface Strings {
   readonly sortDex: string
   /** Sort by the strongest form's base-stat total. Doubles as the sort control's text. */
   readonly sortBst: string
+  /** Filter admitting only species that have a Mega form. */
+  readonly megaOnly: string
+  /** Filter admitting only species that have more than one form. */
+  readonly multiOnly: string
   /** Clears every filter and the search string. */
   readonly reset: string
   /** Shown in the card area when the query matches no species. */
@@ -86,6 +90,8 @@ export const I18N: Record<Lang, Strings> = {
     searchPlaceholder: '名稱 / 編號 / 屬性 / 形態',
     sortDex: '編號',
     sortBst: '種族值',
+    megaOnly: '★ 僅 MEGA',
+    multiOnly: '僅多形態',
     reset: '清除篩選',
     empty: '沒有符合的寶可夢。',
     close: '關閉',
@@ -121,6 +127,8 @@ export const I18N: Record<Lang, Strings> = {
     searchPlaceholder: 'Name / no. / type / form',
     sortDex: 'No.',
     sortBst: 'Stats',
+    megaOnly: '★ Mega only',
+    multiOnly: 'Multi-form',
     reset: 'Clear',
     empty: 'No Pokémon match.',
     close: 'Close',
