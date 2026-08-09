@@ -64,6 +64,13 @@ Capabilities, connect a device with Developer Mode enabled (Settings → Privacy
 and run. A free Apple ID's signature expires after 7 days — reconnect and re-run to renew
 it; a paid Apple Developer Program account lasts a year.
 
+The app icon is drawn by `scripts/make-app-icons.mjs` rather than exported by hand, so it
+cannot drift from the app's own palette — it reads the same colours and the same 8×8 type
+marks the interface does. Unlike `Pods/` and the copied bundle it **is** committed, because
+it is a source, not a build product; the script rewrites it byte-for-byte, so re-running
+leaves the tree unchanged. Pass `--all <dir>` to draw the candidates it was chosen from,
+and see the script's own header for why a lone type mark does not survive at icon size.
+
 ## Checks
 
 ```bash
