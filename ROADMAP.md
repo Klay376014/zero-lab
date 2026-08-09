@@ -105,8 +105,8 @@ C 節的一項決定，見「曾列在 C 節、已被推翻」。
 
 | 項目 | 現況 | 影響 |
 |---|---|---|
-| **自動化測試** | 只有 `scripts/check-styles.mjs`、`scripts/check-contrast.mjs` 與 `tsc` | spec 裡上百條 Scenario 與 Example（`dragon` 19 筆、`gen5` 29 筆、六欄左緣 195/223/267/311…）**沒有一條是機器驗的**，全是文件裡的數字。資料層的六項不變式是載入期斷言，沒有 test runner |
-| **`.vue` 完全沒有型別檢查** | `vue-tsc` 未安裝 | 2026-08-09 發現。`src/tsconfig.json` 的 `include` 有 `./**/*.vue`，還配了 `vueCompilerOptions.plugins`，**但 CLAUDE.md 記載的 `npm exec tsc` 看不懂 `.vue`** —— 需要 `vue-tsc`。實測：把 `query.ts` 的 `typeFilter` 改名後，四處引用它的 `QueryBar.vue` 仍然 `tsc` exit 0。**設定看起來完備、指令照跑、零檔案被檢查**，正是 §12.17 那類失效搬到工具鏈上。目前唯一會在 `.vue` 出錯時失敗的是 `pnpm run build`，但它只驗編譯不驗型別。補法是裝 `vue-tsc` 並在 `package.json` 的 check 與 `.github/workflows/check.yml` 裡取代 `tsc` |
+| **自動化測試** | **已建置（2026-08-09）**，`vitest` + `tests/`，66 個測試 | `dex-query` 與 `dex-data` 的 Example 表已全數機器驗，且測的是真模組（`vue-lynx` 的反應式在 node 下可用，`query.ts` 直接被驅動）。**仍未涵蓋**：`learnset-table` 的六欄左緣 195/223/267/311 那類版面數字（需要量測而非邏輯）、`species-card`／`species-detail`／`move-learners` 的 Example、以及所有需要元素樹的東西。下一批要補就從 `learnset` 與 `moveLearners` 兩個 state 模組開始 —— 它們與 `query.ts` 同構，同樣可直接驅動 |
+| **`.vue` 型別檢查** | **已補（2026-08-09）**，`vue-tsc` + `pnpm run typecheck` | 診斷與補救都經實測（種入型別錯誤：`tsc` exit 0、`vue-tsc` exit 2）。**殘留缺口**：`vue-lynx` 的 Volar plugin 是 API v1、現行 vue-tsc 要 2.x，所以載入時被拒，**Lynx 元素（`<view>`／`<text>`／`<image>`）的屬性仍然不受檢查** —— 假屬性照樣通過。鑑於 §12 反覆記載的失效正是「屬性看起來宣告了卻沒作用」，這一塊仍只能靠實機。要真正補上得等 vue-lynx 更新 plugin API |
 | **CI** | 沒有 `.github/` | 四項 check 靠人記得跑 |
 | **無障礙** | 移植版零 a11y 屬性 | 設計稿有 `aria-pressed`（模式／語系／屬性／排序鈕）、`aria-current`（選中的卡片）、`role="dialog"` + `aria-modal`、`label for`。Lynx 的 accessibility 屬性**沒查過**。這個主題 HANDOFF 全文未提。**`optimize-query-bar` 之後多了一筆**：搜尋輸入框不再有可見標籤，它的身分現在只由 placeholder 承載 —— 處理這個主題時它需要一個 accessibilityLabel，而不是靠 placeholder 兼任 |
 | **效能與記憶體數字** | 只有定性結論 | §12.13／§12.17 的「無卡頓」沒有任何數字，而 §12.14 自己說「208 張卡的首次繪製比直覺慢得多」。真的要優化時沒有基線 |

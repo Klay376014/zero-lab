@@ -1,2 +1,9 @@
+# Which dependencies may run install scripts. pnpm blocks them by default and writes each new
+# one here as an undecided placeholder, so every entry below is a decision someone made.
 allowBuilds:
+  # Nothing imports it; it arrives transitively and its postinstall is not needed.
   core-js: false
+  # Required: vitest transpiles TypeScript with esbuild, and esbuild's postinstall is what
+  # links the platform binary. Without it `pnpm test` cannot start. Build-time only — esbuild
+  # is a devDependency and no part of it reaches the shipped bundle.
+  esbuild: true

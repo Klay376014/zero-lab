@@ -35,5 +35,10 @@ jobs:
       - name: 四項不變式
         run: pnpm run check
 
+      # vue-tsc，不是 tsc。tsc 看不懂 .vue，會靜默略過每一個元件檔而仍然 exit 0 ——
+      # 實測過：把 state 模組的一個匯出改名，四處引用它的 .vue 照樣通過。
       - name: 型別
-        run: npm exec tsc -- --noEmit -p src/tsconfig.json
+        run: pnpm run typecheck
+
+      - name: 單元測試
+        run: pnpm test

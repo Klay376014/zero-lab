@@ -84,15 +84,38 @@ Two more that cost real time:
 ## Verifying a change
 
 ```bash
-pnpm run check                                    # four invariants, non-zero on violation
-npm exec tsc -- --noEmit -p src/tsconfig.json
+pnpm run check                                    # four style/contrast invariants
+pnpm run typecheck                                # vue-tsc — NOT tsc, see below
+pnpm test                                         # vitest, runs the spec's Example tables
 ```
+
+All three run in CI (`.github/workflows/check.yml`), so a push catches what you forget to.
 
 `pnpm run check` asserts the failures that are invisible rather than loud: selected-state rules
 cancelled by their own base rule, `inset` shadows the platform ignores, prose characters the
 subset font cannot draw, and the measured contrast of every type mark on every surface it is
 drawn onto. Adding a `GlyphSurface` member without teaching the contrast check about it fails
 the check rather than going unmeasured.
+
+**`pnpm run typecheck` runs `vue-tsc`. Do not substitute `tsc`** — it does not understand
+`.vue`, so it silently skips every component file and still exits 0. That is not a guess: it
+was measured on 2026-08-09 by planting a type error in a component, which `tsc` passed and
+`vue-tsc` caught. What `vue-tsc` covers here is script blocks and Vue component props in
+templates. What it does **not** cover is attributes on Lynx elements (`<view>`, `<text>`,
+`<image>`) — `vue-lynx`'s Volar plugin is API version 1 and current vue-tsc wants 2.x, so it
+loads without those element types and a bogus attribute passes. Given that §12's recurring
+failure is exactly an attribute that looks declared and does nothing, treat Lynx element
+attributes as unchecked and verify them on device.
+
+`pnpm test` executes the Example tables out of `openspec/specs/` against the real modules —
+`src/state/query.ts` is driven directly, because `vue-lynx` re-exports Vue's reactivity and
+reactivity has no platform dependency. Tests import the code under test rather than
+re-implementing its predicates, so a passing run is evidence about the code and not about the
+transcription. **Node cannot reach layout, gestures, font metrics or anything in §12** — a
+green run does not replace device acceptance.
+
+When a spec's Example table changes, `tests/` changes with it. A count that moves means either
+a regression or a renegotiated spec, and both are worth stopping for.
 
 Device acceptance is a real part of a change here, not a formality — the platform facts in §12
 were nearly all found that way, and three of them only after a physical device disagreed with the
