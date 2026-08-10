@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue-lynx'
+import { computed, ref, watch } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
 import { moveOf } from '../data/dex.js'
@@ -11,6 +11,9 @@ import { lang } from '../state/display.js'
 import { bonusOnly, moveSort } from '../state/learnset.js'
 import type { MoveSort } from '../state/learnset.js'
 import { openMoveLearners } from '../state/moveLearners.js'
+import { BUFFER_SCREENS, MOVE_ROW } from '../state/rowMetrics.js'
+import type { Range } from '../state/visibleRange.js'
+import { sliceForRange, visibleRange } from '../state/visibleRange.js'
 
 const props = defineProps<{
   moves: readonly number[]
@@ -59,11 +62,55 @@ const rows = computed<Row[]>(() => {
   }
 })
 
-const heads = computed(() => moveHeads(lang.value))
-
 const BOUND_ABOVE_ROWS = 12
 
+/** `.MoveTableBound` is 36vh; unbounded, the table is as tall as its rows. */
+const BOUND_HEIGHT = 320
+
 const bounded = computed(() => rows.value.length > BOUND_ABOVE_ROWS)
+
+/**
+ * Only the rows within reach are made. A hundred-and-five-move learnset is about nine hundred
+ * elements at roughly 1.3 ms each, and every one of them is paid before the panel's artwork
+ * appears (design/HANDOFF.md §12.24). The container this scrolls in is nested inside the panel's
+ * own; §12.26 confirmed the inner one reports.
+ */
+let offset = 0
+
+function rangeAt(scrollTop: number): Range {
+  return visibleRange({
+    offset: scrollTop,
+    visible: bounded.value ? BOUND_HEIGHT : rows.value.length * MOVE_ROW.height,
+    itemHeight: MOVE_ROW.height,
+    perRow: MOVE_ROW.perRow,
+    total: rows.value.length,
+    bufferScreens: BUFFER_SCREENS,
+  })
+}
+
+const range = ref<Range>(rangeAt(0))
+
+function commit(next: Range): void {
+  if (next.first === range.value.first && next.last === range.value.last) return
+  range.value = next
+}
+
+// Sorting and the bonus filter both change this sequence; the derivation clamps to the new
+// length, and nothing here tells the container to move.
+watch(rows, () => { commit(rangeAt(offset)) })
+
+const shown = computed(() => sliceForRange(rows.value, range.value))
+
+function onScroll(event: unknown): void {
+  const source = event as Record<string, unknown>
+  const detail = { ...source, ...((source.detail ?? {}) as Record<string, unknown>) }
+  const top = detail.scrollTop
+  if (typeof top !== 'number') return
+  offset = top
+  commit(rangeAt(top))
+}
+
+const heads = computed(() => moveHeads(lang.value))
 
 const SORTS = [
   { key: 'name', label: 'mvName' },
@@ -145,9 +192,11 @@ function figureClass(value: number | null): string {
     <scroll-view
       :class="bounded ? 'MoveTableBound' : undefined"
       scroll-orientation="vertical"
+      @scroll="onScroll"
     >
+      <view :style="{ height: `${range.leading}px` }" />
       <view
-        v-for="row in rows"
+        v-for="row in shown"
         :key="row.move.n"
         :class="row.stab ? 'MoveRow MoveRowStab' : 'MoveRow'"
         :main-thread-bindtouchstart="onPressStart"
@@ -167,6 +216,8 @@ function figureClass(value: number | null): string {
         <text :class="figureClass(row.move.ac)">{{ figure(row.move.ac) }}</text>
         <text class="MoveFigurePp">{{ row.move.pp }}</text>
       </view>
+
+      <view :style="{ height: `${range.trailing}px` }" />
 
       <text v-if="rows.length === 0" class="MoveNone">{{ t('mvNone', lang) }}</text>
     </scroll-view>

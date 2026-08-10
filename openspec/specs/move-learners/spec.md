@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change 'add-move-learners'. Update Purpose after archive.
+How a move resolves to the species that learn it, and how those species are presented as a layer above the detail panel. Covers the learner relation derived from the dataset and memoised rather than recomputed, the form opened for a learner being the one that actually knows the move, the list sitting above the panel as its own layer rather than replacing it, the move name and learner count in its heading with two species to a row and only the visible range of those rows materialised, choosing a learner replacing the selection rather than stacking another layer, and the open-move state being held separately from the selection.
 
 ## Requirements
 
@@ -202,7 +202,9 @@ The learner list SHALL state the name of the move it was opened from in the lead
 
 Species SHALL be listed two per row. Each entry SHALL state the species' name in the leading language, its national dex number, and its type marks.
 
-The list SHALL NOT carry a search field, a filter, or a sort control. The relation's median size is fourteen species, and the list's purpose is navigation rather than browsing.
+Listing every learner SHALL NOT mean materialising every row. The list SHALL materialise only the rows within its scrolling container's visible range plus a buffer, as the visible-range window capability defines, and SHALL hold the remaining extent with spacers so that the scrollable range is the one the full sequence would have. This is the longest sequence in the application: the most widely learned move reaches two hundred and twenty-five species, more than the roster the grid draws, and at roughly eight elements a row it exceeds the grid's element count for a screen that is reached by a single tap.
+
+The list SHALL NOT carry a search field, a filter, or a sort control. The relation's median size is fourteen species, and the list's purpose is navigation rather than browsing. A median-sized relation SHALL still be presented through the same path as a large one, so that the two do not diverge in behaviour.
 
 #### Scenario: The heading names the move and the count
 
@@ -214,6 +216,18 @@ The list SHALL NOT carry a search field, a filter, or a sort control. The relati
 
 - **WHEN** the learner list is open
 - **THEN** each row holds at most two species entries
+
+#### Scenario: Only the visible rows and their buffer exist
+
+- **WHEN** the learner list is opened on a move that two hundred and twenty-five species learn
+- **THEN** the row elements that exist are those of the visible range plus the buffer
+- **AND** the scrollable extent is the one the full relation would occupy
+
+#### Scenario: Scrolling the longest relation shows every learner
+
+- **WHEN** a reviewer scrolls the largest learner list from its first row to its last on a physical device
+- **THEN** no row renders blank
+- **AND** no entry pairs one species' name with another species' number or type marks
 
 #### Scenario: No query controls are present
 
@@ -230,19 +244,23 @@ The list SHALL NOT carry a search field, a filter, or a sort control. The relati
 
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: window-visible-range
+updated: 2026-08-10
 code:
-  - design/champions-dex.html
-  - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
   - src/App.css
+  - src/state/visibleRange.ts
+  - ROADMAP.md
+  - package.json
+  - src/App.vue
+  - src/components/MoveLearners.vue
   - src/components/LearnsetTable.vue
-  - src/data/dex.ts
-  - src/data/i18n.ts
-  - design/champions-dex.json
+  - scripts/check-row-heights.mjs
+  - src/state/viewport.ts
+  - design/HANDOFF.md
+  - src/state/rowMetrics.ts
+  - src/components/DexGrid.vue
+tests:
+  - tests/visible-range.test.ts
 -->
 
 ---

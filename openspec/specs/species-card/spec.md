@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The presentation contract for a single species card. Covers element order and badge rules, the type row's trailing group and the base-stat figure that appears in it exactly while the grid is ordered by base stats, both languages staying on the card at once, layout stability when optional rows are empty and when names are overlong, nearest-neighbour sprite upscaling declared per element, the guarantee that artwork is never recoloured, the glyph-tile fallback when artwork fails to load, the bevel built from per-side border colours instead of an unsupported inset shadow, in-place updates on mode and language change, and the species-plus-form-index input contract.
+The presentation contract for a single species card. Covers element order and badge rules, the type row's trailing group and the base-stat figure that appears in it exactly while the grid is ordered by base stats, both languages staying on the card at once, layout stability when optional rows are empty and when names are overlong together with the reserved cell height that makes every card draw the same height, nearest-neighbour sprite upscaling declared per element, the guarantee that artwork is never recoloured, the glyph-tile fallback when artwork fails to load, the bevel built from per-side border colours instead of an unsupported inset shadow, in-place updates on mode and language change, and the species-plus-form-index input contract.
 
 ## Requirements
 
@@ -150,78 +150,69 @@ code:
 
 The alternate name row and the form label row SHALL reserve their height when their content is empty, so cards of differing content align on a shared baseline.
 
+The cell a card is placed in SHALL reserve a minimum height, so that every card draws the same height as every other card, not merely the same height as the card beside it.
+
+Reserving SHALL be expressed as a minimum height, the mechanism the alternate name and form label rows already use. It SHALL NOT be expressed as a fixed height, and SHALL NOT be expressed by limiting any text to a number of lines: both would push a name that wraps outside the card, which the requirement that long names wrap forbids.
+
+The reservation SHALL be a figure measured on a physical device rather than computed. The stylesheet declares no height for a card and no line height for the text inside it, so no figure can be summed out of source; and character widths follow the pixel face's own metrics, which the web preview does not load, so a width measured there is a measurement of a different face.
+
+Uniform card height is what allows the grid to render only a visible range: a window derives which rows to render from a scroll offset and one row height, and rows of differing heights make that derivation drift.
+
 #### Scenario: Base form leaves the form label empty
 
 - **WHEN** a card renders a form whose label is empty
 - **THEN** the form label row reserves its height and the card's overall height matches a card whose form label is present
 
+#### Scenario: A card shorter than the reservation still fills its row
+
+- **WHEN** a card's content is shorter than the reserved height
+- **THEN** the card draws the reserved height rather than its content height
+
+#### Scenario: A name is never clipped to hold the reservation
+
+- **WHEN** any card's text would exceed the reserved height
+- **THEN** the text remains fully visible
+- **AND** no fixed height and no line limit is applied to hold the card at the reservation
+
+#### Scenario: Every card in the grid draws one height
+
+- **WHEN** the grid is rendered on a physical device with the pixel face loaded
+- **THEN** every card outline measures the same height, in both leading languages
+
+#### Scenario: The reservation is measured, not computed
+
+- **WHEN** the reserved height is chosen
+- **THEN** it comes from a measurement taken on a physical device
+- **AND** the measured figure and the cases it was taken from are recorded in the design handoff document
+
+##### Example: the cases the reservation was measured against
+
+| Case                         | Value                       | Lines it occupies on device |
+| ---------------------------- | --------------------------- | --------------------------- |
+| Longest Latin species name   | Crabominable                | 1                           |
+| Longest Chinese species name | 赫拉克羅斯                   | 1                           |
+| Longest Latin form label     | Paldean Form (Combat Breed) | 1                           |
+| Longest Chinese form label   | 帕底亞的樣子（鬥戰種）         | 1                           |
+
 
 <!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
+source: window-visible-range
+updated: 2026-08-10
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
   - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
+  - src/state/visibleRange.ts
+  - ROADMAP.md
+  - package.json
+  - src/App.vue
+  - src/components/MoveLearners.vue
+  - src/components/LearnsetTable.vue
+  - scripts/check-row-heights.mjs
+  - src/state/viewport.ts
   - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
-  - src/data/i18n.ts
-  - src/index.ts
+  - src/state/rowMetrics.ts
+  - src/components/DexGrid.vue
+tests:
+  - tests/visible-range.test.ts
 -->
 
 ---

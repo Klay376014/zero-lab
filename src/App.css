@@ -349,10 +349,20 @@
    A proportion rather than the design document's 164px, which was sized for a browser no
    narrower than 500px. On a 390px phone that value leaves 324px after the chrome padding and
    fits one column, wasting half the row. Change this one value to change the column count. */
+/* The reserved row pitch. Windowing derives which rows to draw from one scroll offset and one
+   row height, so a row that grows past its reservation drifts the window away from the offset —
+   rows blank at one edge and pile up at the other, with nothing raised.
+
+   A minimum rather than a fixed height, because `species-card` requires long names to wrap rather
+   than truncate, and a fixed height would push a wrapped name out of the card. On the device this
+   was measured at, nothing wraps (§12.26), so the minimum is what every card draws.
+
+   Kept in step with src/state/rowMetrics.ts by scripts/check-row-heights.mjs. */
 .DexCell {
   display: flex;
   flex-direction: column;
   width: 50%;
+  min-height: 201px;
   padding: 3px;
   /* Never give up width to fit another cell in: shrinking is how a wrapping row silently
      turns two columns into two squeezed ones instead of wrapping. */
@@ -399,6 +409,13 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+/* Stands in for the rows outside the rendered range. Full width so it occupies rows of its own —
+   a spacer narrower than the row would wrap in beside a card and break the two columns. */
+.GridSpacer {
+  width: 100%;
+  flex-shrink: 0;
 }
 
 /* The card fills whatever cell it is placed in; the grid's cell owns the column width and the
@@ -1310,10 +1327,12 @@
   height: 36vh;
 }
 
+/* Reserved row pitch — see .DexCell. Kept in step with src/state/rowMetrics.ts. */
 .MoveRow {
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-height: 24px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: var(--surface2);
@@ -1561,10 +1580,12 @@
 /* Rows are built in the component, two entries at a time, rather than produced by wrapping
    half-width cells: a proportional width reflows to one column when an entry will not fit, and
    "two per row" would then be the device's decision instead of this interface's. */
+/* Reserved row pitch — see .DexCell. Kept in step with src/state/rowMetrics.ts. */
 .LearnersRow {
   display: flex;
   flex-direction: row;
   align-items: stretch;
+  min-height: 53.84px;
 }
 
 .LearnerCell {

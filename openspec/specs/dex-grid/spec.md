@@ -2,7 +2,7 @@
 
 ## Purpose
 
-How the roster is presented as a scrollable grid of cards. Covers the choice of a plain scrolling container over the platform's recycling list element and the measured reason for it, card identity composed from species and displayed form rather than position, columns produced as a proportion of the row rather than a fixed pixel width, the staggered reveal that plays once at launch, and stating an empty result rather than leaving the card area blank.
+How the roster is presented as a scrollable grid of cards. Covers the choice of a plain scrolling container over the platform's recycling list element and the measured reason for it, the visible-range window that bounds how many cards exist at once inside that container, card identity composed from species and displayed form rather than position, columns produced as a proportion of the row rather than a fixed pixel width, the staggered reveal that plays once at launch, and stating an empty result rather than leaving the card area blank.
 
 ## Requirements
 
@@ -12,7 +12,11 @@ The species grid SHALL be rendered inside the platform's plain scrolling contain
 
 The framework binding's behaviour SHALL be treated as the authority over the framework's own prose documentation, which describes move detection and reordering support the shipped code does not contain.
 
-This choice SHALL be revisited when the framework binding implements the remove and update actions. The revisit trigger and the evidence behind the current choice SHALL be recorded in the design handoff document, so that a later reader does not mistake it for a standing preference.
+This choice SHALL be revisited when the framework binding implements the remove and update actions. The revisit trigger and the evidence behind the current choice SHALL be recorded in the design handoff document, so that a later reader does not mistake it for a standing preference. When the trigger is re-examined and found still unmet, that re-examination SHALL be recorded too, so the question is not re-opened from scratch each time it is asked.
+
+Because the plain scrolling container does not recycle, the grid SHALL bound the number of cards that exist at once by materialising only the visible range and its buffer, as the visible-range window capability defines. The measured node growth that this requirement previously left as a condition has been taken: the platform charges roughly one and a third milliseconds per element, and an unfiltered grid of two hundred and eight cards holds about four thousand elements.
+
+The window SHALL target roughly ten visible cards, which at two cards to a row is about five rows.
 
 #### Scenario: Cards sit inside the scrolling container
 
@@ -31,24 +35,37 @@ This choice SHALL be revisited when the framework binding implements the remove 
 - **THEN** the card area shows exactly the remaining results
 - **AND** no card from the previous result set stays on screen
 
-#### Scenario: Node growth is measured on a physical device
+#### Scenario: Only the visible cards and their buffer exist
+
+- **WHEN** the unfiltered grid is rendered at the top of its scrolling container
+- **THEN** the cards that exist are those of the visible range plus the buffer
+- **AND** no card element exists for a species outside that range
+
+#### Scenario: Scrolling the whole roster shows every card
 
 - **WHEN** a reviewer scrolls from the first card to the last on a physical device
-- **THEN** the observed node and memory growth is recorded in the design handoff document
-- **AND** when the growth is unacceptable, a self-managed visible-range window is engaged and recorded
+- **THEN** no cell renders blank and no card shows another species' name, artwork, or types
+- **AND** the observed wait is recorded in the design handoff document
 
 
 <!-- @trace
-source: port-champions-dex-grid
-updated: 2026-07-29
+source: window-visible-range
+updated: 2026-08-10
 code:
-  - src/components/QueryBar.vue
-  - design/HANDOFF.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/components/DexGrid.vue
   - src/App.css
+  - src/state/visibleRange.ts
+  - ROADMAP.md
+  - package.json
   - src/App.vue
+  - src/components/MoveLearners.vue
+  - src/components/LearnsetTable.vue
+  - scripts/check-row-heights.mjs
+  - src/state/viewport.ts
+  - design/HANDOFF.md
+  - src/state/rowMetrics.ts
+  - src/components/DexGrid.vue
+tests:
+  - tests/visible-range.test.ts
 -->
 
 ---

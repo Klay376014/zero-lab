@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue-lynx'
+import { computed, ref, watch } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
 import type { Species } from '../data/dex.js'
@@ -8,6 +8,9 @@ import { learnerCountLabel, moveName, speciesName, t } from '../data/i18n.js'
 import { typeAbbr } from '../data/types.js'
 import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang } from '../state/display.js'
+import { BUFFER_SCREENS, LEARNER_ROW } from '../state/rowMetrics.js'
+import type { Range } from '../state/visibleRange.js'
+import { sliceForRange, visibleRange } from '../state/visibleRange.js'
 import { closeMoveLearners } from '../state/moveLearners.js'
 import { openDetail } from '../state/selection.js'
 
@@ -60,6 +63,48 @@ function choose(entry: Entry): void {
   openDetail(entry.species, entry.formIndex)
   closeMoveLearners()
 }
+
+/** `.LearnersBody` is 52vh. */
+const BODY_HEIGHT = 460
+
+/**
+ * Only the rows within reach are made. This is the longest sequence in the application — the most
+ * widely learned move reaches 225 species, more than the roster the grid draws — and it opens on a
+ * single tap. `.LearnersBody` is 52vh; §12.26 measured the row pitch and confirmed this container,
+ * nested inside the panel's own, reports its scroll.
+ */
+let offset = 0
+
+function rangeAt(scrollTop: number): Range {
+  return visibleRange({
+    offset: scrollTop,
+    visible: BODY_HEIGHT,
+    itemHeight: LEARNER_ROW.height,
+    perRow: LEARNER_ROW.perRow,
+    total: rows.value.length,
+    bufferScreens: BUFFER_SCREENS,
+  })
+}
+
+const range = ref<Range>(rangeAt(0))
+
+function commit(next: Range): void {
+  if (next.first === range.value.first && next.last === range.value.last) return
+  range.value = next
+}
+
+watch(rows, () => { commit(rangeAt(offset)) })
+
+const shown = computed(() => sliceForRange(rows.value, range.value))
+
+function onScroll(event: unknown): void {
+  const source = event as Record<string, unknown>
+  const detail = { ...source, ...((source.detail ?? {}) as Record<string, unknown>) }
+  const top = detail.scrollTop
+  if (typeof top !== 'number') return
+  offset = top
+  commit(rangeAt(top))
+}
 </script>
 
 <template>
@@ -83,9 +128,14 @@ function choose(entry: Entry): void {
         </view>
       </view>
 
-      <scroll-view class="LearnersBody" scroll-orientation="vertical">
+      <scroll-view
+        class="LearnersBody"
+        scroll-orientation="vertical"
+        @scroll="onScroll"
+      >
         <view class="LearnersRows">
-          <view v-for="row in rows" :key="rowKey(row)" class="LearnersRow">
+          <view :style="{ height: `${range.leading}px` }" />
+          <view v-for="row in shown" :key="rowKey(row)" class="LearnersRow">
             <view
               v-for="entry in row"
               :key="entry.species.d"
@@ -103,6 +153,7 @@ function choose(entry: Entry): void {
               </view>
             </view>
           </view>
+          <view :style="{ height: `${range.trailing}px` }" />
         </view>
       </scroll-view>
     </view>

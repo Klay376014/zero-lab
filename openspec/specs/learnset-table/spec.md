@@ -2,13 +2,15 @@
 
 ## Purpose
 
-How one form's Champions learnset is presented as a six-column table. Covers one row per move in the section the displayed form points at, the same-type attack bonus judged against the displayed form's types rather than the species' and excluding status moves, the closed set of three sort orders and the tie-break every one of them resolves by name, sort order and the bonus filter held as state that outlives the panel, the section heading stating both the learnset size and the filtered size, an empty filtered result stated in words, numeric columns fixed in width and right aligned with absent values as a dash, move names held to one line by an element attribute rather than a style property, bonus rows carrying both a background and a real star text node, the deliberate absence of the design study's hover tooltips with no substitute added, an English fallback for the two moves with no Chinese name, the platform list binding left unused because it renders neither removals nor reorders, and the table's own height bound and scrolling container above a row threshold with its column header outside them.
+How one form's Champions learnset is presented as a six-column table. Covers one row per move in the section the displayed form points at with only the visible range of those rows materialised, the same-type attack bonus judged against the displayed form's types rather than the species' and excluding status moves, the closed set of three sort orders and the tie-break every one of them resolves by name, sort order and the bonus filter held as state that outlives the panel, the section heading stating both the learnset size and the filtered size, an empty filtered result stated in words, numeric columns fixed in width and right aligned with absent values as a dash, move names held to one line by an element attribute rather than a style property, bonus rows carrying both a background and a real star text node, the deliberate absence of the design study's hover tooltips with no substitute added, an English fallback for the two moves with no Chinese name, the platform list binding left unused because it renders neither removals nor reorders, and the table's own height bound and scrolling container above a row threshold with its column header outside them.
 
 ## Requirements
 
 ### Requirement: The learnset table renders one row per move in the displayed form's section
 
-The learnset table SHALL render one row for every move in the learnset section that the displayed form points at. Each row SHALL carry, in order: the move's type glyph, the move's name in the leading language, the damage-class abbreviation, the power, the accuracy, and the PP.
+The learnset table SHALL present one row for every move in the learnset section that the displayed form points at. Each row SHALL carry, in order: the move's type glyph, the move's name in the leading language, the damage-class abbreviation, the power, the accuracy, and the PP.
+
+Presenting every move SHALL NOT mean materialising every row. The table SHALL materialise only the rows within its scrolling container's visible range plus a buffer, as the visible-range window capability defines, and SHALL hold the remaining extent with spacers so that the scrollable range is the one the full sequence would have. The longest learnset in the dataset holds one hundred and five moves at roughly eight and a half elements a row; the platform charges roughly one and a third milliseconds per element, and that sequence alone accounts for a wait of about nine hundred milliseconds before the panel's artwork appears.
 
 The table's inputs SHALL be the move-index list to render and the types the bonus is computed against, and SHALL NOT include the species. A learnset section is held on the species and a form holds only an index into those sections, so neither input can be derived from a form alone; the panel resolves the section and hands over the result, following the arrangement already used for abilities, where the list component receives the slots rather than the species.
 
@@ -17,8 +19,20 @@ Resolving a form's section SHALL be a data-layer operation. When a form's sectio
 #### Scenario: A form's learnset is listed in full
 
 - **WHEN** the panel opens on a form whose learnset section holds 72 moves and no filter is active
-- **THEN** the table renders 72 rows
+- **THEN** the table presents 72 rows, every one of them reachable by scrolling
 - **AND** each row carries a type glyph, a name, a damage-class abbreviation, a power, an accuracy and a PP
+
+#### Scenario: Only the visible rows and their buffer exist
+
+- **WHEN** the panel opens on a form whose learnset section holds 105 moves
+- **THEN** the row elements that exist are those of the visible range plus the buffer
+- **AND** the scrollable extent is the one 105 rows would occupy
+
+#### Scenario: Scrolling the whole learnset shows every row
+
+- **WHEN** a reviewer scrolls a 105-move learnset from its first row to its last on a physical device
+- **THEN** no row renders blank
+- **AND** no row pairs one move's name with another move's values
 
 #### Scenario: An out-of-range section index yields an empty learnset
 
@@ -32,22 +46,23 @@ Resolving a form's section SHALL be a data-layer operation. When a form's sectio
 
 
 <!-- @trace
-source: port-champions-dex-learnset
-updated: 2026-07-30
+source: window-visible-range
+updated: 2026-08-10
 code:
-  - scripts/check-contrast.mjs
   - src/App.css
-  - README.md
-  - src/components/SpeciesDetail.vue
-  - src/data/i18n.ts
-  - src/state/learnset.ts
-  - src/data/dex.ts
+  - src/state/visibleRange.ts
+  - ROADMAP.md
   - package.json
-  - scripts/check-styles.mjs
+  - src/App.vue
+  - src/components/MoveLearners.vue
   - src/components/LearnsetTable.vue
-  - src/state/query.ts
-  - src/theme/modes.ts
+  - scripts/check-row-heights.mjs
+  - src/state/viewport.ts
   - design/HANDOFF.md
+  - src/state/rowMetrics.ts
+  - src/components/DexGrid.vue
+tests:
+  - tests/visible-range.test.ts
 -->
 
 ---
