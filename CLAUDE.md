@@ -49,6 +49,32 @@ One thing it omits that surprises people: **`/spectra-propose` parks the change 
 finishes.** So `propose → apply` in the workflow diagram has a park in between, which is why
 `apply` has anything to unpark.
 
+# `/spectra-archive` dispatches to a skill that does not exist
+
+Its step 4 and its guardrails both say to invoke `spectra-sync-specs` when the user asks to sync
+delta specs before archiving. **There is no such skill** — `.claude/skills/` holds twelve spectra
+skills and that is not one of them. Hit on 2026-08-10 archiving `window-visible-range`; the
+dispatched agent got `Unknown skill` and applied the deltas by hand instead.
+
+**There is nothing to install, because the step is redundant.** `spectra archive` applies the
+deltas itself — its own step 6 says so, and running it against already-synced specs reports
+`added: 0, modified: 4` and leaves the files byte-identical. Syncing first is safe but buys
+nothing on its own.
+
+Two things it *does* buy, which are worth doing without a sync skill:
+
+- **A newly created capability spec gets `TBD - created by archiving change '<name>'. Update
+  Purpose after archive.` as its Purpose.** That placeholder is how `move-learners` carried a TBD
+  from 2026-08-05 until this was noticed. Write a real Purpose after archiving — no check reports
+  the placeholder.
+- **A MODIFIED requirement can leave its spec's Purpose describing less than the spec now
+  requires**, because deltas carry no Purpose text. Re-read it against the requirements.
+
+`.claude/skills/spectra-archive/SKILL.md` has been edited to drop the dispatch and fold both into
+a post-archive step — **but `spectra update` regenerates every skill file and reverts it**
+(verified: run `spectra update`, the edit is gone). So treat this section as the durable copy and
+re-apply the edit if it matters.
+
 # This project
 
 A finished design study in `design/` and a Vue Lynx port of it in `src/` — complete as to the

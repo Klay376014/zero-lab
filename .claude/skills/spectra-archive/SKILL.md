@@ -52,20 +52,27 @@ Archive a completed change.
 
    **If no tasks file exists:** Proceed without task-related warning.
 
-4. **Assess delta spec sync state**
+4. **Assess what the archive will apply to the main specs**
 
-   Check for delta specs at `openspec/changes/<name>/specs/`. If none exist, proceed without sync prompt.
+   Check for delta specs at `openspec/changes/<name>/specs/`. If none exist, skip this step.
+
+   **There is no separate sync action, and no sync skill to call.** `spectra archive` applies the
+   deltas itself (see step 6). This step exists so the user sees what is about to change, not to
+   change it.
 
    **If delta specs exist:**
    - Compare each delta spec with its corresponding main spec at `openspec/specs/<capability>/spec.md`
-   - Determine what changes would be applied (adds, modifications, removals, renames)
-   - Show a combined summary before prompting
+   - Determine what the archive will apply (adds, modifications, removals, renames)
+   - For every `## MODIFIED` / `## REMOVED` / `## RENAMED` block, verify the requirement name
+     matches an existing heading in the main spec **exactly**. A name that does not match is the
+     failure worth catching here: the delta lands as a second requirement rather than replacing the
+     first, and nothing reports it.
+   - Show a combined summary
 
    **Prompt options:**
-   - If changes needed: "Sync now (recommended)", "Archive without syncing"
-   - If already synced: "Archive now", "Sync anyway", "Cancel"
-
-   If user chooses sync, use Task tool (subagent_type: "general-purpose", prompt: "Use Skill tool to invoke spectra-sync-specs for change '<name>'. Delta spec analysis: <include the analyzed delta spec summary>"). Proceed to archive regardless of choice.
+   - If the delta names all resolve: "Archive (applies the deltas)", "Archive without applying (`--skip-specs`)", "Cancel"
+   - If any name does not resolve: say which, and offer "Fix the delta first" alongside the above.
+     Do not archive a mismatched name without the user choosing to.
 
 5. **Clean up tracking file**
 
@@ -93,13 +100,37 @@ Archive a completed change.
 
    **If archive fails** with "already exists" error, suggest renaming existing archive.
 
-7. **Display summary**
+   Read the reported counts (`added: N, modified: N, removed: N, renamed: N`) — step 7 needs to
+   know which capabilities were newly created.
+
+7. **Write the Purpose for specs the archive created or changed**
+
+   Delta specs carry requirements only, never `## Purpose` text, so the CLI cannot write one.
+
+   **For every capability the archive reports under `added`:** the generated spec's Purpose is the
+   placeholder `TBD - created by archiving change '<name>'. Update Purpose after archive.` Replace
+   it with a written summary of what the capability covers. Leaving it turns the placeholder into
+   permanent documentation debt that no check reports — grep `openspec/specs/` for `TBD` to see
+   whether an earlier archive already left one.
+
+   **For every capability under `modified`:** read its Purpose against the requirements as they now
+   stand. A modified requirement often adds behaviour the Purpose paragraph does not mention, and a
+   Purpose that under-describes its own spec is how a later reader concludes a capability does less
+   than it does. Update the sentence when it no longer covers the requirements; leave it when it
+   already does.
+
+   Do not invent scope here. The Purpose summarises requirements that exist — if writing it
+   surfaces a behaviour no requirement states, that is a gap in the spec, not something to paper
+   over in the summary.
+
+8. **Display summary**
 
    Show archive completion summary including:
    - Change name
    - Schema that was used
    - Archive location
-   - Spec sync status (synced / sync skipped / no delta specs)
+   - What the archive applied to the main specs (the reported counts, or "no delta specs")
+   - Which Purposes were written or refreshed in step 7
    - Note about any warnings (incomplete artifacts/tasks)
 
 **Output On Success**
@@ -110,7 +141,8 @@ Archive a completed change.
 **Change:** <change-name>
 **Schema:** <schema-name>
 **Archived to:** openspec/changes/archive/YYYY-MM-DD-<name>/
-**Specs:** ✓ Synced to main specs
+**Specs:** applied — added: 1, modified: 4, removed: 0, renamed: 0
+**Purpose:** written for `<new-capability>`; `<modified-capability>` refreshed
 
 All artifacts complete. All tasks complete.
 ```
@@ -136,12 +168,12 @@ All artifacts complete. All tasks complete.
 **Change:** <change-name>
 **Schema:** <schema-name>
 **Archived to:** openspec/changes/archive/YYYY-MM-DD-<name>/
-**Specs:** Sync skipped (user chose to skip)
+**Specs:** not applied (archived with `--skip-specs`)
 
 **Warnings:**
 - Archived with 2 incomplete artifacts
 - Archived with 3 incomplete tasks
-- Delta spec sync was skipped (user chose to skip)
+- Delta specs were not applied (archived with `--skip-specs`)
 
 Review the archive if this was not intentional.
 ```
@@ -169,6 +201,9 @@ Target archive directory already exists.
 - Don't block archive on warnings - just inform and confirm
 - Preserve .openspec.yaml when moving to archive (it moves with the directory)
 - Show clear summary of what happened
-- If sync is requested, use the Skill tool to invoke `spectra-sync-specs` (agent-driven)
-- If delta specs exist, always run the sync assessment and show the combined summary before prompting
+- Never call a `spectra-sync-specs` skill — it does not exist, and `spectra archive` applies the
+  deltas itself. Earlier revisions of this skill dispatched to it and the archive stalled there.
+- If delta specs exist, always run the step 4 assessment and show the combined summary before
+  prompting, including whether every MODIFIED/REMOVED/RENAMED name resolves to an existing heading
+- Never leave a newly created spec carrying the CLI's `TBD` Purpose placeholder (step 7)
 - If **AskUserQuestion tool** is not available, ask the same questions as plain text and wait for the user's response
