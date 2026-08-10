@@ -9,10 +9,8 @@ const props = defineProps<{
   stats: StatLine
 }>()
 
-/** The ceiling a bar is drawn against: above the dataset's highest single stat, so none clips. */
 const STAT_MAX = 230
 
-/** Below this the fill would be invisible, which reads as a missing bar rather than a low one. */
 const MIN_FILL_PERCENT = 2
 
 const total = computed(() => {
@@ -25,7 +23,6 @@ const peak = computed(() => Math.max(...props.stats))
 
 const labels = computed(() => statLabels(lang.value))
 
-/** The bar's fill as a percentage of the row, not a pixel width — the panel's width is relative. */
 function fillPercent(value: number): string {
   const share = Math.round(Math.min(value, STAT_MAX) / STAT_MAX * 100)
   return `${Math.max(MIN_FILL_PERCENT, share)}%`
@@ -36,8 +33,6 @@ function fillPercent(value: number): string {
   <view class="Stats">
     <text class="StatsHead">{{ t('secStats', lang) }}</text>
 
-    <!-- The peak stat is emphasised by colour and weight only: a row that changed height would
-         make the block jump as the displayed form changes. -->
     <view
       v-for="(value, index) in stats"
       :key="index"

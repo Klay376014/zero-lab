@@ -14,13 +14,6 @@ import { openMove } from './state/moveLearners.js'
 import { results } from './state/query.js'
 import { selected, selectedFormIndex } from './state/selection.js'
 
-/**
- * The dataset's scale, as four figures with their labels.
- *
- * Order is fixed here rather than taken from the meta block's field order: the four read as a
- * progression from the coarsest unit to the finest, and a reordering makes the row read as an
- * arbitrary list. Every figure comes from the meta block, which the data layer asserts at load.
- */
 const tally = computed(() => [
   { key: 'species', figure: dex.meta.species, label: t('tSpecies', lang.value) },
   { key: 'forms', figure: dex.meta.formEntries, label: t('tForms', lang.value) },
@@ -38,10 +31,6 @@ const tally = computed(() => [
           <text class="Title">CHAMPIONS DEX</text>
           <view class="MastheadRow">
             <text class="Sub">{{ resultCountLabel(results.length, dex.meta.species, lang) }}</text>
-            <!-- Press feedback is bound on the element, never on a component, so the landing
-                 point is certain rather than dependent on attribute fall-through. All three
-                 touch bindings go together: cancel is what releases a press that became a
-                 scroll. -->
             <view
               class="Chip"
               :main-thread-bindtouchstart="onPressStart"
@@ -69,18 +58,8 @@ const tally = computed(() => [
       </view>
     </view>
 
-    <!-- A sibling of the shell: the overlay is positioned against this root view, so anything
-         between them would confine it. -->
-    <!-- Keyed on the species so that replacing one with another — which the learner list does
-         without the panel closing in between — is an unmount and a mount rather than a content
-         update in place. That is what makes the panel's three mount consequences hold for a
-         replacement too, the load-bearing one being that the content starts at the top: a
-         reader arriving from the learnset table would otherwise land partway down the new
-         species' panel. Reaching the same result by writing the scroll position is forbidden.
-
-         The key is the species' number, not the form index: switching form deliberately keeps
-         the scroll position, and replacing the selection with the species already selected
-         must not remount. -->
+    <!-- Keyed on species number: switching form keeps the panel mounted and its scroll
+         position; replacing the species remounts it scrolled to the top. -->
     <SpeciesDetail
       v-if="selected"
       :key="selected.d"
@@ -88,10 +67,6 @@ const tally = computed(() => [
       :form-index="selectedFormIndex"
     />
 
-    <!-- A sibling of the detail overlay, not a section inside it. The list carries its own
-         scrolling container, and the panel is allowed exactly two — placing it inside would be
-         a third, and the style check cannot see that. Later in source order so it draws above
-         the panel without either layer declaring a stacking order. -->
     <MoveLearners v-if="openMove !== null" :move-index="openMove" />
   </view>
 </template>

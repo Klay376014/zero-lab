@@ -1,80 +1,43 @@
-// Values are carried over from design/pipeline/template.html's own I18N table, so the two do
-// not drift into different vocabularies for the same control.
 import { GEN_ROMAN } from './dex.js'
 import type { Ability, Form, FormKind, Move, MoveClass, Species } from './dex.js'
 
 export type Lang = 'zh' | 'en'
 
-/** The keys this slice's screen renders. */
 export interface Strings {
-  /** Label on the language toggle — the language it switches to reading as. */
   readonly lang: string
   readonly type: string
-  /** Form label shown for a species' base form, which carries no upstream label. */
   readonly baseForm: string
-  // Masthead tally. Labels only — the figures come from the dataset's meta block.
   readonly tSpecies: string
   readonly tForms: string
   readonly tMega: string
   readonly tMoves: string
-  // Query bar. No key introduces the search field and none names a generation: the field
-  // carries only its placeholder, and no control selects a generation.
-  /** Placeholder inside the search field — the only thing naming what the search reaches. */
   readonly searchPlaceholder: string
-  /** Sort by national number. Doubles as the sort control's text when that order is in force. */
   readonly sortDex: string
-  /** Sort by the strongest form's base-stat total. Doubles as the sort control's text. */
   readonly sortBst: string
-  /** Filter admitting only species that have a Mega form. */
   readonly megaOnly: string
-  /** Filter admitting only species that have more than one form. */
   readonly multiOnly: string
-  /** Clears every filter and the search string. */
   readonly reset: string
-  /** Shown in the card area when the query matches no species. */
   readonly empty: string
-  // Detail panel.
-  /** Label on the control that closes the detail. */
   readonly close: string
-  /** Attribute row: the form's types. */
   readonly dTypes: string
-  /** Attribute row: the form and its kind. */
   readonly dForm: string
-  /** Attribute row: the game version that introduced the form. */
   readonly dVer: string
-  /** Attribute row: whether the form is in the current roster. */
   readonly dRoster: string
   readonly rosterIn: string
   readonly rosterOut: string
   readonly secStats: string
-  /** Label on the base-stat total. */
   readonly total: string
   readonly secAbil: string
-  /** Marker on the slot holding a species' hidden ability. */
   readonly hidden: string
-  /** Prefix on a roster note carried by the dataset. */
   readonly notePrefix: string
-  /** Warning shown for a form outside the current roster. */
   readonly warnRoster: string
-  /** Warning shown when the artwork is the species' shared sprite. */
   readonly warnApprox: string
-  // Learnset table.
   readonly secMoves: string
-  /** Sort the learnset by move name. */
   readonly mvName: string
-  /** Sort the learnset by power, highest first. */
   readonly mvPower: string
-  /** Sort the learnset by move type. */
   readonly mvType: string
-  /**
-   * Toggle that keeps only the moves receiving the same-type attack bonus. The concept is
-   * 本系加成 in the artefacts; only this control reads 屬修, which fits the chip.
-   */
   readonly mvStab: string
-  /** Shown in place of rows when the active sort and filter leave none. */
   readonly mvNone: string
-  // Learner list.
-  /** Heading of the list of species that learn the opened move. */
   readonly mlTitle: string
 }
 
@@ -157,27 +120,21 @@ export const I18N: Record<Lang, Strings> = {
   },
 }
 
-/** The string for `key` in `lang`. */
 export function t(key: keyof Strings, lang: Lang): string {
   return I18N[lang][key]
 }
 
-/** A name and the same name in the other language. The toggle changes which one leads. */
 export interface NamePair {
-  /** The name in the active language. */
   readonly lead: string
-  /** The same name in the other language. Empty when there is none. */
   readonly alt: string
 }
 
-/** The species' name pair for `lang`. */
 export function speciesName(species: Species, lang: Lang): NamePair {
   return lang === 'zh'
     ? { lead: species.mz, alt: species.m }
     : { lead: species.m, alt: species.mz }
 }
 
-/** The form's label pair for `lang`. A base form carries no upstream label. */
 export function formLabel(form: Form, lang: Lang): NamePair {
   const pair = lang === 'zh'
     ? { lead: form.lz, alt: form.l }
@@ -186,7 +143,6 @@ export function formLabel(form: Form, lang: Lang): NamePair {
   return { lead: t('baseForm', lang), alt: '' }
 }
 
-/** The ability's name pair for `lang`. Two of the 200 carry no Chinese name. */
 export function abilityName(ability: Ability, lang: Lang): NamePair {
   const pair = lang === 'zh'
     ? { lead: ability.z, alt: ability.n }
@@ -195,38 +151,24 @@ export function abilityName(ability: Ability, lang: Lang): NamePair {
   return { lead: pair.alt, alt: '' }
 }
 
-/**
- * The ability's description in `lang`, falling back to the other language. Empty when the
- * dataset carries neither, which is the signal to omit the description entirely.
- */
 export function abilityDescription(ability: Ability, lang: Lang): string {
   return lang === 'zh' ? (ability.d || ability.de) : (ability.de || ability.d)
 }
 
-/** The six base-stat labels for `lang`, in the dataset's stat order. */
 export function statLabels(lang: Lang): readonly string[] {
   return STAT_LABELS[lang]
 }
 
-/** The label for a form kind in `lang`. */
 export function kindLabel(kind: FormKind, lang: Lang): string {
   return KIND_LABELS[lang][kind]
 }
 
-/** "Generation IV" and its Chinese equivalent, from a generation number. */
 export function genOfLabel(gen: number, lang: Lang): string {
   const numeral = GEN_ROMAN[gen] ?? String(gen)
   return lang === 'zh' ? `第 ${numeral} 世代` : `Gen ${numeral}`
 }
 
-/** "3 forms" and its Chinese equivalent. English pluralises; Chinese has no plural. */
-/**
- * How many species learn the opened move. A whole localised string rather than a count beside
- * a key, on the same grounds as {@link resultCountLabel}: the two languages put the measure
- * word and the noun in different places, and composing one from a fragment gets that wrong.
- */
 export function learnerCountLabel(count: number, lang: Lang): string {
-  // "species" is its own plural, so English needs no count-dependent branch here.
   return lang === 'zh' ? `${count} 隻` : `${count} species`
 }
 
@@ -235,62 +177,31 @@ export function formsOfLabel(count: number, lang: Lang): string {
   return count > 1 ? `${count} forms` : `${count} form`
 }
 
-/**
- * "19 / 208 species" and its Chinese equivalent. Names the unit rather than leaving a bare
- * ratio, which reads identically in both languages while the rest of the screen changes.
- *
- * `total` is the dataset's own species count, passed in rather than read here, so that this
- * module keeps depending on the dataset only for the generation numerals.
- */
 export function resultCountLabel(matched: number, total: number, lang: Lang): string {
   return lang === 'zh' ? `${matched} / ${total} 種類` : `${matched} / ${total} species`
 }
 
-/** One footer segment: what it is about, and what it says. */
 export interface FooterSegment {
   readonly heading: string
   readonly body: string
 }
 
-/**
- * The footer's segments for `lang`.
- *
- * A sequence rather than one pair, although the footer currently states one thing: the shape
- * is what the component renders, and a segment added later needs no change on either side.
- */
 export function footerSegments(lang: Lang): readonly FooterSegment[] {
   return FOOTER[lang].map(([heading, body]) => ({ heading, body }))
 }
 
-/** The learnset table's six column headings for `lang`. The first is empty: it is the glyph column. */
 export function moveHeads(lang: Lang): readonly string[] {
   return MOVE_HEADS[lang]
 }
 
-/** The one-token abbreviation for a damage class in `lang`. The column is 28px wide. */
 export function damageClassAbbr(cls: MoveClass, lang: Lang): string {
   return DAMAGE_CLASS_ABBR[lang][cls]
 }
 
-/**
- * The move's name in `lang`. Two of the 496 moves have no Chinese name and fall back to
- * English. A bare string, not a {@link NamePair}: the table has one name column.
- */
 export function moveName(move: Move, lang: Lang): string {
   return lang === 'zh' ? (move.z || move.n) : move.n
 }
 
-/**
- * What the footer states, as heading/body pairs.
- *
- * The design study carried six segments here — the roster, moves, stats and abilities, Chinese
- * naming, artwork, and this one. Only the font and copyright segment is carried over; the five
- * provenance segments were dropped by decision, and design.md records what that costs.
- *
- * Two statements are rewritten from the study's wording because they are true there and not
- * here: this port embeds two font families rather than one, and it is a port rather than a
- * design study.
- */
 const FOOTER: Record<Lang, readonly (readonly [string, string])[]> = {
   zh: [
     ['字型／版權', 'Silkscreen 與 Literata（皆 OFL）已內嵌。Pokémon © Nintendo / Creatures Inc. / GAME FREAK inc.　本作品為非商業用途。'],

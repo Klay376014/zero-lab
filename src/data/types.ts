@@ -8,15 +8,13 @@ export const TYPE_ORDER = [
 
 export type TypeName = (typeof TYPE_ORDER)[number]
 
-/** An 8x8 glyph bitmap: eight rows of eight cells each. */
+/** 8x8 glyph bitmap: eight rows of eight cells each. */
 export type GlyphRows = readonly [
   string, string, string, string, string, string, string, string,
 ]
 
-/** The cell marker that means "filled" in a {@link GlyphRows} row. */
 export const GLYPH_FILLED = '#'
 
-/** Canonical series type colours. Only MODERN can afford to spend them. */
 export const TYPE_COLORS: Record<TypeName, string> = {
   Normal: '#9FA19F', Fire: '#E62829', Water: '#2980EF', Electric: '#FAC000',
   Grass: '#3FA129', Ice: '#3DCEF3', Fighting: '#FF8000', Poison: '#9141CB',
@@ -32,7 +30,6 @@ export const TYPE_ZH: Record<TypeName, string> = {
   Fairy: '妖精',
 }
 
-/** Three-letter codes: two types have to fit on a narrow card. */
 export const TYPE_ABBR: Record<TypeName, string> = {
   Normal: 'NRM', Fire: 'FIR', Water: 'WTR', Electric: 'ELC', Grass: 'GRS', Ice: 'ICE',
   Fighting: 'FGT', Poison: 'PSN', Ground: 'GRD', Flying: 'FLY', Psychic: 'PSY',
@@ -40,7 +37,6 @@ export const TYPE_ABBR: Record<TypeName, string> = {
   Fairy: 'FRY',
 }
 
-/** 18 type marks, hand-plotted on an 8x8 grid. */
 export const GLYPHS: Record<TypeName, GlyphRows> = {
   Normal: ['..####..', '.#....#.', '#......#', '#..##..#', '#..##..#', '#......#', '.#....#.', '..####..'],
   Fire: ['...##...', '..####..', '..####..', '.######.', '.######.', '##.##.##', '#..##..#', '.######.'],
@@ -62,27 +58,22 @@ export const GLYPHS: Record<TypeName, GlyphRows> = {
   Fairy: ['...#....', '...#....', '..###...', '#######.', '..###...', '...#....', '...#....', '........'],
 }
 
-/** True when `name` is one of the eighteen known types. */
 export function isTypeName(name: string): name is TypeName {
   return name in GLYPHS
 }
 
-/** The glyph bitmap for `name`, falling back to Normal for an unrecognised type. */
 export function glyphRows(name: string): GlyphRows {
   return isTypeName(name) ? GLYPHS[name] : GLYPHS.Normal
 }
 
-/** The series colour for `name`, or undefined when unrecognised; only the theme layer substitutes. */
 export function typeColor(name: string): string | undefined {
   return isTypeName(name) ? TYPE_COLORS[name] : undefined
 }
 
-/** The three-letter code for `name`, falling back to the name itself. */
 export function typeAbbr(name: string): string {
   return isTypeName(name) ? TYPE_ABBR[name] : name
 }
 
-/** The type's name in `lang`, falling back to the English name. */
 export function typeName(name: string, lang: Lang): string {
   if (lang === 'en' || !isTypeName(name)) return name
   return TYPE_ZH[name]

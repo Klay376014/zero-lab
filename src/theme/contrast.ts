@@ -1,11 +1,3 @@
-/**
- * WCAG relative luminance and contrast, used to pick ink against an arbitrary background.
- *
- * Two measured ratios, not a luminance cut-off: a mid-tone like Rock's #AFA981 sits at the
- * crossover, where a fixed threshold picks the worse of the two by more than a factor of three.
- */
-
-/** The two ink candidates. Nothing else is ever used as ink over an unknown surface. */
 export const INK_DARK = '#101010'
 export const INK_LIGHT = '#ffffff'
 
@@ -17,7 +9,6 @@ function channels(hex: string): [number, number, number] {
   ]
 }
 
-/** WCAG relative luminance of a `#rrggbb` colour. */
 export function relLum(hex: string): number {
   const [r, g, b] = channels(hex).map((v) => {
     const c = v / 255
@@ -26,13 +17,11 @@ export function relLum(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 
-/** WCAG contrast ratio between two `#rrggbb` colours. Order does not matter. */
 export function contrast(a: string, b: string): number {
   const [hi, lo] = [relLum(a), relLum(b)].sort((x, y) => y - x) as [number, number]
   return (hi + 0.05) / (lo + 0.05)
 }
 
-/** Whichever ink candidate measures higher contrast against `bgHex`. */
 export function inkOn(bgHex: string): string {
   return contrast(INK_DARK, bgHex) >= contrast(INK_LIGHT, bgHex) ? INK_DARK : INK_LIGHT
 }

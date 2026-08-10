@@ -1,8 +1,4 @@
 <script setup lang="ts">
-/**
- * One 8x8 type mark, as an SVG XML string: the element set has no canvas, and the svg
- * element's documented contract is a `content` attribute, not shape children.
- */
 import { computed } from 'vue-lynx'
 
 import { glyphRows } from '../data/types.js'
@@ -12,18 +8,12 @@ import type { GlyphSurface } from '../theme/modes.js'
 import { glyphOn } from '../theme/modes.js'
 
 const props = withDefaults(defineProps<{
-  /** English type name. An unrecognised name falls back to the Normal mark. */
   type: string
-  /** Which surface the glyph is about to sit on. */
   surface: GlyphSurface
-  /**
-   * Box side in pixels. Keep it a whole multiple of the 8px source grid — anything else
-   * lands the cells on fractional pixels and the mark stops being sharp.
-   */
+  /** Keep it a whole multiple of the 8px source grid, or the mark stops being sharp. */
   size?: number
 }>(), { size: 16 })
 
-// Module-level, not per-instance: every card on screen shares the same handful of strings.
 const cache = new Map<string, string>()
 
 const content = computed(() => {

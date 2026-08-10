@@ -10,7 +10,6 @@ const props = defineProps<{
   abilities: readonly AbilityRef[]
 }>()
 
-/** The slots resolved for rendering. An empty description omits that block entirely. */
 const rows = computed(() => props.abilities.map((ref) => {
   const ability = abilityOf(ref)
   return {

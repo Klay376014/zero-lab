@@ -1,5 +1,4 @@
 <script setup lang="ts">
-/** The buttons that switch which of a species' forms the panel describes, grouped by kind. */
 import { computed } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
@@ -10,22 +9,17 @@ import { lang } from '../state/display.js'
 
 const props = defineProps<{
   species: Species
-  /** Which form is currently shown, and therefore which button is selected. */
   formIndex: number
 }>()
 
 const emit = defineEmits<{
-  /** A form was chosen. Carries its index in the species' form list. */
   select: [index: number]
 }>()
 
-/** Base first, Megas last. Fixed here rather than taken from the dataset's own order. */
 const KIND_ORDER: readonly FormKind[] = ['base', 'other', 'regional', 'mega']
 
-/** The base form's type combination. A button carries marks only when its own differs. */
 const baseSignature = computed(() => (props.species.f[0]?.t ?? []).join('/'))
 
-/** The groups that have at least one form, in the fixed kind order. */
 const groups = computed(() => KIND_ORDER.flatMap((kind) => {
   const forms = props.species.f
     .map((form, index) => ({ form, index }))
@@ -38,7 +32,6 @@ const groups = computed(() => KIND_ORDER.flatMap((kind) => {
       index,
       label: formLabel(form, lang.value).lead,
       isMega: form.k === 'mega',
-      // Empty when the form does not retype the species, which is what the template tests.
       types: form.t.join('/') === baseSignature.value ? [] : form.t,
     })),
   }]
@@ -68,8 +61,6 @@ const groups = computed(() => KIND_ORDER.flatMap((kind) => {
           >
             {{ entry.label }}
           </text>
-          <!-- A mark carries its fill inside itself, so a selected button's must be drawn
-               against the accent or it disappears into it. -->
           <TypeGlyph
             v-for="type in entry.types"
             :key="type"

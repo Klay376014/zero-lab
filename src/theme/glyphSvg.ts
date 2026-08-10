@@ -1,12 +1,10 @@
 import { GLYPH_FILLED } from '../data/types.js'
 import type { GlyphRows } from '../data/types.js'
 
-/** `rows` painted in `fill`, as an SVG document with an 8x8 view box. One rect per filled run. */
 export function buildGlyphSvg(rows: GlyphRows, fill: string): string {
   const rects: string[] = []
   rows.forEach((row, y) => {
     let runStart = -1
-    // One past the end so a run reaching the last cell still gets closed.
     for (let x = 0; x <= row.length; x += 1) {
       const filled = row[x] === GLYPH_FILLED
       if (filled && runStart < 0) runStart = x

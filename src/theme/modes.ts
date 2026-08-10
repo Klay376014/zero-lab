@@ -1,7 +1,6 @@
 import { typeColor } from '../data/types.js'
 import { inkOn } from './contrast.js'
 
-/** The ten semantic tokens every mode resolves. Nothing else names a colour. */
 export interface Tokens {
   readonly bg: string
   readonly shell: string
@@ -15,18 +14,15 @@ export interface Tokens {
   readonly accentInk: string
 }
 
-/** An ordered four-tone greyscale ramp, darkest first. */
+/** Darkest first. */
 export type Tones = readonly [string, string, string, string]
 
 export type ModeId = 'POCKET' | 'MODERN'
 
 interface Mode {
   readonly id: ModeId
-  /** Present when the mode's chrome is a four-tone ramp. */
   readonly tones?: Tones
-  /** Present when the mode declares its tokens outright. */
   readonly tokens?: Tokens
-  /** True when the mode is allowed to spend type colours. */
   readonly typeColor?: boolean
 }
 
@@ -43,7 +39,6 @@ export const MODES: readonly Mode[] = [
   },
 ]
 
-/** The ten tokens for `mode`, derived from its ramp when it has one. */
 export function tokensOf(mode: Mode): Tokens {
   if (mode.tokens) return mode.tokens
   const tones = mode.tones as Tones
@@ -54,15 +49,8 @@ export function tokensOf(mode: Mode): Tokens {
   }
 }
 
-/**
- * Which surface a glyph is about to be drawn onto. A caller names the surface its glyph
- * actually sits on, never a near neighbour: POCKET resolves `panel` and `surface` to the same
- * tone but MODERN does not, and borrowing one for the other makes the contrast check
- * measure against a background the glyph is not on.
- */
 export type GlyphSurface = 'surface' | 'accent' | 'typechip' | 'panel' | 'surface2'
 
-/** The fill a glyph of `type` needs to stay visible on `surface` under `mode`. */
 export function glyphOn(mode: Mode, type: string, surface: GlyphSurface): string {
   const tones = mode.tones
   if (tones) return surface === 'accent' ? tones[3] : tones[0]
@@ -72,10 +60,6 @@ export function glyphOn(mode: Mode, type: string, surface: GlyphSurface): string
   return typeColor(type) ?? tokens.ink
 }
 
-/**
- * The background a glyph on `surface` will actually sit on, for contrast checking. Kept in
- * step with {@link glyphOn} by hand — both change together or neither does.
- */
 export function glyphBackdrop(mode: Mode, type: string, surface: GlyphSurface): string {
   const tokens = tokensOf(mode)
   if (surface === 'accent') return tokens.accent
