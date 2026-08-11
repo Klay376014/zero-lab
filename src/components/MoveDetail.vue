@@ -7,11 +7,15 @@
  * the same gesture, which is what the second one bought by giving up its direct route to the
  * learners.
  *
- * Flags are deliberately absent. The dataset carries them and this reads none: 71 of the 496
- * moves carry none at all because the upstream source never recorded them, and displaying the
- * field would assert "this move does not have those properties" where the data supports only
- * "nobody wrote it down". Which subset to show, and how to word it, is a decision this batch
- * does not make.
+ * Flags are stated as a row of short labels, the last row of the attribute list. 17 of the 21 get
+ * one; the other four are omitted by carrying no label in the string table, which is the whole of
+ * how that exclusion is expressed.
+ *
+ * The row is absent, rather than empty, when nothing can be stated. 71 of the 496 moves carry no
+ * flags at all because the upstream source never recorded them, and saying "none" would assert
+ * "this move does not have those properties" where the data supports only "nobody wrote it down".
+ * Stating only what is present asserts nothing about what is not — which is why there is no count
+ * and no empty-state text here.
  *
  * The panel is the species panel's dialog family, reusing its overlay, frame, header and
  * attribute rows rather than restating them.
@@ -25,6 +29,7 @@ import {
   learnerCountLabel,
   moveDescription,
   moveFigure,
+  moveFlagLabel,
   moveName,
   t,
 } from '../data/i18n.js'
@@ -61,6 +66,18 @@ const figures = computed(() => [
   { key: 'mdAcc', value: moveFigure(move.value.ac), dash: move.value.ac === null },
   { key: 'mdPp', value: String(move.value.pp), dash: false },
 ] as const)
+
+/**
+ * The flags to state, in the ascending identifier order the dataset already guarantees — stable
+ * rather than meaningful, and chosen for exactly that reason: no second ordering rule to keep.
+ *
+ * A flag with no label drops out here. That covers the four excluded identifiers and anything
+ * upstream adds before someone writes a label for it; the dataset's own invariant and the flag
+ * table's size test are what make the second case loud, so it can be quiet on screen.
+ */
+const flagLabels = computed(() => (move.value.fl ?? [])
+  .map((id) => moveFlagLabel(id, lang.value))
+  .filter((label) => label !== ''))
 
 const description = computed(() => moveDescription(move.value, lang.value))
 
@@ -127,6 +144,23 @@ function openLearners(): void {
               <text
                 :class="figure.dash ? 'DetailAttrValue MoveFigureDash' : 'DetailAttrValue'"
               >{{ figure.value }}</text>
+            </view>
+
+            <!-- Last row, and absent rather than empty when there is nothing to state. Its value
+                 column is the species panel's wrapping mark container, so four labels wrap within
+                 the row instead of raising a horizontal-scrolling question the layer's one
+                 scrolling container would not answer.
+
+                 `MoveFlagRow` centres this row instead of aligning it on baselines like the five
+                 above — see the stylesheet for what the platform does with a container's baseline
+                 and why the label sat low without it. -->
+            <view v-if="flagLabels.length > 0" class="DetailAttr MoveFlagRow">
+              <text class="DetailAttrKey MoveDetailAttrKey">{{ t('mdFlags', lang) }}</text>
+              <view class="DetailAttrTypes">
+                <view v-for="label in flagLabels" :key="label" class="MoveFlagMark">
+                  <text class="MoveFlagMarkText">{{ label }}</text>
+                </view>
+              </view>
             </view>
           </view>
 

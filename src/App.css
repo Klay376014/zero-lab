@@ -1523,6 +1523,59 @@
   word-break: break-word;
 }
 
+/* A flag's short label: a display mark, not a control.
+ *
+ * Deliberately not `.Chip`. That family carries `.ChipOn` and, in the query bar, three main-thread
+ * touch bindings — it is the visual language of something you press, and pressing one of these
+ * does nothing. Deliberately not `.TypePill` either, even though that one is display-only: its 3px
+ * border and glyph gutter are sized for a form's types, and a flag ranks below a type. So this is
+ * the quiet member of that family — 1px, no glyph, no state, and the regular face where the pill
+ * takes the bold one.
+ *
+ * The row's wrapping container is `.DetailAttrTypes`, reused from the species panel's types row
+ * rather than restated here. Its name says Types and it now holds two kinds of mark; if a third
+ * appears, fold the three declarations into one neutrally-named primitive rather than copying
+ * them a third time. */
+/* Centred, where every other row in this list is baseline-aligned.
+ *
+ * `.DetailAttr` aligns its two children on their baselines, which is right for the five rows above
+ * — label text against value text. It is wrong here, and measured wrong on device: this row's
+ * value is a container, and the platform takes a container's baseline from its bottom margin edge
+ * rather than from the text inside it. The label therefore dropped below the marks by exactly the
+ * marks' own bottom margin. Centring the row sidesteps the question, and the mark's vertical
+ * margins are symmetric so that centring is exact whether the marks take one line or two.
+ *
+ * This wins over `.DetailAttr`'s `align-items` because both are single-class selectors and this
+ * rule is further down — the same mechanism `.MoveDetailAttrKey` records for the key column. Keep
+ * it below that rule.
+ *
+ * The species panel's types row has the same shape and may sit the same way; it was not changed
+ * here because nothing has measured it. */
+.MoveFlagRow {
+  align-items: center;
+}
+
+.MoveFlagMark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--ink2);
+  padding: 1px 4px;
+  margin-right: 6px;
+  /* Symmetric, so the row centres exactly; 3 + 3 gives wrapped lines the same 6px gap the marks
+     already keep from each other horizontally. */
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.MoveFlagMarkText {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+}
+
 /* The only path to the learner list. Bordered rather than filled: the accent fill is what marks a
    selected state on this surface, and this control has no states. */
 .MoveDetailLearners {

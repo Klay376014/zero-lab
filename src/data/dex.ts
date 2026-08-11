@@ -54,9 +54,14 @@ export interface Move {
    * Identifiers of the move flags that apply, ascending. Absent — not empty — for the 71 moves
    * to which none applies.
    *
-   * Nothing reads this yet, deliberately: 71 moves carry none because the upstream source has
-   * not recorded them, which is not the same statement as those moves lacking the properties,
-   * and no display can tell the two apart. See the `move-detail` capability.
+   * Names for these ids are in {@link Dex.moveFlags}; the labels drawn on screen are in the
+   * string table, keyed by the name rather than by the id. Which flags are drawn is decided by
+   * which names the string table gives a label to — 17 of the 21 — so this field carries all of
+   * them and encodes no display decision.
+   *
+   * Absence still states nothing. 71 moves carry no flag because the upstream source has not
+   * recorded them, which is not the same statement as those moves lacking the properties, and
+   * `move-detail` therefore states only the flags that are present and never their absence.
    */
   readonly fl?: readonly number[]
 }
@@ -89,6 +94,15 @@ export interface Dex {
   readonly species: readonly Species[]
   readonly moves: readonly Move[]
   readonly abilities: readonly Ability[]
+  /**
+   * What each move flag id is called upstream, keyed by the id in string form — all 21, including
+   * the four no screen draws.
+   *
+   * Two hops rather than one (id to name, name to label) so that an upstream renumbering resolves
+   * to the same label and an upstream rename resolves to no label at all. Keying labels by the id
+   * directly would mislabel silently instead, and nothing outside the tests reads this field.
+   */
+  readonly moveFlags: Readonly<Record<string, string>>
 }
 
 const EXPECTED = {
@@ -130,6 +144,38 @@ assertCount('mega forms', megaCount)
 assertCount('regional forms', regionalCount)
 assertCount('move table entries', dex.moves.length)
 assertCount('ability entries', dex.abilities.length)
+
+/**
+ * Every flag id a move references has to be one the flag table can name.
+ *
+ * Not a count. The table and the flag-to-move map are a matched pair from one upstream export, so
+ * an id applied to a move but absent from the table means the pair came apart — a dataset that
+ * contradicts itself, which is what this catches. Upstream *adding* a flag keeps the pair
+ * consistent and passes here by design; the table's size is asserted in the tests instead.
+ *
+ * Exported and taking its inputs as arguments so a test can hand it a dataset that violates it.
+ * The other invariants compare against fixed counts and can be checked by reading the real
+ * dataset, but this one is a relation between two of its fields, and the shipped dataset
+ * satisfies it — the only way to test the failure is to construct one.
+ */
+export function assertFlagsNamed(
+  moves: readonly Move[],
+  names: Readonly<Record<string, string>>,
+): void {
+  const unnamed = [...new Set(moves.flatMap((move) => move.fl ?? []))]
+    .filter((id) => names[String(id)] === undefined)
+    .sort((a, b) => a - b)
+  if (unnamed.length > 0) {
+    throw new Error(
+      `dex dataset invariant violated: flag id(s) ${unnamed.join(', ')} apply to a move but are `
+      + 'not named in moveFlags. The flag table and the flag-to-move map are one upstream '
+      + 'export — delete both CSVs and re-run design/pipeline/fetch_sources.sh rather than '
+      + 'patching either.',
+    )
+  }
+}
+
+assertFlagsNamed(dex.moves, dex.moveFlags)
 
 assertCount('species count', dex.meta.species)
 assertCount('form entries', dex.meta.formEntries)

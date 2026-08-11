@@ -1,4 +1,4 @@
-import { GEN_ROMAN } from './dex.js'
+import { dex, GEN_ROMAN } from './dex.js'
 import type { Ability, Form, FormKind, Move, MoveClass, Species } from './dex.js'
 
 export type Lang = 'zh' | 'en'
@@ -52,6 +52,7 @@ export interface Strings {
   readonly mdPp: string
   readonly mdDesc: string
   readonly mdLearners: string
+  readonly mdFlags: string
 }
 
 export const I18N: Record<Lang, Strings> = {
@@ -96,6 +97,7 @@ export const I18N: Record<Lang, Strings> = {
     mdPp: 'PP',
     mdDesc: '說明',
     mdLearners: '哪些寶可夢會',
+    mdFlags: '性質',
   },
   en: {
     lang: 'EN',
@@ -140,6 +142,11 @@ export const I18N: Record<Lang, Strings> = {
     mdPp: 'PP',
     mdDesc: 'Description',
     mdLearners: 'LEARNED BY',
+    // Measured, not chosen for looks: this label shares move detail's 88px key column, which was
+    // sized for `ACCURACY` at 81.5px. `Flags` is 47.0px in Silkscreen-Regular at 12px with the
+    // column's 1px of tracking. `Properties` is 91.0px and would wrap, taking the row's baseline
+    // out of line with the five rows above — the failure `.MoveDetailAttrKey` already records.
+    mdFlags: 'Flags',
   },
 }
 
@@ -296,4 +303,88 @@ const DAMAGE_CLASS_ABBR: Record<Lang, Record<MoveClass, string>> = {
 const DAMAGE_CLASS_NAME: Record<Lang, Record<MoveClass, string>> = {
   zh: { Physical: '物理', Special: '特殊', Status: '變化' },
   en: { Physical: 'Physical', Special: 'Special', Status: 'Status' },
+}
+
+/**
+ * The short label for each move flag this interface draws, keyed by the flag's upstream
+ * identifier rather than by its numeric id.
+ *
+ * Keyed by identifier so an upstream renumbering resolves to the same label, and an upstream
+ * rename resolves to no label at all — a flag quietly disappearing, which the string table's
+ * coverage test catches. Keying by the id would mislabel silently instead, and nothing outside
+ * the tests reads these.
+ *
+ * Seventeen of the twenty-one, and the four absences are the whole of how the exclusion is
+ * expressed — there is no second list of excluded flags to keep in step with this one. A flag is
+ * here when its label names a property of the move itself, and absent when the label could only
+ * name a relation to a mechanism this dataset does not contain: `mirror` and `snatch` would have
+ * to say "can be copied by Mirror Move" and "can be taken by Snatch", and neither move is among
+ * the 496; `non-sky-battle` and `distance` name battle formats this game does not have. Coverage
+ * is not the criterion — `protect` applies to 340 of the 496 and is here.
+ *
+ * Nouns, never mechanism descriptions. 401 of the 496 moves carry figures Champions retuned, so a
+ * sentence about what a flag does in the mainline games would assert rules this game has changed.
+ * The consequence is that direction is not carried: `重力` means the move cannot be used under
+ * Gravity, where its neighbours read as things the move can do. That was weighed and accepted.
+ *
+ * Two pairs are not literal renderings of each other. `authentic` is `穿透` / `Pierce` because
+ * "Authentic" carries no meaning as an English interface label, and `reflectable` is `反彈` /
+ * `Rebound` — "Reflectable" is an adjective where every other label is a noun, and `Reflect` is
+ * the name of a move in these 496 that has nothing to do with this flag (the mechanism is Magic
+ * Coat and Magic Bounce), so an English reader would have taken the label for a pointer at it.
+ * The Chinese side keeps `反彈`, which collides with nothing.
+ */
+const MOVE_FLAG_LABEL: Record<Lang, Readonly<Record<string, string>>> = {
+  zh: {
+    contact: '接觸',
+    charge: '蓄力',
+    recharge: '力竭',
+    protect: '守住',
+    reflectable: '反彈',
+    punch: '拳擊',
+    sound: '聲音',
+    gravity: '重力',
+    defrost: '解凍',
+    heal: '回復',
+    authentic: '穿透',
+    powder: '粉末',
+    bite: '啃咬',
+    pulse: '波動',
+    ballistics: '球彈',
+    mental: '心靈',
+    dance: '舞蹈',
+  },
+  en: {
+    contact: 'Contact',
+    charge: 'Charge',
+    recharge: 'Recharge',
+    protect: 'Protect',
+    reflectable: 'Rebound',
+    punch: 'Punch',
+    sound: 'Sound',
+    gravity: 'Gravity',
+    defrost: 'Defrost',
+    heal: 'Heal',
+    authentic: 'Pierce',
+    powder: 'Powder',
+    bite: 'Bite',
+    pulse: 'Pulse',
+    ballistics: 'Ballistic',
+    mental: 'Mental',
+    dance: 'Dance',
+  },
+}
+
+/**
+ * A move flag's short label, or an empty string when this interface does not draw that flag.
+ *
+ * Empty rather than thrown, and empty rather than the identifier: a flag nobody has written a
+ * label for must not reach the screen wearing its upstream name. The caller skips it. That covers
+ * both the four deliberate exclusions and a twenty-second flag appearing upstream — the dataset's
+ * own invariant and the flag table's size test are what make the second case loud.
+ */
+export function moveFlagLabel(id: number, lang: Lang): string {
+  const identifier = dex.moveFlags[String(id)]
+  if (identifier === undefined) return ''
+  return MOVE_FLAG_LABEL[lang][identifier] ?? ''
 }

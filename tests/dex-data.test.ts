@@ -9,7 +9,17 @@
  */
 import { describe, expect, it } from 'vitest'
 
-import { allTypes, bestBst, bst, dex, hasMega, megaForms, searchHaystack } from '../src/data/dex.js'
+import { moveFlagLabel } from '../src/data/i18n.js'
+import {
+  allTypes,
+  assertFlagsNamed,
+  bestBst,
+  bst,
+  dex,
+  hasMega,
+  megaForms,
+  searchHaystack,
+} from '../src/data/dex.js'
 
 /** Example: asserted invariants — spec.md, "Dataset integrity is asserted at load time". */
 const EXPECTED = {
@@ -79,10 +89,10 @@ describe('the meta block agrees with the collections it describes', () => {
  * Example: the shape of the added fields — spec.md, "Move records carry a bilingual description
  * and flag identifiers".
  *
- * The flag figures are asserted here and nowhere in the interface, because nothing renders them:
- * this batch stores flags and displays none. Without a test they would be the one part of the
- * record that no check reads, so a pipeline change that dropped or reshaped them would surface
- * only whenever a later batch came to display them.
+ * The flag figures are asserted here rather than in the interface. `move-detail` draws 17 of the
+ * 21 as short labels, so a pipeline change that dropped or reshaped `fl` would show up on screen
+ * as labels quietly going missing — the silent-omission shape this project keeps paying for, and
+ * the reason the counts are stated here where a reader sees them.
  */
 describe('Example: the shape of the added move fields', () => {
   const flagged = dex.moves.filter((move) => move.fl !== undefined)
@@ -121,6 +131,48 @@ describe('Example: the shape of the added move fields', () => {
       return ids.join() !== [...ids].sort((a, b) => a - b).join()
     })
     expect(unsorted.map((move) => move.n)).toEqual([])
+  })
+})
+
+/**
+ * Example: the shape of the flag identifier table — spec.md, "The dataset names every move flag
+ * identifier".
+ *
+ * The table names all 21 including the four `move-detail` does not draw, because which flags are
+ * drawn is decided by which identifiers the string table gives a label to. A table filtered down
+ * to the displayed 17 would put that decision in the dataset, where changing it would mean
+ * re-running the pipeline.
+ */
+describe('Example: the shape of the flag identifier table', () => {
+  it('names 21 identifiers', () => {
+    expect(Object.keys(dex.moveFlags).length).toBe(21)
+  })
+
+  it('names every identifier that applies to at least one move', () => {
+    const used = [...new Set(dex.moves.flatMap((move) => move.fl ?? []))]
+    expect(used.filter((id) => dex.moveFlags[String(id)] === undefined)).toEqual([])
+  })
+
+  it('names the four identifiers no move detail draws', () => {
+    const named = new Set(Object.values(dex.moveFlags))
+    for (const identifier of ['mirror', 'snatch', 'non-sky-battle', 'distance']) {
+      expect(named.has(identifier)).toBe(true)
+    }
+  })
+
+  it('carries no label text — the identifiers are ASCII upstream names', () => {
+    const nonAscii = Object.values(dex.moveFlags).filter((name) => /[^\u0020-\u007e]/.test(name))
+    expect(nonAscii).toEqual([])
+  })
+
+  it('the load-time invariant throws on an id no table entry names', () => {
+    const move = { ...dex.moves[0], fl: [99] }
+    expect(() => assertFlagsNamed([move], dex.moveFlags))
+      .toThrow(/flag id\(s\) 99 apply to a move but are not named in moveFlags/)
+  })
+
+  it('the load-time invariant accepts the shipped dataset', () => {
+    expect(() => assertFlagsNamed(dex.moves, dex.moveFlags)).not.toThrow()
   })
 })
 
@@ -178,5 +230,60 @@ describe('the search corpus', () => {
       return / v /.test(corpus) || corpus.endsWith(' v')
     })
     expect(bareRoman.length).toBe(0)
+  })
+})
+
+/**
+ * Which flag labels read as the name of the move they sit under.
+ *
+ * Five of the 17 labels are also names in this dataset: `守住`, `蓄力` and `重力` are moves, `穿透`
+ * is an ability, and `波動` is part of six move names. Three of those are harmless because the
+ * label points at the very move the flag is about — `守住` means "blocked by Protect", and Protect
+ * is that move.
+ *
+ * What matters is a label landing on the move it describes. Exactly one does, and only in English:
+ * the move Bite carries the `bite` flag, so its English detail reads `Flags: … Bite`. That is
+ * tautological but true — Bite is a biting move, which is what the flag says — so it is pinned
+ * here rather than renamed. Chinese is clean: the move is 咬住 and the label is 啃咬.
+ *
+ * Pinned as an exact set, not asserted empty. Nothing upstream prevents a second one: a re-fetch
+ * that added `charge` to Stockpile would put a 蓄力 chip on the move 蓄力, and that one would be a
+ * genuine misread rather than a tautology. A new entry here is a decision to make, not a test to
+ * relax.
+ */
+describe('flag labels that read as their own move name', () => {
+  const selfNaming = (lang: 'zh' | 'en') => dex.moves
+    .filter((move) => (move.fl ?? [])
+      .some((id) => moveFlagLabel(id, lang) === (lang === 'zh' ? move.z : move.n)))
+    .map((move) => move.n)
+
+  it('no move states a label equal to its Chinese name', () => {
+    expect(selfNaming('zh')).toEqual([])
+  })
+
+  it('exactly one move states a label equal to its English name, and it is Bite', () => {
+    expect(selfNaming('en')).toEqual(['Bite'])
+  })
+
+  it('Bite is a biting move, so the label states something true of it', () => {
+    const bite = dex.moves.find((move) => move.n === 'Bite')!
+    expect(bite.z).toBe('咬住')
+    expect(bite.fl!.map((id) => moveFlagLabel(id, 'zh'))).toContain('啃咬')
+    expect(moveFlagLabel(bite.fl!.find((id) => moveFlagLabel(id, 'en') === 'Bite')!, 'zh'))
+      .toBe('啃咬')
+  })
+
+  it('the three moves whose names are also labels carry no flag that would name them', () => {
+    const labelsOf = (zh: string) => (dex.moves.find((move) => move.z === zh)!.fl ?? [])
+      .map((id) => moveFlagLabel(id, 'zh'))
+    expect(labelsOf('守住')).not.toContain('守住')
+    expect(labelsOf('蓄力')).not.toContain('蓄力')
+    expect(labelsOf('重力')).not.toContain('重力')
+  })
+
+  it('Rebound does not name any move, where Reflect would have', () => {
+    const names = new Set(dex.moves.map((move) => move.n))
+    expect(names.has('Reflect')).toBe(true)
+    expect(names.has('Rebound')).toBe(false)
   })
 })
