@@ -37,15 +37,25 @@ ID_BY_EN = {fold(v): k for k, v in en_by_id.items()}
 # empty for two others. Descriptions have no PokeAPI equivalent at all past version group 20.
 POKE52 = json.load(open('moves_zh.json', encoding='utf-8'))
 
-# ---- PokeAPI: the flag ids that apply to each move ----
-# Identifiers only. The flags' labels are user-facing strings and belong to the string table;
-# writing them here would make them hand-authored content in a file whose provenance rule
-# forbids exactly that. Nothing reads these yet — this batch stores them and displays none,
-# because 71 of the 496 moves carry no flag at all and "upstream did not record it" is not the
-# same statement as "the move lacks that property".
+# ---- PokeAPI: the flag ids that apply to each move, and what each id is called ----
+# Two files, and both are needed. The map carries numeric ids only; without the name table the
+# dataset's `4` and `7` are opaque numbers, which is what they were for as long as nothing read
+# them. The interface reads them now, so the names ship with them.
+#
+# Names, not labels. The labels the interface draws are user-facing strings and belong to the
+# string table; writing them here would make them hand-authored content in a file whose
+# provenance rule forbids exactly that. `move_flag_prose.csv` is not fetched for the same
+# reason plus a practical one: its zh-Hant row count is zero.
+#
+# All 21 are emitted, including the four the interface does not draw. Which flags are shown is
+# decided by which identifiers the string table gives a label to — the dataset does not encode
+# that decision, so changing the displayed set never means re-running this pipeline.
 FLAGS = collections.defaultdict(set)
 for r in csv.DictReader(open('move_flag_map.csv', encoding='utf-8')):
     FLAGS[r['move_id']].add(int(r['move_flag_id']))
+
+FLAG_NAMES = {int(r['id']): r['identifier']
+              for r in csv.DictReader(open('move_flags.csv', encoding='utf-8'))}
 
 # ---- PokeAPI: English description, newest version group per move ----
 # Per move rather than one global version group, for the reason build_data3.py records about
@@ -160,9 +170,21 @@ print(f'mechanics kept from Champions: {len(table)} / {len(table)} '
       f'({retuned} differ from the mainline figures 52poke publishes)')
 print(f'zh names resolved: {sum(1 for m in table if m["z"])} / {len(table)}')
 _flagged = [m for m in table if 'fl' in m]
+_used = {f for m in _flagged for f in m['fl']}
 print(f'flags: {len(_flagged)} move(s) carry at least one, {len(table) - len(_flagged)} omit '
-      f'the field; {len({f for m in _flagged for f in m["fl"]})} distinct ids, at most '
+      f'the field; {len(_used)} distinct ids, at most '
       f'{max((len(m["fl"]) for m in _flagged), default=0)} on one move')
+print(f'flag names: {len(FLAG_NAMES)} id(s) named from move_flags.csv')
+
+# An id on a move that the name table cannot name would reach the app as a flag it can neither
+# label nor report. The load-time invariants throw on it too; catching it here means a broken
+# pair of upstream files never gets as far as a dataset.
+unnamed = sorted(_used - set(FLAG_NAMES))
+assert not unnamed, (
+    f'{len(unnamed)} flag id(s) applied to a move but not named in move_flags.csv: {unnamed}. '
+    'The two files are a matched pair from the same export — delete both and re-run '
+    './fetch_sources.sh rather than patching either one.'
+)
 print(f'total move references: {sum(len(s["mv"]) for v in sections.values() for s in v)}')
 print(f'section counts: {dict(sorted(collections.Counter(len(v) for v in sections.values()).items()))}')
 if conflicts:
@@ -175,6 +197,9 @@ else:
 nozh = [m['n'] for m in table if not m['z']]
 print(f'\nmoves without a zh-Hant name ({len(nozh)}): {nozh[:20]}')
 
-json.dump({'moves': table, 'sections': sections, 'lost': lost},
+json.dump({'moves': table, 'sections': sections, 'lost': lost,
+           # Sorted by id so the serialisation is stable across runs; the app reads it as a
+           # lookup, not in order.
+           'moveFlags': {str(i): FLAG_NAMES[i] for i in sorted(FLAG_NAMES)}},
           open('learn.json', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 print('\nbytes:', len(open('learn.json', encoding='utf-8').read()))

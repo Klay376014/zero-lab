@@ -195,13 +195,17 @@ meta = {
     'source': 'Bulbapedia Champions wikitext (roster, forms, move mechanics) + '
               'PokeAPI CSVs (base stats, abilities, zh-Hant naming); sprites HTTP-verified',
 }
+# `moveFlags` names every flag id a move record can reference — all 21, including the four no
+# screen draws. It sits at the top level rather than in `meta` because `meta` holds figures about
+# the dataset and this is a lookup table the app reads per move.
 out = {'meta': meta, 'species': species,
-       'moves': learn['moves'], 'abilities': ability_table}
+       'moves': learn['moves'], 'abilities': ability_table,
+       'moveFlags': learn['moveFlags']}
 json.dump(out, open('dex3.json', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 
 print('species', meta['species'], '| forms', meta['formEntries'],
       '| moves', meta['moves'], '| move refs', meta['moveRefs'],
-      '| abilities', meta['abilities'])
+      '| abilities', meta['abilities'], '| flag names', len(out['moveFlags']))
 print('multi-section species:',
       dict(sorted(collections.Counter(len(s['sec']) for s in species).items())))
 print('bytes:', len(open('dex3.json', encoding='utf-8').read()))

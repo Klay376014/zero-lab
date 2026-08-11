@@ -34,9 +34,15 @@ assert n == 208, f'roster size changed ({n} != 208) — the game was updated; se
 PY
 
 echo "3/4  PokeAPI source CSVs"
+# `move_flag_map.csv` and `move_flags.csv` are a pair and both are needed: the map says which
+# flags apply to a move and carries numeric ids only, the second says what each id is called.
+# Without the second, the dataset's flag ids are opaque numbers — which is what they were until
+# the interface began naming them. `move_flag_prose.csv` is deliberately not fetched: its
+# zh-Hant row count is zero, so the labels are written by hand in the string table either way.
 for f in pokemon.csv pokemon_forms.csv pokemon_stats.csv stats.csv \
          pokemon_abilities.csv abilities.csv ability_names.csv ability_flavor_text.csv \
-         moves.csv move_names.csv move_flavor_text.csv move_flag_map.csv languages.csv \
+         moves.csv move_names.csv move_flavor_text.csv move_flag_map.csv move_flags.csv \
+         languages.csv \
          pokemon_species_names.csv pokemon_form_names.csv ; do
   get "$POKEAPI/$f" "$f"
 done
