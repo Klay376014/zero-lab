@@ -42,12 +42,23 @@ export interface Species {
 
 export interface Move {
   readonly n: string // English name
-  readonly z: string // Chinese name; empty for the two moves without one
+  readonly z: string // Chinese name, Traditional; non-empty for every move
   readonly ty: string
   readonly dc: MoveClass
   readonly pw: number | null // null for moves with no fixed damage
   readonly ac: number | null // null for moves that never miss
   readonly pp: number
+  readonly d: string // Chinese description, from the 52poke move list
+  readonly de: string // English description, from PokeAPI's newest version group
+  /**
+   * Identifiers of the move flags that apply, ascending. Absent — not empty — for the 71 moves
+   * to which none applies.
+   *
+   * Nothing reads this yet, deliberately: 71 moves carry none because the upstream source has
+   * not recorded them, which is not the same statement as those moves lacking the properties,
+   * and no display can tell the two apart. See the `move-detail` capability.
+   */
+  readonly fl?: readonly number[]
 }
 
 export interface Ability {

@@ -147,6 +147,10 @@ function proseCorpus() {
   const dex = JSON.parse(readFileSync(DEX, 'utf8'))
   for (const ability of dex.abilities) text.push(ability.de, ability.d)
   for (const species of dex.species) text.push(species.n)
+  // Move descriptions joined the corpus when move detail began setting them as prose. Without
+  // them the check would report ok while an English description drew a missing-glyph box — the
+  // corpus is only as wide as the text someone remembered to add.
+  for (const move of dex.moves) text.push(move.de, move.d)
   // Every literal in the string table — single quoted, double quoted, or a template literal.
   //
   // Template literals are matched deliberately. They were missed until a footer string was
@@ -212,6 +216,13 @@ function isEastAsian(code) {
 function isUncoveredMark(code) {
   return code === 0x203b // ※ REFERENCE MARK — prefixes the Chinese warnings
     || code === 0x2605 // ★ BLACK STAR — Mega badge, bonus row marker, bonus filter label
+    // ♀ / ♂ reached the corpus with the move descriptions. One move carries them: Attract, whose
+    // Chinese description reads ♂誘惑♀而♀誘惑♂ — so they sit inside CJK text that is already
+    // falling through to the system serif, and they fall through the same way, per character.
+    // Measured on the upstream variable font before adding them here: Literata carries neither,
+    // along with neither of the two above, so no widening of the subset range could cover them.
+    || code === 0x2640 // ♀ FEMALE SIGN — in Attract's Chinese description
+    || code === 0x2642 // ♂ MALE SIGN — likewise
 }
 
 /**

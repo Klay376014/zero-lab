@@ -11,9 +11,18 @@ import { lang } from '../state/display.js'
 import { BUFFER_SCREENS, LEARNER_ROW } from '../state/rowMetrics.js'
 import type { Range } from '../state/visibleRange.js'
 import { sliceForRange, visibleRange } from '../state/visibleRange.js'
-import { closeMoveLearners } from '../state/moveLearners.js'
+import { closeTopLayer } from '../state/layerStack.js'
 import { openDetail } from '../state/selection.js'
 
+/**
+ * The move comes from the learner-list layer's own content, handed down by the root.
+ *
+ * There is no module holding "the open move" any more. While this list had one entry point and
+ * one relationship to the selection, a module of its own was the simpler arrangement; with the
+ * layer stack owning which layers are open and what each carries, a second holder of the same
+ * fact could disagree with it — a layer in the stack while the module reported none, or the
+ * reverse — and nothing would detect it.
+ */
 const props = defineProps<{
   moveIndex: number
 }>()
@@ -59,9 +68,17 @@ function rowKey(row: Entry[]): string {
   return String(row[0]?.species.d ?? 'empty')
 }
 
+/**
+ * Opens species detail for the chosen learner, on the form the accessor returns.
+ *
+ * No explicit close: the stack's own rule does the right thing either way. Reached from a species
+ * — species detail is already in the stack — it unwinds to that layer and replaces its content,
+ * so this list and the move detail above it are discarded. Reached from the moves tab, species
+ * detail is pushed on top and this list stays beneath it, covered. Both are what the
+ * `layer-stack` capability's examples state, and neither keeps a history of visited species.
+ */
 function choose(entry: Entry): void {
   openDetail(entry.species, entry.formIndex)
-  closeMoveLearners()
 }
 
 /** `.LearnersBody` is 52vh. */
@@ -109,7 +126,7 @@ function onScroll(event: unknown): void {
 
 <template>
   <view class="LearnersOverlay">
-    <view class="LearnersVeil" @tap="closeMoveLearners" />
+    <view class="LearnersVeil" @tap="closeTopLayer" />
 
     <view class="LearnersPanel">
       <view class="LearnersHead">
@@ -122,7 +139,7 @@ function onScroll(event: unknown): void {
           :main-thread-bindtouchstart="onPressStart"
           :main-thread-bindtouchend="onPressEnd"
           :main-thread-bindtouchcancel="onPressEnd"
-          @tap="closeMoveLearners"
+          @tap="closeTopLayer"
         >
           <text class="LearnersCloseMark">✕</text>
         </view>

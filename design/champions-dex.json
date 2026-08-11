@@ -7,7 +7,7 @@
   "moves": 496,
   "moveRefs": 13928,
   "abilities": 200,
-  "zhMoves": 494,
+  "zhMoves": 496,
   "zhAbilities": 198,
   "abilDescZh": 181,
   "abilDescEn": 200,
@@ -26788,7 +26788,7 @@
   {
    "d": 983,
    "m": "Kingambit",
-   "mz": "仆斬將軍",
+   "mz": "仆刀將軍",
    "gz": "大刀寶可夢",
    "g": 9,
    "v": "1.0.2",
@@ -27279,7 +27279,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在５回合內減弱物理和特殊的傷害。只有下雪時才能使出。",
+   "de": "This move reduces damage from physical and special moves for five turns. This can be used only when it is snowing.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Avalanche",
@@ -27288,7 +27293,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "如果受到對手的招式攻擊，給予該對手的招式威力就會變成２倍。",
+   "de": "This move's power is doubled if the target has inflicted damage on the user in the same turn.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Blizzard",
@@ -27297,7 +27309,13 @@
    "dc": "Special",
    "pw": 110,
    "ac": 70,
-   "pp": 8
+   "pp": 8,
+   "d": "將猛烈的暴風雪吹向對手進行攻擊。有時會讓對手陷入冰凍狀態。",
+   "de": "A howling blizzard is summoned to strike opposing Pokémon. This may also leave the opposing Pokémon frozen.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Body Press",
@@ -27306,7 +27324,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用身體撞向對手進行攻擊。自己的防禦越高，給予對手的傷害越大。",
+   "de": "The user attacks by slamming its body into the target. The higher the user's Defense stat, the greater the damage this move deals.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Body Slam",
@@ -27315,7 +27340,15 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用整個身體壓住對手進行攻擊。有時會讓對手陷入麻痺狀態。",
+   "de": "The user attacks by dropping onto the target with its full body weight. This may also leave the target with paralysis.",
+   "fl": [
+    1,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Brick Break",
@@ -27324,7 +27357,14 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "猛烈地揮下手刀攻擊對手。還可以破壞光牆和反射壁等。",
+   "de": "The user attacks with a swift chop. This move can also break barriers, such as Light Screen and Reflect.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Bulldoze",
@@ -27333,7 +27373,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用力踩踏地面，攻擊自己周圍所有的寶可夢。可降低對手的速度。",
+   "de": "The user strikes everything around it by stomping down on the ground. This lowers the Speed stats of those hit.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Bullet Seed",
@@ -27342,7 +27389,14 @@
    "dc": "Physical",
    "pw": 25,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "向對手猛烈地發射種子進行攻擊。連續攻擊２～５次。",
+   "de": "The user attacks by forcefully shooting seeds at the target. This move hits two to five times in a row.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Chilling Water",
@@ -27351,7 +27405,9 @@
    "dc": "Special",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "潑灑冰冷到足以讓對手失去活力的水進行攻擊。可降低對手的攻擊。",
+   "de": "The user attacks the target by showering it with water that's so cold it saps the target's power. This also lowers the target's Attack stat."
   },
   {
    "n": "Curse",
@@ -27360,7 +27416,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "使用詛咒時，幽靈屬性的寶可夢和其他屬性的寶可夢，會獲得不同的招式效果。",
+   "de": "A move that has different effects depending on whether the user is a Ghost type or not.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Double-Edge",
@@ -27369,7 +27430,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "捨身衝撞對手進行攻擊。自己也會受到不小的傷害。",
+   "de": "A reckless life-risking tackle in which the user rushes the target. This also damages the user quite a lot.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Earth Power",
@@ -27378,7 +27446,14 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手腳下釋放出大地之力。有時會降低對手的特防。",
+   "de": "The user makes the ground under the target erupt with power. This may also lower the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Earthquake",
@@ -27387,7 +27462,14 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用地震的衝擊，攻擊自己周圍所有的寶可夢。",
+   "de": "The user sets off an earthquake that strikes every Pokémon around it.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Endure",
@@ -27396,7 +27478,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "即使受到再強烈的攻擊，也一定會剩下１ＨＰ。連續使用時容易失敗。",
+   "de": "The user endures any attack with at least 1 HP. This move's chance of failing rises if used in succession."
   },
   {
    "n": "Energy Ball",
@@ -27405,7 +27489,14 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "發射從大自然匯聚而來的生命力量。有時會降低對手的特防。",
+   "de": "The user draws power from nature and fires it at the target. This may also lower the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Facade",
@@ -27414,7 +27505,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "當自己陷入中毒、麻痺、灼傷等狀態時，向對手使用此招式，威力會變成２倍。",
+   "de": "This move's power is doubled if the user is poisoned, burned, or paralyzed.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Fling",
@@ -27423,7 +27521,13 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "快速投擲攜帶的道具進行攻擊。招式威力和效果會隨著道具不同而改變。",
+   "de": "The user flings its held item at the target to attack. This move's power and effects depend on the item.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Focus Blast",
@@ -27432,7 +27536,14 @@
    "dc": "Special",
    "pw": 120,
    "ac": 70,
-   "pp": 8
+   "pp": 8,
+   "d": "提高氣勢，釋放全身所有力量。有時會降低對手的特防。",
+   "de": "The user heightens its mental focus and unleashes its power. This may also lower the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Focus Punch",
@@ -27441,7 +27552,14 @@
    "dc": "Physical",
    "pw": 150,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "集中精神後出拳。若出拳前受到攻擊，則會失敗。",
+   "de": "The user focuses its mind before launching a punch. This move fails if the user is hit before using the move.",
+   "fl": [
+    1,
+    4,
+    8
+   ]
   },
   {
    "n": "Frost Breath",
@@ -27450,7 +27568,13 @@
    "dc": "Special",
    "pw": 60,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "將冰冷的氣息吹向對手進行攻擊。必定會擊中要害。",
+   "de": "The user attacks by blowing its cold breath on the target. This move always lands a critical hit.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Giga Drain",
@@ -27459,7 +27583,14 @@
    "dc": "Special",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "吸取對手的養分進行攻擊。可以回復給予對手傷害的一半ＨＰ。",
+   "de": "A nutrient-draining attack. The user's HP is restored by up to half the damage taken by the target.",
+   "fl": [
+    4,
+    7,
+    13
+   ]
   },
   {
    "n": "Giga Impact",
@@ -27468,7 +27599,15 @@
    "dc": "Physical",
    "pw": 150,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "使出全身上下所有力量突擊對手。下一回合自己將無法動彈。",
+   "de": "The user charges at the target using every bit of its power. The user can't move on the next turn.",
+   "fl": [
+    1,
+    3,
+    4,
+    7
+   ]
   },
   {
    "n": "Grass Knot",
@@ -27477,7 +27616,15 @@
    "dc": "Special",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用打結的草絆倒對手。對手越重，威力越大。",
+   "de": "The user snares the target with grass and trips it. The heavier the target, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Grassy Glide",
@@ -27486,7 +27633,14 @@
    "dc": "Physical",
    "pw": 55,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "在地面上滑行般地攻擊對手。在青草場地時，必定能夠發動先制攻擊。",
+   "de": "Gliding on the ground, the user attacks the target. This move always goes first on Grassy Terrain.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Growth",
@@ -27495,7 +27649,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "讓身體瞬間長大，提高自己的攻擊和特攻。",
+   "de": "The user's body grows all at once, boosting the Attack and Sp. Atk stats.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Hard Press",
@@ -27504,7 +27663,9 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用手臂或鉗子壓迫對手。對手現有的ＨＰ越多，招式的威力越大。",
+   "de": "The target is crushed with an arm, a claw, or the like to inflict damage. The more HP the target has left, the greater the move's power."
   },
   {
    "n": "Helping Hand",
@@ -27513,7 +27674,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "幫助夥伴。被幫助的寶可夢，招式的威力會比原來更大。",
+   "de": "The user assists an ally by boosting the power of that ally's attack.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Hyper Beam",
@@ -27522,7 +27688,14 @@
    "dc": "Special",
    "pw": 150,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "向對手發射強烈的光線進行攻擊。下一回合自己將無法動彈。",
+   "de": "The target is attacked with a powerful beam. The user can't move on the next turn.",
+   "fl": [
+    3,
+    4,
+    7
+   ]
   },
   {
    "n": "Ice Beam",
@@ -27531,7 +27704,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手發射冰凍光束進行攻擊。有時會讓對手陷入冰凍狀態。",
+   "de": "The target is struck with an icy-cold beam of energy. This may also leave the target frozen.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Ice Hammer",
@@ -27540,7 +27719,15 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "揮出強力而沉重的拳頭，給予對手傷害。自己的速度會降低。",
+   "de": "The user swings its strong, heavy fist at the target to inflict damage. This also lowers the user's Speed stat.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Ice Punch",
@@ -27549,7 +27736,15 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用帶有寒氣的拳頭攻擊對手。有時會讓對手陷入冰凍狀態。",
+   "de": "The target is attacked with an icy punch. This may also leave the target frozen.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Ice Shard",
@@ -27558,7 +27753,13 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "將瞬間製造出的冰塊快速地扔向對手。必定能夠發動先制攻擊。",
+   "de": "The user flash-freezes chunks of ice and hurls them at the target. This move always goes first.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Ice Spinner",
@@ -27567,7 +27768,9 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "在腳上包覆薄冰，骨碌碌地旋轉並進行撞擊。以旋轉的動作破壞場地。",
+   "de": "The user covers its feet in thin ice and twirls around, slamming into the target. This move's spinning motion also destroys the terrain."
   },
   {
    "n": "Icicle Spear",
@@ -27576,7 +27779,13 @@
    "dc": "Physical",
    "pw": 25,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "向對手發射尖銳的冰柱進行攻擊。可連續攻擊２～５次。",
+   "de": "The user attacks by launching sharp icicles at the target. This move hits two to five times in a row.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Icy Wind",
@@ -27585,7 +27794,13 @@
    "dc": "Special",
    "pw": 55,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "將冰冷的寒氣吹向對手進行攻擊。可降低對手的速度。",
+   "de": "The user attacks with a gust of chilled air. This also lowers opposing Pokémon's Speed stats.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Ingrain",
@@ -27594,7 +27809,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在大地上扎根，每回合會回復自己的ＨＰ。但扎根之後無法進行替換。",
+   "de": "The user lays roots that restore its own HP every turn. Because the user is now rooted, it can't switch out.",
+   "fl": [
+    6,
+    20
+   ]
   },
   {
    "n": "Iron Tail",
@@ -27603,7 +27824,14 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 75,
-   "pp": 16
+   "pp": 16,
+   "d": "將堅硬的尾巴甩向對手進行攻擊。有時會降低對手的防禦。",
+   "de": "The target is slammed with a steel-hard tail. This may also lower the target's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Leaf Storm",
@@ -27612,7 +27840,13 @@
    "dc": "Special",
    "pw": 130,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "用尖銳的葉子捲起風暴向對手進行攻擊。使用後因為反作用力，自己的特攻會大幅降低。",
+   "de": "The user whips up a storm of leaves around the target. The recoil from this move harshly lowers the user's Sp. Atk stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Leech Seed",
@@ -27621,7 +27855,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "在對手身上植入種子，每回合吸取對手少許的ＨＰ，用來回復自己的ＨＰ。",
+   "de": "A seed is planted on the target. It steals some HP from the target every turn.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Low Kick",
@@ -27630,7 +27871,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用力踢對手的腳，讓對手摔倒進行攻擊。對手越重，威力越大。",
+   "de": "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Mega Kick",
@@ -27639,7 +27887,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 75,
-   "pp": 8
+   "pp": 8,
+   "d": "用灌注了巨大力量的重踢踢飛對手進行攻擊。",
+   "de": "The target is attacked by a kick launched with muscle-packed power.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Mud-Slap",
@@ -27648,7 +27903,13 @@
    "dc": "Special",
    "pw": 20,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手的臉等處投擲泥巴進行攻擊。可降低對手的命中率。",
+   "de": "The user hurls mud in the target's face to inflict damage and lower its accuracy.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Outrage",
@@ -27657,7 +27918,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "在２～３回合內瘋狂亂打對手進行攻擊。大鬧一番後自己會陷入混亂。",
+   "de": "The user rampages and attacks for two to three turns. The user then becomes confused.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Protect",
@@ -27666,7 +27934,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "完全防住對手的所有攻擊。連續使用時容易失敗。",
+   "de": "This move enables the user to protect itself from all attacks. Its chance of failing rises if it is used in succession."
   },
   {
    "n": "Rain Dance",
@@ -27675,7 +27945,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "降下大雨，在５回合內提高水屬性招式的威力。火屬性招式的威力會降低。",
+   "de": "The user summons a heavy rain that falls for five turns, powering up Water-type attacks. The rain also lowers the power of Fire-type attacks."
   },
   {
    "n": "Rest",
@@ -27684,7 +27956,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "連續睡２回合。回復自己的全部ＨＰ以及治癒所有異常狀態。",
+   "de": "The user goes to sleep for two turns. This fully restores the user's HP and cures any status conditions.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Rock Slide",
@@ -27693,7 +27971,13 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "將大岩石猛烈地砸向對手進行攻擊。有時會讓對手畏縮。",
+   "de": "Large boulders are hurled at opposing Pokémon to inflict damage. This may also make the opposing Pokémon flinch.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Rock Tomb",
@@ -27702,7 +27986,13 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "投擲岩石進行攻擊。封住對手的行動，進而降低其速度。",
+   "de": "The user hurls boulders at the target to inflict damage. This also lowers the target's Speed stat by cutting off its movement.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Round",
@@ -27711,7 +28001,15 @@
    "dc": "Special",
    "pw": 60,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用歌聲攻擊對手。大家一起輪唱便可以接連使出，威力也會提高。",
+   "de": "The user attacks the target with a song. If others use this move, they will act immediately after the initial user, and the power of their Rounds will be boosted.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Scary Face",
@@ -27720,7 +28018,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用恐怖的表情瞪著對手，讓對手害怕，大幅降低對手的速度。",
+   "de": "The user frightens the target with a scary face to harshly lower its Speed stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Seed Bomb",
@@ -27729,7 +28034,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "從上方砸下外殼堅硬的大種子，攻擊對手。",
+   "de": "The user attacks by slamming a barrage of hard-shelled seeds down on the target from above.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Shadow Ball",
@@ -27738,7 +28050,14 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "投擲一團黑影進行攻擊。有時會降低對手的特防。",
+   "de": "The user attacks by hurling a shadowy blob at the target. This may also lower the target’s Sp. Def stat.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Sheer Cold",
@@ -27747,7 +28066,13 @@
    "dc": "Special",
    "pw": null,
    "ac": 30,
-   "pp": 8
+   "pp": 8,
+   "d": "一擊讓對手陷入瀕死。冰屬性以外的寶可夢使用時，會比較不易命中對手。",
+   "de": "The target faints instantly. This move is less likely to hit the target if used by Pokémon other than Ice types.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Sleep Talk",
@@ -27756,7 +28081,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "從自己已學會的招式中隨機選出１個使出。只有在睡眠狀態時可以使用。",
+   "de": "The user randomly uses one of the moves it knows. This move can only be used while the user is asleep."
   },
   {
    "n": "Snore",
@@ -27765,7 +28092,15 @@
    "dc": "Special",
    "pw": 50,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "在自己睡著時，發出噪音進行攻擊。有時會讓對手畏縮。",
+   "de": "This attack can be used only if the user is asleep. The harsh noise may also make the target flinch.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Snowscape",
@@ -27774,7 +28109,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "在５回合內會下雪。冰屬性寶可夢的防禦會提高。",
+   "de": "The user summons a snowstorm lasting five turns. This boosts the Defense stats of Ice types."
   },
   {
    "n": "Solar Beam",
@@ -27783,7 +28120,14 @@
    "dc": "Special",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合吸收大量日光，並於第２回合發射光束進行攻擊。",
+   "de": "The user gathers light on the first turn, then blasts a bundled beam on the next turn.",
+   "fl": [
+    2,
+    4,
+    7
+   ]
   },
   {
    "n": "Stomping Tantrum",
@@ -27792,7 +28136,14 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "化悔恨為力量進行攻擊。如果上一回合的招式沒有命中，威力就會加倍。",
+   "de": "Driven by frustration, the user attacks the target. This move's power is doubled if the user's previous move failed.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Substitute",
@@ -27801,7 +28152,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "消耗一些自己的ＨＰ，製造分身。分身將成為自己的替身。",
+   "de": "The user creates a substitute for itself using some of its own HP. The substitute serves as the user's decoy.",
+   "fl": [
+    6,
+    20
+   ]
   },
   {
    "n": "Swagger",
@@ -27810,7 +28167,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 85,
-   "pp": 16
+   "pp": 16,
+   "d": "讓對手火大並陷入混亂。但對手的攻擊會因憤怒而大幅提高。",
+   "de": "The user enrages and confuses the target. However, this also sharply boosts the target's Attack stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Swords Dance",
@@ -27819,7 +28183,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "激烈地跳起戰舞提升氣勢，大幅提高自己的攻擊。",
+   "de": "A frenetic dance to uplift the fighting spirit. This sharply boosts the user's Attack stat.",
+   "fl": [
+    6,
+    21
+   ]
   },
   {
    "n": "Trailblaze",
@@ -27828,7 +28198,9 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "從草叢裡跳出來進行攻擊。輕快的腳步會使得自己的速度提高。",
+   "de": "The user attacks suddenly as if leaping out from tall grass. The user's nimble footwork boosts its Speed stat."
   },
   {
    "n": "Water Pulse",
@@ -27837,7 +28209,15 @@
    "dc": "Special",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用水的震動攻擊對手。有時會使對手混亂。",
+   "de": "The user attacks the target with a pulsing blast of water. This may also confuse the target.",
+   "fl": [
+    4,
+    7,
+    12,
+    17
+   ]
   },
   {
    "n": "Weather Ball",
@@ -27846,7 +28226,14 @@
    "dc": "Special",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "招式屬性和威力會隨著使用時天氣的不同而改變。",
+   "de": "This move's type and power change depending on the weather at the time the move is used.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Wood Hammer",
@@ -27855,7 +28242,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用堅硬的軀體撞擊對手進行攻擊。自己也會受到不小的傷害。",
+   "de": "The user slams its rugged body into the target to attack. This also damages the user quite a lot.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Aerial Ace",
@@ -27864,7 +28258,15 @@
    "dc": "Physical",
    "pw": 60,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "以敏捷的動作戲弄對手後進行切斬。攻擊必定會命中。",
+   "de": "The user confounds the target with speed, then slashes. This attack never misses.",
+   "fl": [
+    1,
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Air Slash",
@@ -27873,7 +28275,14 @@
    "dc": "Special",
    "pw": 75,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "用連天空也能劈開的空氣之刃進行攻擊。有時會使對手畏縮。",
+   "de": "The user attacks with a blade of air that slices even the sky. This may also make the target flinch.",
+   "fl": [
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Assurance",
@@ -27882,7 +28291,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "如果此回合內對手已受到傷害，招式威力會變成２倍。",
+   "de": "This move's power is doubled if the target has already taken some damage in the same turn.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Attract",
@@ -27891,7 +28307,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "♂誘惑♀而♀誘惑♂，讓對手著迷。對手將難以使用招式。",
+   "de": "If the target is of the opposite gender to the user, it becomes infatuated with the user and will sometimes be unable to use its moves.",
+   "fl": [
+    4,
+    5,
+    7,
+    14,
+    19
+   ]
   },
   {
    "n": "Baton Pass",
@@ -27900,7 +28325,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "與後備寶可夢進行替換。替換上場的寶可夢，將承接目前寶可夢的能力變化。",
+   "de": "The user switches places with a party Pokémon in waiting and passes along any stat changes."
   },
   {
    "n": "Bite",
@@ -27909,7 +28336,15 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用尖銳的牙齒咬住對手進行攻擊。有時會使對手畏縮。",
+   "de": "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Bounce",
@@ -27918,7 +28353,17 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 85,
-   "pp": 8
+   "pp": 8,
+   "d": "彈跳到高空中，在下一回合攻擊對手。有時會讓對手陷入麻痺狀態。",
+   "de": "The user bounces up high on the first turn, then drops onto the target on the next turn. This may also leave the target with paralysis.",
+   "fl": [
+    1,
+    2,
+    4,
+    7,
+    10,
+    12
+   ]
   },
   {
    "n": "Brutal Swing",
@@ -27927,7 +28372,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用自己的身體狂舞揮打，給予對手傷害。",
+   "de": "The user swings its body around violently to inflict damage on everything in its vicinity.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Calm Mind",
@@ -27936,7 +28388,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "屏氣凝神，提高自己的特攻和特防。",
+   "de": "The user quietly focuses its mind and calms its spirit to boost its Sp. Atk and Sp. Def stats.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Close Combat",
@@ -27945,7 +28402,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "反守為攻，近身突擊對手。自己的防禦和特防會降低。",
+   "de": "The user fights the target up close, inflicting damage without guarding itself. This also lowers the user's Defense and Sp. Def stats.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Confuse Ray",
@@ -27954,7 +28418,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "讓對手看奇怪的光線擾亂對手。使對手混亂。",
+   "de": "The target is exposed to a sinister ray that causes confusion.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Dark Pulse",
@@ -27963,7 +28434,15 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "從身體散發出充滿惡意的恐怖氣場。有時會使對手畏縮。",
+   "de": "The user releases a horrible aura imbued with ill intent. This may also make the target flinch.",
+   "fl": [
+    4,
+    7,
+    12,
+    17
+   ]
   },
   {
    "n": "Detect",
@@ -27972,7 +28451,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "完全防住對手的所有攻擊。連續使用時容易失敗。",
+   "de": "This move enables the user to protect itself from all attacks. Its chance of failing rises if it is used in succession."
   },
   {
    "n": "Double Team",
@@ -27981,7 +28462,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "利用快速移動製造出分身擾亂對手，提高自己的閃避率。",
+   "de": "By moving rapidly, the user makes illusory copies of itself to boost its evasiveness.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Feint",
@@ -27990,7 +28476,12 @@
    "dc": "Physical",
    "pw": 30,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "能夠攻擊使用了守住或看穿的對手。並解除對手的防守效果。",
+   "de": "This attack can hit a target using a move such as Protect or Detect. This also lifts the effects of those moves.",
+   "fl": [
+    7
+   ]
   },
   {
    "n": "Fire Blast",
@@ -27999,7 +28490,13 @@
    "dc": "Special",
    "pw": 110,
    "ac": 85,
-   "pp": 8
+   "pp": 8,
+   "d": "用大字形狀的火焰燒盡對手。有時會讓對手陷入灼傷狀態。",
+   "de": "The target is attacked with an intense blast of all-consuming fire. This may also leave the target with a burn.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Flamethrower",
@@ -28008,7 +28505,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手發射強烈火焰進行攻擊。有時會讓對手陷入灼傷狀態。",
+   "de": "The target is scorched with an intense blast of fire. This may also leave the target with a burn.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Focus Energy",
@@ -28017,7 +28520,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "深呼吸後集中精神。讓自己的攻擊變得容易擊中要害。",
+   "de": "The user takes a deep breath and focuses so that its future attacks have a heightened chance of landing critical hits.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Foul Play",
@@ -28026,7 +28534,14 @@
    "dc": "Physical",
    "pw": 95,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "利用對手的力量進行攻擊。對手的攻擊越高，給予對手的傷害越大。",
+   "de": "The user turns the target's strength against it. The higher the target's Attack stat, the greater the damage this move inflicts.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Future Sight",
@@ -28035,7 +28550,9 @@
    "dc": "Special",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用招式的２回合後，向對手發送一團念力進行攻擊。",
+   "de": "Two turns after this move is used, a hunk of psychic energy attacks the target."
   },
   {
    "n": "Hex",
@@ -28044,7 +28561,13 @@
    "dc": "Special",
    "pw": 65,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "接二連三地向對手進行攻擊。攻擊陷入異常狀態的對手時，能給予較大的傷害。",
+   "de": "This relentless attack does massive damage to a target affected by status conditions.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Knock Off",
@@ -28053,7 +28576,14 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "拍落對手的持有物，讓對手在戰鬥結束前都無法使用。對手有攜帶物品時，傷害會增加。",
+   "de": "The user slaps down the target's held item, making it unusable for that battle. This move does more damage if the target has a held item.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Mean Look",
@@ -28062,7 +28592,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "用漆黑深邃的眼神一動也不動地凝視對手，讓對手無法從戰鬥中逃走。",
+   "de": "The user pins the target with a dark, arresting look. The target becomes unable to flee.",
+   "fl": [
+    5,
+    7
+   ]
   },
   {
    "n": "Megahorn",
@@ -28071,7 +28607,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 85,
-   "pp": 12
+   "pp": 12,
+   "d": "用堅硬且華麗的角狠狠地刺進對手進行攻擊。",
+   "de": "Using its tough and impressive horn, the user rams into the target with no letup.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Night Slash",
@@ -28080,7 +28623,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "抓住瞬間的空隙斬切對手。容易擊中要害。",
+   "de": "The user slashes the target the instant an opportunity arises. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Payback",
@@ -28089,7 +28639,14 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "累積力量進行攻擊。若在對手之後進行攻擊，招式的威力會變成２倍。",
+   "de": "The user stores power, then attacks. This move's power is doubled if the user moves after the target.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Perish Song",
@@ -28098,7 +28655,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "聽了歌聲的寶可夢３回合後將陷入瀕死。替換寶可夢後效果就會消失。",
+   "de": "Any Pokémon that hears this song faints in three turns, unless it switches out of battle.",
+   "fl": [
+    9,
+    12,
+    14
+   ]
   },
   {
    "n": "Phantom Force",
@@ -28107,7 +28671,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合消失到某處，並於第２回合攻擊對手。可不顧對手的守護進行攻擊。",
+   "de": "The user vanishes somewhere, then strikes the target on the next turn. This move hits even if the target protects itself.",
+   "fl": [
+    1,
+    2,
+    7
+   ]
   },
   {
    "n": "Play Rough",
@@ -28116,7 +28687,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "在和對手嬉鬧的同時進行攻擊。有時會降低對手的攻擊。",
+   "de": "The user attacks by playing rough with the target. This may also lower the target's Attack stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Psycho Cut",
@@ -28125,7 +28703,13 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用實體化的精神利刃斬向對手。容易擊中要害。",
+   "de": "The user tears at the target with blades formed by psychic power. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Quick Attack",
@@ -28134,7 +28718,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "以迅雷不及掩耳之勢撲向對手。必定能夠發動先制攻擊。",
+   "de": "The user lunges at the target to inflict damage, moving at blinding speed. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Sandstorm",
@@ -28143,7 +28734,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "揚起沙暴，在５回合內給予岩石、地面和鋼屬性以外的寶可夢傷害。岩石屬性寶可夢的特防會提高。",
+   "de": "A five-turn sandstorm is summoned to damage all Pokémon except Rock, Ground, and Steel types. The sandstorm also boosts the Sp. Def stats of Rock types."
   },
   {
    "n": "Shadow Claw",
@@ -28152,7 +28745,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用黑影化成的銳利爪子撕裂對手。容易擊中要害。",
+   "de": "The user attacks by slashing the target with a sharp claw made from shadows. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Shadow Sneak",
@@ -28161,7 +28761,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "伸長自己的影子，從對手的背後進行攻擊。必定能夠發動先制攻擊。",
+   "de": "The user extends its shadow and attacks the target from behind. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Snarl",
@@ -28170,7 +28777,15 @@
    "dc": "Special",
    "pw": 55,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "沒完沒了地向對手大聲咆哮，降低對手的特攻。",
+   "de": "The user yells as if it's ranting about something, which lowers the Sp. Atk stats of opposing Pokémon.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Stone Edge",
@@ -28179,7 +28794,13 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 80,
-   "pp": 8
+   "pp": 8,
+   "d": "用尖銳的岩石刺進對手進行攻擊。容易擊中要害。",
+   "de": "The user stabs the target with sharpened stones. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Sucker Punch",
@@ -28188,7 +28809,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "可以搶先對手一步進行攻擊。若對手使用的不是攻擊招式則會失敗。",
+   "de": "This move enables the user to attack first. This move fails if the target is not readying an attack.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Sunny Day",
@@ -28197,7 +28825,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "讓日照增強，在５回合內提高火屬性招式的威力。水屬性招式的威力會降低。",
+   "de": "The user intensifies the sun for five turns, powering up Fire-type attacks. The sunlight also lowers the power of Water-type attacks."
   },
   {
    "n": "Superpower",
@@ -28206,7 +28836,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "發揮驚人的力量攻擊對手。自己的攻擊和防禦會降低。",
+   "de": "The user attacks the target with great power. This also lowers the user's Attack and Defense stats.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Taunt",
@@ -28215,7 +28852,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "激怒對手。在３回合內讓對手只能使出給予傷害的招式。",
+   "de": "The target is taunted into a rage that allows it to use only attack moves for three turns.",
+   "fl": [
+    4,
+    5,
+    7,
+    14,
+    19
+   ]
   },
   {
    "n": "Thief",
@@ -28224,7 +28870,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "在攻擊的同時偷取道具。當寶可夢自己有攜帶道具時，則無法偷取。",
+   "de": "The user attacks and steals the target's held item simultaneously. The user can't steal anything if it already holds an item.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Throat Chop",
@@ -28233,7 +28886,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "受到此招式攻擊的對手，會因為地獄般的痛苦，在２回合內無法使用會發出聲音的招式。",
+   "de": "The user attacks the target's throat, and the resultant suffering prevents the target from using sound-based moves for two turns.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Thunder",
@@ -28242,7 +28902,13 @@
    "dc": "Special",
    "pw": 110,
    "ac": 70,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手劈下暴雷進行攻擊。有時會讓對手陷入麻痺狀態。",
+   "de": "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Thunder Wave",
@@ -28251,7 +28917,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 90,
-   "pp": 20
+   "pp": 20,
+   "d": "放出微弱的電流。讓對手陷入麻痺狀態。",
+   "de": "The user launches a weak jolt of electricity that paralyzes the target.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Thunderbolt",
@@ -28260,7 +28933,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手放出強力電流進行攻擊。有時會讓對手陷入麻痺狀態。",
+   "de": "The user attacks the target with a strong electric blast. This may also leave the target with paralysis.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Will-O-Wisp",
@@ -28269,7 +28948,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 85,
-   "pp": 16
+   "pp": 16,
+   "d": "放出詭異的火焰，讓對手陷入灼傷狀態。",
+   "de": "The user shoots a sinister flame at the target to inflict a burn.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "X-Scissor",
@@ -28278,7 +28964,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "將鐮刀或爪子像剪刀般地交叉，順勢劈開對手。",
+   "de": "The user slashes at the target by crossing its scythes, claws, or the like as if they were a pair of scissors.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Zen Headbutt",
@@ -28287,7 +28980,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 90,
-   "pp": 16
+   "pp": 16,
+   "d": "將意念的力量集中在前額進行攻擊。有時會讓對手畏縮。",
+   "de": "The user focuses its willpower to its head and attacks the target. This may also make the target flinch.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Block",
@@ -28296,7 +28996,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "張開雙手進行阻擋，封住對手的退路，讓對手無法逃走。",
+   "de": "The user blocks the target's way with arms spread wide to prevent the target from fleeing.",
+   "fl": [
+    5,
+    7
+   ]
   },
   {
    "n": "Destiny Bond",
@@ -28305,7 +29011,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "使出招式後，當受到對手攻擊，陷入瀕死時，對手也會一同陷入瀕死。連續使用時會失敗。",
+   "de": "If the user is knocked out after using this move, the Pokémon that knocked it out will also faint. This move's chance of failing rises if it is used in succession.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Double Hit",
@@ -28314,7 +29025,14 @@
    "dc": "Physical",
    "pw": 35,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "用尾巴等向對手進行攻擊。連續２次給予傷害。",
+   "de": "The user slams the target with a tail or the like. The target is hit twice in a row.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Flash Cannon",
@@ -28323,7 +29041,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將身體的光芒聚集在一個點後釋放出去。有時會降低對手的特防。",
+   "de": "The user gathers all its light energy and releases it at once. This may also lower the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Gyro Ball",
@@ -28332,7 +29056,15 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "高速旋轉身體，撞擊對手。速度比對手越慢，威力越大。",
+   "de": "The user tackles the target with a high-speed spin. The slower the user is than the target, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Head Smash",
@@ -28341,7 +29073,14 @@
    "dc": "Physical",
    "pw": 150,
    "ac": 80,
-   "pp": 8
+   "pp": 8,
+   "d": "使出渾身力量，捨身向對手進行頭錘攻擊。自己也會受到非常大的傷害。",
+   "de": "The user attacks the target with a hazardous full-power headbutt. This also damages the user terribly.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Iron Defense",
@@ -28350,7 +29089,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "將皮膚變得堅硬如鐵，大幅提高自己的防禦。",
+   "de": "The user hardens its body's surface like iron, sharply boosting its Defense stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Iron Head",
@@ -28359,7 +29103,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用如同鋼鐵般堅硬的頭部進行攻擊。有時會讓對手畏縮。",
+   "de": "The user slams the target with its steel-hard head. This may also make the target flinch.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "King's Shield",
@@ -28368,7 +29119,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "防住對手攻擊的同時，使自己變為防禦姿態。降低接觸到的對手的攻擊。",
+   "de": "The user takes a defensive stance while it protects itself from damage. It also lowers the Attack stat of any attacker that makes direct contact."
   },
   {
    "n": "Metal Sound",
@@ -28377,7 +29130,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 85,
-   "pp": 20
+   "pp": 20,
+   "d": "讓對手聽如同金屬摩擦般的刺耳聲。大幅降低對手的特防。",
+   "de": "A horrible sound like scraping metal harshly lowers the target's Sp. Def stat.",
+   "fl": [
+    4,
+    5,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Poltergeist",
@@ -28386,7 +29148,13 @@
    "dc": "Physical",
    "pw": 110,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "操控對手的持有物進行攻擊。對手沒有攜帶道具時，則會失敗。",
+   "de": "The user attacks by controlling the target's item. This move fails if the target isn't holding an item.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Power Trick",
@@ -28395,7 +29163,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "利用超能力，將自己的攻擊和防禦互相交換。",
+   "de": "The user employs its psychic power to switch its Attack stat with its Defense stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Reflect",
@@ -28404,7 +29177,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "利用神奇的屏障，在５回合內減輕來自對手的物理攻擊傷害。",
+   "de": "A wondrous wall of light is put up to reduce damage from physical moves for five turns.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Reversal",
@@ -28413,7 +29191,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "竭盡全力進行攻擊。自己的ＨＰ越少，招式的威力越大。",
+   "de": "An all-out attack that becomes more powerful the less HP the user has.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Sacred Sword",
@@ -28422,7 +29207,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用劍斬切對手進行攻擊。可不顧對手的能力變化給予傷害。",
+   "de": "The user attacks by slicing with a sword. The target's stat changes don't affect the damage inflicted by this move.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Screech",
@@ -28431,7 +29223,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 85,
-   "pp": 20
+   "pp": 20,
+   "d": "發出令人不由自主想要摀起耳朵的刺耳聲，大幅降低對手的防禦。",
+   "de": "An earsplitting screech harshly lowers the target's Defense stat.",
+   "fl": [
+    4,
+    5,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Solar Blade",
@@ -28440,7 +29241,15 @@
    "dc": "Physical",
    "pw": 125,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合吸收大量日光，並於第２回合把力量注入劍裡進行攻擊。",
+   "de": "The user gathers light on the first turn, then fills a blade with the light's energy and attacks on the next turn.",
+   "fl": [
+    1,
+    2,
+    4,
+    7
+   ]
   },
   {
    "n": "Steel Beam",
@@ -28449,7 +29258,13 @@
    "dc": "Special",
    "pw": 140,
    "ac": 95,
-   "pp": 8
+   "pp": 8,
+   "d": "將從全身匯聚起來的鋼鐵化為光束激烈地發射出去。自己也會受到傷害。",
+   "de": "The user fires a beam of steel that it collected from its entire body. This also damages the user.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Wide Guard",
@@ -28458,7 +29273,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "在１回合內，防禦住攻擊我方全體的攻擊招式。",
+   "de": "The user and its allies are protected from wide-ranging attacks for one turn.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Agility",
@@ -28467,7 +29287,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "放鬆身體，讓自己變得輕盈以進行高速移動。可大幅提高自己的速度。",
+   "de": "The user relaxes and lightens its body to move faster. This sharply boosts its Speed stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Ancient Power",
@@ -28476,7 +29301,13 @@
    "dc": "Special",
    "pw": 60,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "用原始之力進行攻擊。有時會提高自己的所有能力。",
+   "de": "The user attacks with a prehistoric power. This may also boost all the user's stats at once.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Crunch",
@@ -28485,7 +29316,15 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用尖銳的牙齒咬碎對手進行攻擊。有時會降低對手的防禦。",
+   "de": "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Dragon Claw",
@@ -28494,7 +29333,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用尖銳的巨爪撕裂對手進行攻擊。",
+   "de": "The user slashes the target with huge, sharp claws to inflict damage.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Dragon Dance",
@@ -28503,7 +29349,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "激烈地跳起神秘又強而有力的舞蹈。提高自己的攻擊和速度。",
+   "de": "The user vigorously performs a mystic, powerful dance that boosts its Attack and Speed stats.",
+   "fl": [
+    6,
+    21
+   ]
   },
   {
    "n": "Dragon Pulse",
@@ -28512,7 +29364,15 @@
    "dc": "Special",
    "pw": 85,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "從張大的口中發射衝擊波攻擊對手。",
+   "de": "The target is attacked with a shock wave generated by the user's gaping mouth.",
+   "fl": [
+    4,
+    7,
+    12,
+    17
+   ]
   },
   {
    "n": "Dual Wingbeat",
@@ -28521,7 +29381,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "用翅膀撞向對手進行攻擊。連續２次給予傷害。",
+   "de": "The user slams the target with its wings to inflict damage. The target is hit twice in a row.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Fire Fang",
@@ -28530,7 +29397,15 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "用纏繞火焰的牙齒咬住對手。有時會讓對手畏縮或陷入灼傷狀態。",
+   "de": "The user bites with flame-cloaked fangs. This may also make the target flinch or leave it with a burn.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Fly",
@@ -28539,7 +29414,17 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "使用後的第１回合飛上天空，並於第２回合攻擊對手。",
+   "de": "The user flies up into the sky on the first turn, then attacks on the next turn.",
+   "fl": [
+    1,
+    2,
+    4,
+    7,
+    10,
+    12
+   ]
   },
   {
    "n": "Heat Wave",
@@ -28548,7 +29433,13 @@
    "dc": "Special",
    "pw": 95,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "將炎熱的氣息吹向對手進行攻擊。有時會讓對手陷入灼傷狀態。",
+   "de": "The user attacks by exhaling hot breath on opposing Pokémon. This may also leave them with a burn.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Hurricane",
@@ -28557,7 +29448,14 @@
    "dc": "Special",
    "pw": 110,
    "ac": 70,
-   "pp": 12
+   "pp": 12,
+   "d": "用強烈的風席捲對手進行攻擊。有時會使對手混亂。",
+   "de": "The user attacks by wrapping its opponent in a fierce wind. This may also confuse the target.",
+   "fl": [
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Ice Fang",
@@ -28566,7 +29464,15 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "用帶有寒氣的牙齒咬住對手。有時會讓對手畏縮或陷入冰凍狀態。",
+   "de": "The user bites with cold-infused fangs. This may also make the target flinch or leave it frozen.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Meteor Beam",
@@ -28575,7 +29481,14 @@
    "dc": "Special",
    "pw": 120,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合會聚集宇宙的力量來提高特攻，並於第２回合攻擊對手。",
+   "de": "The user gathers energy from space and boosts its Sp. Atk stat on the first turn, then attacks on the next turn.",
+   "fl": [
+    2,
+    4,
+    7
+   ]
   },
   {
    "n": "Psychic Fangs",
@@ -28584,7 +29497,15 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "利用精神力量咬住對手進行攻擊。並可破壞光牆和反射壁等。",
+   "de": "The user attacks by biting the target with its psychic capabilities. This move can also break barriers, such as Light Screen and Reflect.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Roar",
@@ -28593,7 +29514,15 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "趕走對手，強制讓後備寶可夢上場。對手為野生寶可夢時，戰鬥將直接結束。",
+   "de": "The target is scared off, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
+   "fl": [
+    5,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Rock Blast",
@@ -28602,7 +29531,14 @@
    "dc": "Physical",
    "pw": 25,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手發射堅硬的岩石進行攻擊。連續攻擊２～５次。",
+   "de": "The user attacks by hurling hard rocks at the target. This move hits two to five times in a row.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Roost",
@@ -28611,7 +29547,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "降落到地面，讓身體休息。回復自己最大ＨＰ的一半。",
+   "de": "The user lands and rests its body. This move restores the user's HP by up to half its max HP.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Sky Attack",
@@ -28620,7 +29562,15 @@
    "dc": "Physical",
    "pw": 140,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "在使用後的下一回合進行攻擊。有時會使對手畏縮。且容易擊中要害。",
+   "de": "The user attacks the turn after using this move. This move has a heightened chance of landing a critical hit and may also make the target flinch.",
+   "fl": [
+    2,
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Stealth Rock",
@@ -28629,7 +29579,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在對手周圍撒下無數飄浮的岩石，讓對手替換出場的寶可夢受到傷害。",
+   "de": "The user lays a trap of levitating stones around the opposing team. The trap damages opposing Pokémon that switch into battle.",
+   "fl": [
+    5
+   ]
   },
   {
    "n": "Steel Wing",
@@ -28638,7 +29593,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 90,
-   "pp": 20
+   "pp": 20,
+   "d": "用堅硬的翅膀撞擊對手進行攻擊。有時會提高自己的防禦。",
+   "de": "The target is hit with wings of steel. This may also boost the user's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Tailwind",
@@ -28647,7 +29609,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "刮起猛烈的強風，在４回合內提高我方全體的速度。",
+   "de": "The user whips up a turbulent whirlwind that boosts the Speed stats of itself and its allies for four turns.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Thunder Fang",
@@ -28656,7 +29623,15 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "用蓄滿電流的牙齒咬住對手。有時會讓對手畏縮或陷入麻痺狀態。",
+   "de": "The user bites with electrified fangs. This may also make the target flinch or leave it with paralysis.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Whirlwind",
@@ -28665,7 +29640,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "吹飛對手，強制讓後備寶可夢上場。對手為野生寶可夢時，戰鬥將直接結束。",
+   "de": "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
+   "fl": [
+    5,
+    7,
+    14
+   ]
   },
   {
    "n": "Dig",
@@ -28674,7 +29656,16 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合潛入地底，並於第２回合攻擊對手。",
+   "de": "The user burrows into the ground on the first turn, then attacks on the next turn.",
+   "fl": [
+    1,
+    2,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Dragon Rush",
@@ -28683,7 +29674,14 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 75,
-   "pp": 12
+   "pp": 12,
+   "d": "釋放出駭人的殺氣，威嚇並撞擊對手。有時會使對手畏縮。",
+   "de": "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Endeavor",
@@ -28692,7 +29690,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "給予傷害，使對手的ＨＰ變得和自己的ＨＰ一樣。",
+   "de": "The user inflicts damage by cutting down the target's HP to roughly equal the user's HP.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Fire Punch",
@@ -28701,7 +29706,15 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用帶有火焰的拳頭攻擊對手。有時會讓對手陷入灼傷狀態。",
+   "de": "The target is attacked with a fiery punch. This may also leave the target with a burn.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Heavy Slam",
@@ -28710,7 +29723,15 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用沉重的身體衝撞對手進行攻擊。體重比對手重越多，威力越大。",
+   "de": "The user slams into the target with its heavy body. The more the user outweighs the target, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "High Horsepower",
@@ -28719,7 +29740,14 @@
    "dc": "Physical",
    "pw": 95,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "使出全身力量，猛攻對手。",
+   "de": "The user fiercely attacks the target using its entire body.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Hydro Pump",
@@ -28728,7 +29756,13 @@
    "dc": "Special",
    "pw": 110,
    "ac": 80,
-   "pp": 8
+   "pp": 8,
+   "d": "向對手猛烈地噴射大量水流進行攻擊。",
+   "de": "The target is blasted by a huge volume of water launched under great pressure.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Metal Burst",
@@ -28737,7 +29771,13 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將發動攻擊前最後受到的招式傷害放大，向對手進行反擊。",
+   "de": "The user retaliates with much greater force against the opponent that last inflicted damage on it.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Sand Tomb",
@@ -28746,7 +29786,13 @@
    "dc": "Physical",
    "pw": 35,
    "ac": 85,
-   "pp": 16
+   "pp": 16,
+   "d": "將對手困在鋪天蓋地的沙暴中，在４～５回合內進行攻擊。",
+   "de": "The user traps the target inside a harshly raging sandstorm that inflicts damage for four to five turns.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Smart Strike",
@@ -28755,7 +29801,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用尖尖的角刺進對手進行攻擊。攻擊必定會命中。",
+   "de": "The user stabs the target with a sharp horn. This attack never misses.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Steel Roller",
@@ -28764,7 +29817,14 @@
    "dc": "Physical",
    "pw": 130,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "一邊破壞場地，一邊進行攻擊。在不是特殊狀態的場地上使用，招式就會失敗。",
+   "de": "The user attacks while destroying the terrain. This move fails if the ground hasn't turned into a terrain.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Surf",
@@ -28773,7 +29833,14 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "使用大浪攻擊自己周圍所有的寶可夢。",
+   "de": "The user attacks everything around it by swamping its surroundings with a giant wave.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Thunder Punch",
@@ -28782,7 +29849,15 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用帶有電流的拳頭攻擊對手。有時會讓對手陷入麻痺狀態。",
+   "de": "The target is attacked with an electrified punch. This may also leave the target with paralysis.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Uproar",
@@ -28791,7 +29866,15 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "在３回合內大吵大鬧攻擊對手。在此期間誰都無法入眠。",
+   "de": "The user attacks in an uproar for three turns. During that time, no Pokémon can fall asleep.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Whirlpool",
@@ -28800,7 +29883,13 @@
    "dc": "Special",
    "pw": 35,
    "ac": 85,
-   "pp": 16
+   "pp": 16,
+   "d": "將對手困在激烈的水流漩渦中，在４～５回合內進行攻擊。",
+   "de": "The user traps the target inside a violent, swirling whirlpool that inflicts damage for four to five turns.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Ally Switch",
@@ -28809,7 +29898,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "用神奇的力量瞬間移動，讓自己和同伴的所在位置互換。連續使用時容易失敗。",
+   "de": "The user teleports using a strange power and switches places with one of its allies. This move's chance of failing rises if it is used in succession."
   },
   {
    "n": "Dazzling Gleam",
@@ -28818,7 +29909,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "發出強烈的閃光，給予對手傷害。",
+   "de": "The user damages opposing Pokémon by emitting a powerful flash.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Disable",
@@ -28827,7 +29924,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "阻止對手出招，最近一次使用的招式在４回合內無法使用。",
+   "de": "For four turns, the target will be unable to use whichever move it last used.",
+   "fl": [
+    4,
+    5,
+    7,
+    14,
+    19
+   ]
   },
   {
    "n": "Drain Punch",
@@ -28836,7 +29942,16 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "從拳頭吸取對手的力量。可以回復給予對手傷害的一半ＨＰ。",
+   "de": "The user attacks with an energy-draining punch. The user's HP is restored by up to half the damage taken by the target.",
+   "fl": [
+    1,
+    4,
+    7,
+    8,
+    13
+   ]
   },
   {
    "n": "Encore",
@@ -28845,7 +29960,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "要求對手再來一次，讓對手連續３次使出最近一次使用的招式。",
+   "de": "The user compels the target to keep using the move it encored for three turns.",
+   "fl": [
+    4,
+    5,
+    7,
+    14,
+    19
+   ]
   },
   {
    "n": "Expanding Force",
@@ -28854,7 +29978,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用精神力量攻擊對手。在精神場地時，威力會提高，能給予所有對手傷害。",
+   "de": "The user attacks the target with its psychic power. When the ground is Psychic Terrain, this move's power is boosted and it damages all opposing Pokémon.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Guard Split",
@@ -28863,7 +29993,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用超能力將自己和對手的防禦和特防各別相加後，再進行平分。",
+   "de": "The user employs its psychic power to average its Defense and Sp. Def stats with those of the target.",
+   "fl": [
+    4
+   ]
   },
   {
    "n": "Guard Swap",
@@ -28872,7 +30007,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用超能力將自己和對手的防禦與特防的能力變化互相交換。",
+   "de": "The user employs its psychic power to switch changes to its Defense and Sp. Def stats with the target.",
+   "fl": [
+    4,
+    7,
+    14
+   ]
   },
   {
    "n": "Imprison",
@@ -28881,7 +30023,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "如果對手也學會了和自己相同的招式，則對手將不能使用該招式。",
+   "de": "If opposing Pokémon know any move also known by the user, they are prevented from using it.",
+   "fl": [
+    6,
+    14
+   ]
   },
   {
    "n": "Light Screen",
@@ -28890,7 +30038,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "利用神奇的屏障，在５回合內減輕來自對手的特殊攻擊傷害。",
+   "de": "A wondrous wall of light is put up to reduce damage from special moves for five turns.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Magic Room",
@@ -28899,7 +30052,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "創造出非常不可思議的空間。在５回合內，所有寶可夢攜帶的道具都會失去效果。",
+   "de": "The user creates a bizarre area in which Pokémon's held items lose their effects for five turns.",
+   "fl": [
+    7
+   ]
   },
   {
    "n": "Nasty Plot",
@@ -28908,7 +30066,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "動歪腦筋，活化大腦。大幅提高自己的特攻。",
+   "de": "The user stimulates its brain by thinking bad thoughts. This sharply boosts the user's Sp. Atk stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Power Swap",
@@ -28917,7 +30080,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用超能力將自己和對手的攻擊與特攻的能力變化互相交換。",
+   "de": "The user employs its psychic power to switch changes to its Attack and Sp. Atk stats with the target.",
+   "fl": [
+    4,
+    7,
+    14
+   ]
   },
   {
    "n": "Psychic",
@@ -28926,7 +30096,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手發送強大的念力進行攻擊。有時會降低對手的特防。",
+   "de": "The target is hit with a strong telekinetic force to inflict damage. This may also lower the target’s Sp. Def stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Psychic Terrain",
@@ -28935,7 +30111,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "在５回合內，地面上的寶可夢不會受到先制招式攻擊。超能力屬性的招式威力會提高。",
+   "de": "This protects Pokémon on the ground from priority moves and powers up Psychic-type moves for five turns.",
+   "fl": [
+    20
+   ]
   },
   {
    "n": "Psyshock",
@@ -28944,7 +30125,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將神奇的念力波實體化後攻擊對手。給予對手物理傷害。",
+   "de": "The user materializes an odd psychic wave to attack the target. This move deals physical damage.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Recover",
@@ -28953,7 +30140,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "讓細胞再生，回復自己最大ＨＰ的一半。",
+   "de": "The user regenerates its cells, restoring its own HP by up to half its max HP.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Role Play",
@@ -28962,7 +30155,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "扮演成對手，讓自己的特性也變得和對手相同。",
+   "de": "The user mimics the target completely, copying the target's Ability.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Safeguard",
@@ -28971,7 +30169,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在５回合內被神奇的力量守護，不會陷入異常狀態。",
+   "de": "The user creates a protective field that prevents status conditions for five turns.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Skill Swap",
@@ -28980,7 +30183,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用超能力將自己和對手的特性互相交換。",
+   "de": "The user employs its psychic power to exchange Abilities with the target.",
+   "fl": [
+    4,
+    7,
+    14
+   ]
   },
   {
    "n": "Speed Swap",
@@ -28989,7 +30199,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將對手和自己的速度進行互換。",
+   "de": "The user exchanges Speed stats with the target.",
+   "fl": [
+    4,
+    7,
+    14
+   ]
   },
   {
    "n": "Stored Power",
@@ -28998,7 +30215,13 @@
    "dc": "Special",
    "pw": 20,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用蓄積的力量攻擊對手。自己的能力提高越多，招式的威力越大。",
+   "de": "The user attacks the target with stored power. The more the user's stats are boosted, the greater the move's power.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Tri Attack",
@@ -29007,7 +30230,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用３種光線進行攻擊。有時會讓對手陷入麻痺、灼傷或冰凍的狀態。",
+   "de": "The user strikes with a simultaneous three-beam attack. This may also burn, freeze, or paralyze the target.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Trick",
@@ -29016,7 +30245,13 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "在對手露出空隙時，趁機交換自己和對手的持有物。",
+   "de": "The user catches the target off guard and swaps the target's held item with its own.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Trick Room",
@@ -29025,7 +30260,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "創造出非常不可思議的空間。在５回合內，速度慢的寶可夢可以先行動。",
+   "de": "The user creates a bizarre area in which slower Pokémon get to move first for five turns.",
+   "fl": [
+    7
+   ]
   },
   {
    "n": "Wonder Room",
@@ -29034,7 +30274,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "創造出非常不可思議的空間。在５回合內，讓所有寶可夢的防禦和特防互相交換。",
+   "de": "The user creates a bizarre area in which Pokémon's Defense and Sp. Def stats are swapped for five turns.",
+   "fl": [
+    7
+   ]
   },
   {
    "n": "Acid Armor",
@@ -29043,7 +30288,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "藉由細胞的變化讓身體液化，大幅提高自己的防禦。",
+   "de": "The user alters its cellular structure to liquefy itself, sharply boosting its Defense stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Alluring Voice",
@@ -29052,7 +30302,9 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用天使般的歌聲攻擊對手。讓此回合內能力提高的寶可夢陷入混亂狀態。",
+   "de": "The user attacks the target using its angelic voice. This also confuses the target if its stats have been boosted during the turn."
   },
   {
    "n": "Aromatic Mist",
@@ -29061,7 +30313,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "利用神奇的芳香，提高我方寶可夢的特防。",
+   "de": "The user boosts the Sp. Def stat of an ally Pokémon by using a mysterious aroma.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Baby-Doll Eyes",
@@ -29070,7 +30327,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用圓圓的眼睛凝視對手，降低對手的攻擊。必定能夠發動先制攻擊。",
+   "de": "The user stares at the target with its baby-doll eyes, which lowers the target's Attack stat. This move always goes first.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Charm",
@@ -29079,7 +30343,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用撒嬌的眼神誘使對手疏忽大意，大幅降低對手的攻擊。",
+   "de": "The user gazes at the target rather charmingly, making it less wary. This harshly lowers the target's Attack stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Decorate",
@@ -29088,7 +30359,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "透過裝飾，大幅提高對手的攻擊和特攻。",
+   "de": "The user sharply boosts the target's Attack and Sp. Atk stats by decorating the target."
   },
   {
    "n": "Draining Kiss",
@@ -29097,7 +30370,15 @@
    "dc": "Special",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "親吻對手來吸取對手的ＨＰ。可以回復給予對手傷害的一半以上的ＨＰ。",
+   "de": "The user steals the target's HP with a kiss. The user's HP is restored by over half the damage taken by the target.",
+   "fl": [
+    1,
+    4,
+    7,
+    13
+   ]
   },
   {
    "n": "Entrainment",
@@ -29106,7 +30387,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用神奇的節奏跳舞。讓對手模仿自己的動作，變成和自己一樣的特性。",
+   "de": "The user dances with an odd rhythm that compels the target to mimic it, making the target's Ability the same as the user's.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Fake Tears",
@@ -29115,7 +30403,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "裝哭掉眼淚。讓對手不知所措，大幅降低對手的特防。",
+   "de": "The user feigns crying to fluster the target. This harshly lowers the target's Sp. Def stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Last Resort",
@@ -29124,7 +30419,14 @@
    "dc": "Physical",
    "pw": 140,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "在戰鬥中將其他已學會的招式全部使用過後，才能夠使出的珍藏招式。",
+   "de": "This move can be used only after the user has used all the other moves it knows in the battle.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Misty Explosion",
@@ -29133,7 +30435,13 @@
    "dc": "Special",
    "pw": 100,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "對自己周圍的所有寶可夢進行攻擊，但使出後，自己會陷入瀕死。在薄霧場地時，招式威力會提高。",
+   "de": "The user attacks everything around it and faints upon using this move. This move's power is boosted on Misty Terrain.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Misty Terrain",
@@ -29142,7 +30450,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "在５回合內，地面上的寶可夢不會陷入異常狀態。龍屬性招式的傷害也會減半。",
+   "de": "This protects Pokémon on the ground from status conditions and halves damage from Dragon-type moves for five turns.",
+   "fl": [
+    20
+   ]
   },
   {
    "n": "Mystical Fire",
@@ -29151,7 +30464,13 @@
    "dc": "Special",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "從口中吐出特別灼熱的火焰進行攻擊。可降低對手的特攻。",
+   "de": "The user attacks by breathing a special, hot fire. This also lowers the target's Sp. Atk stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Pain Split",
@@ -29160,7 +30479,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "將自己的ＨＰ和對手的ＨＰ相加，然後雙方友好地平分。",
+   "de": "The user adds its HP to the target's HP, then equally splits the combined HP between the target and itself.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Psych Up",
@@ -29169,7 +30494,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "向自己施加自我暗示，讓能力變化的狀態變得與對手相同。",
+   "de": "The user hypnotizes itself into copying any stat change made by the target.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Sweet Kiss",
@@ -29178,7 +30508,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 75,
-   "pp": 12
+   "pp": 12,
+   "d": "像天使般可愛地親吻對手，進而使對手混亂。",
+   "de": "The user kisses the target with a sweet, angelic cuteness that causes confusion.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Sweet Scent",
@@ -29187,7 +30524,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用香氣大幅降低對手的閃避率。",
+   "de": "The user releases a scent that harshly lowers opposing Pokémon's evasiveness.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Acrobatics",
@@ -29196,7 +30540,15 @@
    "dc": "Physical",
    "pw": 55,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "輕巧地攻擊對手。自己沒有攜帶道具時，能給予對手較大的傷害。",
+   "de": "The user nimbly strikes the target. This attack does massive damage if the user isn't holding an item.",
+   "fl": [
+    1,
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Brave Bird",
@@ -29205,7 +30557,15 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "收起翅膀，低空飛行突擊對手。自己也會受到不小的傷害。",
+   "de": "The user tucks in its wings and charges at a low altitude. This also damages the user quite a lot.",
+   "fl": [
+    1,
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Breaking Swipe",
@@ -29214,7 +30574,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "激烈地甩動強韌的尾巴攻擊對手，降低對手的攻擊。",
+   "de": "The user swings its tough tail wildly and attacks opposing Pokémon. This also lowers their Attack stats.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Cotton Guard",
@@ -29223,7 +30590,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用軟綿綿的絨毛保護自己的身體。極大幅提高自己的防禦。",
+   "de": "The user protects itself by wrapping its body in soft cotton, drastically boosting its Defense stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Defog",
@@ -29232,7 +30604,15 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "用強風吹開對手的反射壁或光牆等。也會降低對手的閃避率。",
+   "de": "A strong wind blows away the target's barriers such as Reflect or Light Screen. This also lowers the target's evasiveness.",
+   "fl": [
+    4,
+    5,
+    7,
+    14
+   ]
   },
   {
    "n": "Draco Meteor",
@@ -29241,7 +30621,13 @@
    "dc": "Special",
    "pw": 130,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "讓隕石從空中落下以攻擊對手。使用後因為反作用力，自己的特攻會大幅降低。",
+   "de": "Comets are summoned down from the sky onto the target. The recoil from this move harshly lowers the user’s Sp. Atk stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Dragon Cheer",
@@ -29250,7 +30636,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "以龍之鼓舞提高士氣。我方的招式會變得容易擊中要害。對龍屬性的鼓舞效果更強。",
+   "de": "The user raises its allies’ morale with a draconic cry so that their future attacks have a heightened chance of landing critical hits. This rouses Dragon types more."
   },
   {
    "n": "Feather Dance",
@@ -29259,7 +30647,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "撒出羽毛，纏住對手的身體。大幅降低對手的攻擊。",
+   "de": "The user covers the target's body with a mass of down that harshly lowers its Attack stat.",
+   "fl": [
+    4,
+    5,
+    7,
+    21
+   ]
   },
   {
    "n": "Fire Spin",
@@ -29268,7 +30664,13 @@
    "dc": "Special",
    "pw": 35,
    "ac": 85,
-   "pp": 16
+   "pp": 16,
+   "d": "將對手困在熊熊燃燒的火焰旋渦中，在４～５回合內進行攻擊。",
+   "de": "The user traps the target inside a fierce vortex of fire that inflicts damage for four to five turns.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Haze",
@@ -29277,7 +30679,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "放出黑霧，讓場上全體寶可夢的能力變化回到初始狀態。",
+   "de": "The user creates a haze that eliminates every stat change among all the Pokémon engaged in battle.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Hyper Voice",
@@ -29286,7 +30693,15 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "製造出震耳欲聾的巨大聲波攻擊對手。",
+   "de": "The user attacks by letting loose a horribly loud, resounding cry.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Moonblast",
@@ -29295,7 +30710,13 @@
    "dc": "Special",
    "pw": 95,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "借用月亮的力量攻擊對手。有時會降低對手的特攻。",
+   "de": "Borrowing the power of the moon, the user attacks the target. This may also lower the target's Sp. Atk stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Pluck",
@@ -29304,7 +30725,15 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用鳥喙進行攻擊。可以吃下對手攜帶的樹果，並獲得樹果的效果。",
+   "de": "The user attacks by pecking the target. If the target is holding a Berry, the user eats it and gains its effect.",
+   "fl": [
+    1,
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Sing",
@@ -29313,7 +30742,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 55,
-   "pp": 16
+   "pp": 16,
+   "d": "唱出舒服美妙的歌聲，讓對手陷入睡眠狀態。",
+   "de": "A soothing lullaby is sung in a beautiful voice that puts the target to sleep.",
+   "fl": [
+    4,
+    5,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "After You",
@@ -29322,7 +30760,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "支援對手，讓對手緊接在自己之後行動。",
+   "de": "The user helps the target and makes it use its move right after the user.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Charge",
@@ -29331,7 +30774,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "變成充電狀態，提高下次使出的電屬性的招式威力。也會提高自己的特防。",
+   "de": "The user becomes charged, boosting the power of the next Electric-type move it uses. This also boosts the user's Sp. Def stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Charge Beam",
@@ -29340,7 +30788,13 @@
    "dc": "Special",
    "pw": 50,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手發射電擊光束。有時會因電流蓄積，提高自己的特攻。",
+   "de": "The user attacks the target with an electric charge. The residual electricity may also boost the user's Sp. Atk stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Cotton Spore",
@@ -29349,7 +30803,15 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將棉花般柔軟的孢子纏繞對手，大幅降低對手的速度。",
+   "de": "The user releases cotton-like spores that cling to opposing Pokémon. This harshly lowers their Speed stats.",
+   "fl": [
+    4,
+    5,
+    7,
+    15
+   ]
   },
   {
    "n": "Discharge",
@@ -29358,7 +30820,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用耀眼的電流攻擊自己周圍所有的寶可夢。有時會讓對手陷入麻痺狀態。",
+   "de": "The user strikes everything around it by letting loose a flare of electricity. This may also leave those hit by the attack with paralysis.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Dragon Tail",
@@ -29367,7 +30835,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "彈飛對手，強制讓後備寶可夢上場。對手為野生寶可夢時，戰鬥將直接結束。",
+   "de": "The target is knocked away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Eerie Impulse",
@@ -29376,7 +30851,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "從身體發出怪異電波影響對手，大幅降低對手的特攻。",
+   "de": "The user's body generates an eerie impulse. Exposing the target to it harshly lowers the target's Sp. Atk stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Electric Terrain",
@@ -29385,7 +30867,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "在５回合內將腳下變成電氣場地。地面上的寶可夢將不會陷入睡眠狀態。電屬性招式的威力會提高。",
+   "de": "The user turns the ground into Electric Terrain for five turns, powering up Electric-type moves. Pokémon on the ground can no longer fall asleep.",
+   "fl": [
+    20
+   ]
   },
   {
    "n": "Electro Ball",
@@ -29394,7 +30881,14 @@
    "dc": "Special",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用電球攻擊對手。速度比對手快越多，威力越大。",
+   "de": "The user hurls an electric orb at the target. The faster the user is than the target, the greater the move's power.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Electroweb",
@@ -29403,7 +30897,13 @@
    "dc": "Special",
    "pw": 55,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "用電網捉住對手進行攻擊。可降低對手的速度。",
+   "de": "The user captures opposing Pokémon in an electric net to inflict damage. This also lowers their Speed stats.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Flatter",
@@ -29412,7 +30912,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "吹捧對手，使其混亂。同時還會提高對手的特攻。",
+   "de": "Flattery is used to confuse the target. However, this also boosts the target's Sp. Atk stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Magnetic Flux",
@@ -29421,7 +30928,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "操控磁場，提高特性是正電和負電的寶可夢的防禦和特防。",
+   "de": "The user manipulates magnetic fields, which boosts the Defense and Sp. Def stats of ally Pokémon with the Plus Ability or the Minus Ability.",
+   "fl": [
+    6,
+    12,
+    14
+   ]
   },
   {
    "n": "Parabolic Charge",
@@ -29430,7 +30944,14 @@
    "dc": "Special",
    "pw": 65,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "攻擊自己周圍所有的寶可夢。可以回復給予傷害的一半ＨＰ。",
+   "de": "The user attacks everything around it. The user's HP is restored by half the damage taken by those hit.",
+   "fl": [
+    4,
+    7,
+    13
+   ]
   },
   {
    "n": "Power Gem",
@@ -29439,7 +30960,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "發射如寶石般閃耀的光芒攻擊對手。",
+   "de": "The user attacks with a ray of light that sparkles as if it were made of gemstones.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Rising Voltage",
@@ -29448,7 +30975,13 @@
    "dc": "Special",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用從地面升騰的電擊攻擊。當對手在電氣場地時，招式威力會變成２倍。",
+   "de": "The user attacks with electricity rising from the ground. This move's power is doubled if the target is on Electric Terrain.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Supercell Slam",
@@ -29457,7 +30990,9 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "讓身體帶電然後壓向對手。沒命中對手時自己會受到傷害。",
+   "de": "The user electrifies its body and drops onto the target to inflict damage. If this move misses, the user takes damage instead."
   },
   {
    "n": "Volt Switch",
@@ -29466,7 +31001,13 @@
    "dc": "Special",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "攻擊後迅速返回，和後備寶可夢進行替換。",
+   "de": "After making its attack, the user rushes back to switch places with a party Pokémon in waiting.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Wild Charge",
@@ -29475,7 +31016,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "讓電流圍繞全身，衝撞對手進行攻擊。自己也會受到少許傷害。",
+   "de": "The user shrouds itself in electricity and smashes into its target. This also damages the user a little.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Zap Cannon",
@@ -29484,7 +31032,14 @@
    "dc": "Special",
    "pw": 120,
    "ac": 50,
-   "pp": 8
+   "pp": 8,
+   "d": "發射如大炮般的電流進行攻擊。能讓對手陷入麻痺狀態。",
+   "de": "The user attacks by firing an electric blast like a cannon. This also leaves the target with paralysis.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Beat Up",
@@ -29493,7 +31048,13 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "讓我方所有寶可夢進行攻擊。同行的寶可夢越多，招式的攻擊次數越多。",
+   "de": "The user gets all party Pokémon to attack the target. The more party Pokémon, the greater the number of attacks.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Bulk Up",
@@ -29502,7 +31063,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "將力量集中於體內，增厚肌肉，提高自己的攻擊和防禦。",
+   "de": "The user tenses its muscles to bulk up its body, boosting its Attack and Defense stats.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Coaching",
@@ -29511,7 +31077,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "透過適切的指導，提高我方全體的攻擊和防禦。",
+   "de": "The user properly coaches its ally Pokémon, boosting their Attack and Defense stats.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Counter",
@@ -29520,7 +31091,13 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "將來自對手的物理攻擊傷害加倍後，返還給該對手。",
+   "de": "A retaliatory attack that counters any physical move, inflicting double the damage taken.",
+   "fl": [
+    1,
+    4
+   ]
   },
   {
    "n": "Cross Chop",
@@ -29529,7 +31106,14 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 80,
-   "pp": 8
+   "pp": 8,
+   "d": "用左右手刀劈打對手進行攻擊。容易擊中要害。",
+   "de": "The user delivers a double chop with its forearms crossed. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Dynamic Punch",
@@ -29538,7 +31122,15 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 50,
-   "pp": 8
+   "pp": 8,
+   "d": "使出渾身力量出拳進行攻擊。必定會使對手混亂。",
+   "de": "The user attacks by punching the target with full concentrated power. This also confuses the target.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Gunk Shot",
@@ -29547,7 +31139,13 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 80,
-   "pp": 8
+   "pp": 8,
+   "d": "將骯髒的垃圾丟向對手進行攻擊。有時會讓對手陷入中毒狀態。",
+   "de": "The user shoots filthy garbage at the target to attack. This may also poison the target.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Lash Out",
@@ -29556,7 +31154,14 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "將惱怒砸向對手進行攻擊。如果此回合已被降低能力，招式威力就會變成２倍。",
+   "de": "The user lashes out to vent its frustration toward the target. This move's power is doubled if the user's stats were lowered during this turn.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Low Sweep",
@@ -29565,7 +31170,14 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "瞄準對手的腳，以敏捷的動作進行攻擊。可降低對手的速度。",
+   "de": "The user makes a swift attack on the target's legs, which lowers the target's Speed stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Night Shade",
@@ -29574,7 +31186,13 @@
    "dc": "Special",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "讓對手看見恐怖幻影，給予對手和自己等級相同的傷害。",
+   "de": "The user makes the target see a frightening mirage. It inflicts damage equal to the user's level.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Overheat",
@@ -29583,7 +31201,13 @@
    "dc": "Special",
    "pw": 130,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "釋放全部能量攻擊對手。使用後因為反作用力，自己的特攻會大幅降低。",
+   "de": "The user attacks the target with all its might. The recoil from this move harshly lowers the user's Sp. Atk stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Poison Jab",
@@ -29592,16 +31216,25 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "以帶有毒性的觸手或手臂刺進對手。有時會讓對手陷入中毒狀態。",
+   "de": "The target is stabbed with a tentacle, an arm, or the like steeped in poison. This may also poison the target.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Rage Fist",
-   "z": "愤怒之拳",
+   "z": "憤怒之拳",
    "ty": "Ghost",
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將憤怒化為能量進行攻擊。受到的攻擊次數越多，招式的威力越大。",
+   "de": "The user converts its rage into energy to attack. The more times the user has been hit by attacks, the greater the move's power."
   },
   {
    "n": "Seismic Toss",
@@ -29610,7 +31243,15 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "利用引力將對手甩飛出去。給予對手和自己等級相同的傷害。",
+   "de": "The target is thrown using the power of gravity. It inflicts damage equal to the user's level.",
+   "fl": [
+    1,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Shadow Punch",
@@ -29619,7 +31260,15 @@
    "dc": "Physical",
    "pw": 60,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "暗藏在陰影之中出拳。攻擊必定會命中。",
+   "de": "The user throws a punch from the shadows. This attack never misses.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Smack Down",
@@ -29628,7 +31277,14 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "向空中的對手投擲石頭或炮彈等物體進行攻擊。對手會被擊落，掉到地面。",
+   "de": "The user throws a stone or similar projectile to attack the target. If the target is in the air, it will be knocked down to the ground.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Spite",
@@ -29637,7 +31293,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手最近一次使用的招式發出怨念，讓該招式減少４ＰＰ。",
+   "de": "The user unleashes its grudge on the move last used by the target by cutting 4 PP from it.",
+   "fl": [
+    4,
+    5,
+    7,
+    14
+   ]
   },
   {
    "n": "Storm Throw",
@@ -29646,7 +31310,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手發動強烈的一擊。一定會擊中要害。",
+   "de": "The user strikes the target with a fierce blow. This attack always results in a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Thrash",
@@ -29655,7 +31326,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "在２～３回合內瘋狂亂打對手進行攻擊。大鬧一番後自己會陷入混亂。",
+   "de": "The user rampages and attacks for two to three turns. The user then becomes confused.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Torment",
@@ -29664,7 +31342,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "無理取鬧，讓對手不能連續２次使出相同招式。",
+   "de": "The user torments and enrages the target, making it incapable of using the same move twice in a row.",
+   "fl": [
+    4,
+    5,
+    7,
+    14,
+    19
+   ]
   },
   {
    "n": "U-turn",
@@ -29673,7 +31360,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "攻擊後迅速返回，和後備寶可夢進行替換。",
+   "de": "After making its attack, the user rushes back to switch places with a party Pokémon in waiting.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Vacuum Wave",
@@ -29682,7 +31376,13 @@
    "dc": "Special",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "揮動拳頭，捲起真空波。必定能夠發動先制攻擊。",
+   "de": "The user whirls its fists to send a wave of pure vacuum at the target. This move always goes first.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Amnesia",
@@ -29691,7 +31391,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "將頭腦清空，藉由在一瞬間遺忘某些事大幅提高自己的特防。",
+   "de": "The user temporarily empties its mind to forget its concerns. This sharply boosts the user's Sp. Def stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Apple Acid",
@@ -29700,7 +31405,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用從酸蘋果提煉出的酸性液體進行攻擊。可降低對手的特防。",
+   "de": "The user attacks the target with an acidic liquid created from tart apples. This also lowers the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Grassy Terrain",
@@ -29709,16 +31420,23 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "在５回合內將腳下變成青草場地。地面上的寶可夢每回合都會回復ＨＰ。草屬性招式的威力會提高。",
+   "de": "The user turns the ground into Grassy Terrain for five turns. This restores the HP of Pokémon on the ground a little every turn and powers up Grass-type moves.",
+   "fl": [
+    20
+   ]
   },
   {
    "n": "Pounce",
-   "z": "虫撲",
+   "z": "蟲撲",
    "ty": "Bug",
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "撲向對手進行攻擊。可降低對手的速度。",
+   "de": "The user attacks by pouncing on the target. This also lowers the target's Speed stat."
   },
   {
    "n": "Recycle",
@@ -29727,7 +31445,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將在戰鬥中已消耗完的寶可夢持有物回收後，回復成可以使用的狀態。",
+   "de": "The user recycles a held item that has been used in battle so it can be used again.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Aqua Ring",
@@ -29736,7 +31459,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在自己的身邊套上水流環。每回合會回復自己的ＨＰ。",
+   "de": "The user envelops itself in a veil made of water. It regains some HP every turn.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Bug Bite",
@@ -29745,7 +31473,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "叮咬對手進行攻擊。可以吃下對手攜帶的樹果，並獲得樹果的效果。",
+   "de": "The user attacks by biting the target. If the target is holding a Berry, the user eats it and gains its effect.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Bug Buzz",
@@ -29754,7 +31489,15 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "利用振動產生出的音波進行攻擊。有時會降低對手的特防。",
+   "de": "The user vibrates to generate a damaging sound wave. This may also lower the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Dive",
@@ -29763,7 +31506,16 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合潛入水中，並於第２回合浮上來進行攻擊。",
+   "de": "The user dives on the first turn, then floats up and attacks on the next turn.",
+   "fl": [
+    1,
+    2,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Infestation",
@@ -29772,7 +31524,14 @@
    "dc": "Special",
    "pw": 20,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "在４～５回合內死纏爛打地進行攻擊。在此期間對手將無法逃走。",
+   "de": "The target is infested and attacked for four to five turns. The target can't flee during this time.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Leech Life",
@@ -29781,7 +31540,15 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "吸取對手的血液進行攻擊。可以回復給予對手傷害的一半ＨＰ。",
+   "de": "The user drains the target's blood. The user's HP is restored by up to half the damage taken by the target.",
+   "fl": [
+    1,
+    4,
+    7,
+    13
+   ]
   },
   {
    "n": "Liquidation",
@@ -29790,7 +31557,14 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用水之力量撞向對手進行攻擊。有時會降低對手的防禦。",
+   "de": "The user slams into the target using a full-force blast of water. This may also lower the target's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Lunge",
@@ -29799,7 +31573,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "全力猛撲對手進行攻擊。進而降低對手的攻擊。",
+   "de": "The user makes a lunge at the target, attacking with full force. This also lowers the target's Attack stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Mirror Coat",
@@ -29808,7 +31589,12 @@
    "dc": "Special",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "將來自對手的特殊攻擊傷害加倍後，返還給該對手。",
+   "de": "A retaliatory attack that counters any special move, inflicting double the damage taken.",
+   "fl": [
+    4
+   ]
   },
   {
    "n": "Power Split",
@@ -29817,7 +31603,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "用超能力將自己和對手的攻擊和特攻各別相加後，再進行平分。",
+   "de": "The user employs its psychic power to average its Attack and Sp. Atk stats with those of the target.",
+   "fl": [
+    4
+   ]
   },
   {
    "n": "Skitter Smack",
@@ -29826,7 +31617,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "從對手背後爬近後進行攻擊。會降低對手的特攻。",
+   "de": "The user skitters behind the target to attack. This also lowers the target's Sp. Atk stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Soak",
@@ -29835,7 +31633,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "朝對手灑下大量的水，讓對手變成水屬性。",
+   "de": "The user shoots a torrent of water that changes the target's type to Water.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Spit Up",
@@ -29844,7 +31649,12 @@
    "dc": "Special",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將蓄積的力量撞向對手進行攻擊。蓄積得越多，威力越大。",
+   "de": "The power stored using the move Stockpile is released at once in an attack. The more power is stored, the greater the move's power.",
+   "fl": [
+    4
+   ]
   },
   {
    "n": "Sticky Web",
@@ -29853,7 +31663,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在對手周圍撒下黏黏的網，降低替換出場的對手的速度。",
+   "de": "The user weaves a sticky net around the opposing team, which lowers their Speed stats upon switching into battle.",
+   "fl": [
+    5
+   ]
   },
   {
    "n": "Stockpile",
@@ -29862,7 +31677,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "蓄積力量，提高自己的防禦和特防。最多蓄積３次。",
+   "de": "The user stores power and boosts its Defense and Sp. Def stats. This move can be used up to three times.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Waterfall",
@@ -29871,7 +31691,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "以驚人的氣勢撲向對手。有時會讓對手畏縮。",
+   "de": "The user charges at the target and may make it flinch.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Acid Spray",
@@ -29880,7 +31707,14 @@
    "dc": "Special",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "噴出能溶化對手的液體進行攻擊。可大幅降低對手的特防。",
+   "de": "The user attacks by spitting fluid that works to melt the target. This also harshly lowers the target's Sp. Def stat.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Belch",
@@ -29889,7 +31723,12 @@
    "dc": "Special",
    "pw": 120,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "朝著對手打嗝進行攻擊。沒吃下樹果時無法使用。",
+   "de": "The user lets out a damaging belch at the target. The user must eat a held Berry to use this move.",
+   "fl": [
+    4
+   ]
   },
   {
    "n": "Coil",
@@ -29898,7 +31737,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "盤蜷身體集中精神。可提高自己的攻擊、防禦和命中率。",
+   "de": "The user coils up and concentrates. This boosts its Attack and Defense stats as well as its accuracy.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Gastro Acid",
@@ -29907,7 +31751,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將胃液吐向對手的身體。沾到的胃液會消除對手的特性效果。",
+   "de": "The user hurls up its stomach acids on the target. The fluid eliminates the effect of the target's Ability.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Glare",
@@ -29916,7 +31767,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用腹部的花紋使對手心生恐懼，讓對手陷入麻痺狀態。",
+   "de": "The user intimidates the target with the pattern on its belly to cause paralysis.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Mud Shot",
@@ -29925,7 +31783,13 @@
    "dc": "Special",
    "pw": 55,
    "ac": 95,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手投擲泥塊進行攻擊。同時降低對手的速度。",
+   "de": "The user attacks by hurling a blob of mud at the target. This also lowers the target's Speed stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Poison Fang",
@@ -29934,7 +31798,15 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用有毒的牙齒咬住對手進行攻擊。有時會讓對手陷入劇毒狀態。",
+   "de": "The user bites the target with toxic fangs. This may also leave the target badly poisoned.",
+   "fl": [
+    1,
+    4,
+    7,
+    16
+   ]
   },
   {
    "n": "Scale Shot",
@@ -29943,7 +31815,13 @@
    "dc": "Physical",
    "pw": 25,
    "ac": 90,
-   "pp": 20
+   "pp": 20,
+   "d": "射出鱗片進行攻擊。可連續攻擊２～５次。速度會提高但防禦會降低。",
+   "de": "The user attacks by shooting scales two to five times in a row. This move boosts the user's Speed stat but lowers its Defense stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Sludge Bomb",
@@ -29952,7 +31830,14 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手投擲污泥進行攻擊。有時會讓對手陷入中毒狀態。",
+   "de": "The user hurls unsanitary sludge at the target to inflict damage. This may also poison the target.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Sludge Wave",
@@ -29961,7 +31846,13 @@
    "dc": "Special",
    "pw": 95,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用污泥波攻擊自己周圍所有的寶可夢。有時會讓對手陷入中毒狀態。",
+   "de": "The user strikes everything around it by swamping the area with a giant sludge wave. This may also poison those it hits.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Swallow",
@@ -29970,7 +31861,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將蓄積的力量吞下，回復自己的ＨＰ。蓄積得越多，回復越多。",
+   "de": "The power stored using the move Stockpile is absorbed by the user to restore its own HP. The more power is stored, the more HP is restored.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Switcheroo",
@@ -29979,7 +31876,13 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "以肉眼看不清的速度將自己和對手的持有物互相交換。",
+   "de": "The user trades held items with the target faster than the eye can follow.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Toxic",
@@ -29988,7 +31891,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "讓對手陷入劇毒狀態。中毒傷害會隨著回合的進行而增加。",
+   "de": "A move that leaves the target badly poisoned. Its poison damage worsens every turn.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Toxic Spikes",
@@ -29997,7 +31907,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "在對手腳下散布毒菱。讓對手替換出場的寶可夢陷入中毒狀態。",
+   "de": "The user lays a trap of poison spikes at the feet of the opposing team. The spikes will poison opposing Pokémon that switch into battle.",
+   "fl": [
+    5,
+    20
+   ]
   },
   {
    "n": "Venoshock",
@@ -30006,7 +31922,13 @@
    "dc": "Special",
    "pw": 65,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將特殊的毒液潑向對手。攻擊陷入中毒狀態的對手時，威力會變成２倍。",
+   "de": "The user drenches the target in a special poisonous liquid. This move's power is doubled if the target is poisoned.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Wrap",
@@ -30015,7 +31937,14 @@
    "dc": "Physical",
    "pw": 15,
    "ac": 90,
-   "pp": 20
+   "pp": 20,
+   "d": "使用長長的身體或藤蔓等，在４～５回合內緊束對手進行攻擊。",
+   "de": "A long body, vines, or the like are used to wrap and squeeze the target for four to five turns.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Burn Up",
@@ -30024,7 +31953,14 @@
    "dc": "Special",
    "pw": 130,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "燃盡全身的火焰，給予對手巨大的傷害。自己的火屬性將會消失。",
+   "de": "To inflict massive damage, the user burns itself out. After using this move, the user will no longer be Fire type.",
+   "fl": [
+    4,
+    7,
+    11
+   ]
   },
   {
    "n": "Covet",
@@ -30033,7 +31969,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "一邊可愛地撒嬌，一邊靠近對手，奪取對手攜帶的道具。",
+   "de": "The user endearingly approaches the target, then steals the target's held item.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Extreme Speed",
@@ -30042,7 +31985,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "以迅雷不及掩耳之勢猛撞向對手進行攻擊。必定能夠發動先制攻擊。",
+   "de": "The user charges the target at blinding speed. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Flame Charge",
@@ -30051,7 +32001,14 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "讓火焰圍繞全身後攻擊對手。同時蓄積力量來提高自己的速度。",
+   "de": "Cloaking itself in flame, the user attacks the target. Then, building up momentum, the user boosts its Speed stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Flare Blitz",
@@ -30060,7 +32017,15 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "將火焰圍繞全身後猛撞對手。自己也會受到不小的傷害。有時會讓對手陷入灼傷狀態。",
+   "de": "The user cloaks itself in fire and charges the target to inflict damage. This also damages the user quite a lot and may leave the target with a burn.",
+   "fl": [
+    1,
+    4,
+    7,
+    11
+   ]
   },
   {
    "n": "Heat Crash",
@@ -30069,7 +32034,15 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用燃燒的身體重壓對手進行攻擊。體重比對手重越多，威力越大。",
+   "de": "The user slams into the target with its flame-covered body. The more the user outweighs the target, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Howl",
@@ -30078,7 +32051,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "大聲地吼叫提升氣勢，提高自己和同伴的攻擊。",
+   "de": "The user howls loudly to rouse itself and its allies. This boosts their Attack stats.",
+   "fl": [
+    6,
+    9
+   ]
   },
   {
    "n": "Morning Sun",
@@ -30087,16 +32066,24 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "回復自己的ＨＰ。回復量會隨著天氣的不同而有所變化。",
+   "de": "The user restores its own HP. The amount of HP regained varies with the weather.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Raging Fury",
-   "z": "大愤慨",
+   "z": "大憤慨",
    "ty": "Fire",
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "在２～３回合內放出火焰，同時瘋狂亂打。大鬧一番後自己會陷入混亂。",
+   "de": "The user rampages around spewing flames for two to three turns. The user then becomes confused."
   },
   {
    "n": "Scorching Sands",
@@ -30105,7 +32092,14 @@
    "dc": "Special",
    "pw": 70,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手投灑熾熱的沙子進行攻擊。有時會讓對手陷入灼傷狀態。",
+   "de": "The user throws scorching sand at the target to attack. This may also leave the target with a burn.",
+   "fl": [
+    4,
+    7,
+    11
+   ]
   },
   {
    "n": "Temper Flare",
@@ -30114,7 +32108,9 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用自暴自棄的狠勁攻擊對手。如果上一回合的招式沒有命中，威力就會加倍。",
+   "de": "Spurred by desperation, the user attacks the target. This move's power is doubled if the user's previous move failed."
   },
   {
    "n": "Aura Sphere",
@@ -30123,7 +32119,16 @@
    "dc": "Special",
    "pw": 80,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "將來自體內深處的波導之力擊向對手。攻擊必定會命中。",
+   "de": "The user lets loose a pulse of aura power from deep within its body at the target. This attack never misses.",
+   "fl": [
+    4,
+    7,
+    12,
+    17,
+    18
+   ]
   },
   {
    "n": "Electro Shot",
@@ -30132,7 +32137,9 @@
    "dc": "Special",
    "pw": 130,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使用後的第１回合會收集電力來提高特攻，並於第２回合發射出高壓電。天氣為下雨時可立即發射。",
+   "de": "The user gathers electricity on the first turn, boosting its Sp. Atk stat, then fires a high-voltage shot on the next turn. The shot will be fired immediately in rain."
   },
   {
    "n": "Cross Poison",
@@ -30141,7 +32148,14 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用毒刃劈開對手。有時會讓對手陷入中毒狀態，也容易擊中要害。",
+   "de": "A slashing attack with a poisonous blade that may also poison the target. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Fell Stinger",
@@ -30150,7 +32164,14 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "使用此招式打倒對手時，自己的攻擊會極大幅提高。",
+   "de": "When the user knocks out a target with this move, the user's Attack stat is boosted drastically.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "First Impression",
@@ -30159,7 +32180,14 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "招式的威力雖高，但只有在出場戰鬥時，立刻使出才能成功。",
+   "de": "Although this move has great power, it works only on the first turn each time the user enters battle.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Pin Missile",
@@ -30168,7 +32196,13 @@
    "dc": "Physical",
    "pw": 25,
    "ac": 95,
-   "pp": 20
+   "pp": 20,
+   "d": "向對手發射銳利的針進行攻擊。可連續攻擊２～５次。",
+   "de": "The user attacks by shooting sharp spikes at the target. This move hits two to five times in a row.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Rage Powder",
@@ -30177,7 +32211,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "將令人煩躁的粉末撒在自己身上，吸引對手的注意。進而將對手的攻擊全部轉移到自己身上。",
+   "de": "The user scatters a cloud of irritating powder to draw attention to itself. Opposing Pokémon aim only at the user.",
+   "fl": [
+    15
+   ]
   },
   {
    "n": "String Shot",
@@ -30186,7 +32225,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 95,
-   "pp": 20
+   "pp": 20,
+   "d": "用口中吐出的絲纏繞對手，大幅降低對手的速度。",
+   "de": "The user blows silk from its mouth that binds opposing Pokémon and harshly lowers their Speed stats.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Struggle Bug",
@@ -30195,7 +32241,13 @@
    "dc": "Special",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "抵抗對手進行攻擊。可降低對手的特攻。",
+   "de": "The user attacks by struggling against opposing Pokémon. This also lowers their Sp. Atk stats.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Toxic Thread",
@@ -30204,16 +32256,25 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "將混有毒的絲吐向對手。使其中毒，進而降低對手的速度。",
+   "de": "The user shoots poisonous threads to poison the target and lower the target's Speed stat.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Armor Cannon",
-   "z": "铠农炮",
+   "z": "鎧農炮",
    "ty": "Fire",
    "dc": "Special",
    "pw": 120,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "將自身的鎧甲做成熊熊燃燒的砲彈擊發進行攻擊。自己的防禦和特防會降低。",
+   "de": "The user shoots its own armor out as blazing projectiles. This also lowers the user’s Defense and Sp. Def stats."
   },
   {
    "n": "Clear Smog",
@@ -30222,7 +32283,13 @@
    "dc": "Special",
    "pw": 50,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手投擲特殊的泥塊進行攻擊。能讓對手的能力變化回復到初始狀態。",
+   "de": "The user attacks the target by throwing a clump of special mud. All stat changes are eliminated.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Lava Plume",
@@ -30231,7 +32298,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用熊熊烈火攻擊自己周圍所有的寶可夢。有時會讓對手陷入灼傷狀態。",
+   "de": "The user torches everything around it in an inferno of scarlet flames. This may also leave those it hits with a burn.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Flail",
@@ -30240,7 +32313,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "抓狂般亂打進行攻擊。自己的ＨＰ越少，招式的威力越大。",
+   "de": "The user flails about aimlessly to attack. The less HP the user has, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Heal Pulse",
@@ -30249,7 +32329,16 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "釋放出治癒波動，讓對手回復最大ＨＰ的一半。",
+   "de": "The user emits a healing pulse that restores the target's HP by up to half its max HP.",
+   "fl": [
+    4,
+    5,
+    12,
+    13,
+    17
+   ]
   },
   {
    "n": "Hypnosis",
@@ -30258,7 +32347,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 60,
-   "pp": 20
+   "pp": 20,
+   "d": "施加引發睡意的暗示，讓對手陷入睡眠狀態。",
+   "de": "The user employs hypnotic suggestion to make the target fall asleep.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Wish",
@@ -30267,7 +32363,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "在下一回合回復自己或是替換上場的寶可夢最大ＨＰ的一半。",
+   "de": "One turn after this move is used, the user's or its replacement's HP is restored by up to half the user's max HP.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Healing Wish",
@@ -30276,7 +32378,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "雖然自己會陷入瀕死，但可以治癒接替上場的寶可夢的異常狀態並回復ＨＰ。",
+   "de": "The user faints. In return, the Pokémon taking its place will have its HP restored and status conditions cured.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Life Dew",
@@ -30285,7 +32393,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "灑出神奇之水，回復自己和場上同伴的ＨＰ。",
+   "de": "The user scatters mysterious water around and restores the HP of itself and its ally Pokémon currently in the battle.",
+   "fl": [
+    6,
+    13,
+    14
+   ]
   },
   {
    "n": "Simple Beam",
@@ -30294,7 +32409,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手發射謎樣的念力波。接收了念力波的對手，特性會變成單純。",
+   "de": "The user emits a mysterious psychic wave that changes the target's Ability to Simple.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Yawn",
@@ -30303,7 +32425,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "打個大哈欠引起睡意。在下一回合讓對手陷入睡眠狀態。",
+   "de": "The user lets loose a huge yawn that lulls the target into falling asleep on the next turn.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Freeze-Dry",
@@ -30312,7 +32441,13 @@
    "dc": "Special",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "急速冷凍對手，有時會讓對手陷入冰凍狀態。對水屬性寶可夢也是效果絕佳。",
+   "de": "The user rapidly cools the target. This may also leave the target frozen. This move is super effective on Water types.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Icicle Crash",
@@ -30321,7 +32456,13 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "將巨大冰柱猛烈地砸向對手進行攻擊。有時會使對手畏縮。",
+   "de": "The user attacks by crashing large icicles onto the target. This may also make the target flinch.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Rapid Spin",
@@ -30330,16 +32471,25 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "藉由旋轉來攻擊對手。也可以擺脫綁緊、緊束、寄生種子等招式。自己的速度也會提高。",
+   "de": "The user performs a spin attack that can also eliminate the effects of such moves as Bind, Wrap, and Leech Seed. This also boosts the user's Speed stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Mountain Gale",
-   "z": "冰山风",
+   "z": "冰山風",
    "ty": "Ice",
    "dc": "Physical",
    "pw": 120,
    "ac": 85,
-   "pp": 12
+   "pp": 12,
+   "d": "將冰山般巨大的冰塊砸向對手進行攻擊。有時會使對手畏縮。",
+   "de": "The user hurls giant chunks of ice at the target to inflict damage. This may also make the target flinch."
   },
   {
    "n": "Aqua Jet",
@@ -30348,7 +32498,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "以迅雷不及掩耳之勢撲向對手。必定能夠發動先制攻擊。",
+   "de": "The user lunges at the target to inflict damage, moving at blinding speed. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Aqua Tail",
@@ -30357,7 +32514,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "如驚濤駭浪般地甩動大尾巴攻擊對手。",
+   "de": "The user attacks by swinging its tail as if it were a vicious wave in a raging storm.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Belly Drum",
@@ -30366,7 +32530,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將現有的ＨＰ減去最大ＨＰ的一半，讓自己的攻擊提高至最大值。",
+   "de": "The user maximizes its Attack stat but loses HP equal to half its max HP.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Copycat",
@@ -30375,7 +32544,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "模仿對手最近一次使用的招式，若對手沒有成功出招則會失敗。",
+   "de": "The user mimics the move used immediately before it. The move fails if no other move has been used yet."
   },
   {
    "n": "Muddy Water",
@@ -30384,7 +32555,14 @@
    "dc": "Special",
    "pw": 90,
    "ac": 85,
-   "pp": 12
+   "pp": 12,
+   "d": "用渾濁的污水攻擊對手。有時會降低對手的命中率。",
+   "de": "The user attacks by shooting muddy water at opposing Pokémon. This may also lower their accuracy.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Tickle",
@@ -30393,7 +32571,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "搔癢對手的身體，讓對手發笑，降低對手的攻擊和防禦。",
+   "de": "The user tickles the target into laughing, lowering its Attack and Defense stats.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Burning Jealousy",
@@ -30402,7 +32587,13 @@
    "dc": "Special",
    "pw": 70,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "用嫉妒的能量攻擊對手。讓此回合內能力提高的寶可夢陷入灼傷狀態。",
+   "de": "The user attacks with energy from jealousy. This leaves all opposing Pokémon that have had their stats boosted during the turn with a burn.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Aqua Cutter",
@@ -30411,7 +32602,9 @@
    "dc": "Physical",
    "pw": 70,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "噴射出經過加壓的水，如刀刃似地劈開對手。容易擊中要害。",
+   "de": "The user expels pressurized water to cut at the target like a blade. This move has a heightened chance of landing a critical hit."
   },
   {
    "n": "Razor Shell",
@@ -30420,7 +32613,14 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "用鋒利的貝殼斬切對手進行攻擊。有時會降低對手的防禦。",
+   "de": "The user cuts the target with sharp shells to inflict damage. This may also lower the target's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Rock Polish",
@@ -30429,7 +32629,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "打磨自己的身體，減少空氣阻力。可大幅提高自己的速度。",
+   "de": "The user polishes its body to reduce drag. This sharply boosts the user's Speed stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Scald",
@@ -30438,7 +32643,14 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手噴射滾燙的熱水進行攻擊。有時會讓對手陷入灼傷狀態。",
+   "de": "The user attacks by shooting boiling hot water at the target. This may also leave the target with a burn.",
+   "fl": [
+    4,
+    7,
+    11
+   ]
   },
   {
    "n": "Shell Smash",
@@ -30447,7 +32659,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "破殼而出。自己的防禦和特防會降低，但能大幅提高攻擊、特攻和速度。",
+   "de": "The user breaks its shell, which lowers its Defense and Sp. Def stats but sharply boosts its Attack, Sp. Atk, and Speed stats.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Flip Turn",
@@ -30456,7 +32673,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "攻擊後迅速返回，和後備寶可夢進行替換。",
+   "de": "After making its attack, the user rushes back to switch places with a party Pokémon in waiting.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Last Respects",
@@ -30465,7 +32689,9 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "為了替夥伴雪恨而攻擊。被打倒的我方寶可夢越多，招式威力就會越強。",
+   "de": "The user attacks to avenge its allies. The more defeated allies there are in the user's party, the greater the move's power."
   },
   {
    "n": "Wave Crash",
@@ -30474,7 +32700,9 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用水圍繞全身並撞向對手，但自己也會受到不小的傷害。",
+   "de": "The user shrouds itself in water and slams into the target with its whole body to inflict damage. This also damages the user quite a lot."
   },
   {
    "n": "Fissure",
@@ -30483,7 +32711,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 30,
-   "pp": 8
+   "pp": 8,
+   "d": "讓對手掉進地面的裂縫中進行攻擊。只要命中就會一擊瀕死。",
+   "de": "The user opens up a fissure in the ground and drops the target in. The target faints instantly if this attack hits.",
+   "fl": [
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Air Cutter",
@@ -30492,7 +32727,13 @@
    "dc": "Special",
    "pw": 60,
    "ac": 95,
-   "pp": 20
+   "pp": 20,
+   "d": "用鋒利的風刃斬切對手進行攻擊。容易擊中要害。",
+   "de": "The user launches razor-like wind to slash opposing Pokémon. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Drill Run",
@@ -30501,7 +32742,14 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "像鑽頭一樣旋轉身體，猛烈地撞擊對手。容易擊中要害。",
+   "de": "The user crashes into the target while rotating its body like a drill. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Pollen Puff",
@@ -30510,7 +32758,14 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "對敵人使用時，用會爆炸的花粉團來攻擊。對我方同伴使用時，則給予有回復效果的花粉團。",
+   "de": "The user attacks the enemy with a pollen puff that explodes. If the target is an ally, it gives the ally a pollen puff that restores its HP instead.",
+   "fl": [
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Slack Off",
@@ -30519,7 +32774,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "偷懶休息。回復自己最大ＨＰ的一半。",
+   "de": "The user slacks off, restoring its own HP by up to half its max HP.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Fake Out",
@@ -30528,7 +32789,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "利用先制攻擊使對手畏縮。要在上場後立即使用才會成功。",
+   "de": "This attack hits first and makes the target flinch. It works only on the first turn each time the user enters battle.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Hydro Cannon",
@@ -30537,7 +32805,14 @@
    "dc": "Special",
    "pw": 150,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "向對手發射水炮進行攻擊。下一回合自己將無法動彈。",
+   "de": "The target is hit with a watery blast. The user can't move on the next turn.",
+   "fl": [
+    3,
+    4,
+    7
+   ]
   },
   {
    "n": "Terrain Pulse",
@@ -30546,7 +32821,14 @@
    "dc": "Special",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "藉助場地的力量進行攻擊。視使出招式時場地狀態不同，招式的屬性和威力會有所變化。",
+   "de": "The user utilizes the energy of the terrain to attack. This move’s type and power change depending on the terrain at the time the move is used.",
+   "fl": [
+    4,
+    7,
+    17
+   ]
   },
   {
    "n": "Water Spout",
@@ -30555,7 +32837,13 @@
    "dc": "Special",
    "pw": 150,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "噴起潮水進行攻擊。自己的ＨＰ越少，招式的威力越小。",
+   "de": "The user spouts water to damage opposing Pokémon. The lower the user's HP, the lower the move's power.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Blast Burn",
@@ -30564,7 +32852,14 @@
    "dc": "Special",
    "pw": 150,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "用爆炸的火焰燒盡對手進行攻擊。下一回合自己將無法動彈。",
+   "de": "The target is razed by a fiery explosion. The user can't move on the next turn.",
+   "fl": [
+    3,
+    4,
+    7
+   ]
   },
   {
    "n": "Blaze Kick",
@@ -30573,7 +32868,14 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "有時會讓受到攻擊的對手陷入灼傷狀態。且容易擊中要害。",
+   "de": "The user launches a kick that has a heightened chance of landing a critical hit. This may also leave the target with a burn.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Crush Claw",
@@ -30582,7 +32884,14 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "用堅硬的銳爪撕裂對手進行攻擊。有時會降低對手的防禦。",
+   "de": "The user slashes the target with hard and sharp claws. This may also lower the target's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "High Jump Kick",
@@ -30591,7 +32900,15 @@
    "dc": "Physical",
    "pw": 130,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "跳起後用膝蓋踢擊對手。沒踢中對手時自己會受到傷害。",
+   "de": "The target is attacked with a knee kick from a jump. If this move misses, the user takes damage instead.",
+   "fl": [
+    1,
+    4,
+    7,
+    10
+   ]
   },
   {
    "n": "Upper Hand",
@@ -30600,7 +32917,9 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "察覺對手動作並以掌底攻擊來反應，讓對手畏縮。若對手使用的招式不是先制攻擊則會失敗。",
+   "de": "The user reacts to the target's movement and strikes with the heel of its palm, making the target flinch. This move fails if the target is not readying a priority move."
   },
   {
    "n": "Eruption",
@@ -30609,7 +32928,13 @@
    "dc": "Special",
    "pw": 150,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "爆發怒火攻擊對手。自己的ＨＰ越少，招式的威力越小。",
+   "de": "The user attacks opposing Pokémon with explosive fury. The lower the user's HP, the lower the move's power.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Self-Destruct",
@@ -30618,7 +32943,13 @@
    "dc": "Physical",
    "pw": 200,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "引起爆炸，攻擊自己周圍所有的寶可夢。使用後自己會陷入瀕死。",
+   "de": "The user attacks everything around it by causing an explosion. The user faints upon using this move.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Cosmic Power",
@@ -30627,7 +32958,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "吸取來自宇宙的神秘力量，提高自己的防禦和特防。",
+   "de": "The user absorbs a mystical power from space to boost its Defense and Sp. Def stats.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Bitter Blade",
@@ -30636,7 +32972,9 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將對這個世界的牽掛注入劍尖進行劈斬。可以回復給予對手傷害的一半ＨＰ。",
+   "de": "The user focuses its bitter feelings toward the world of the living into a slashing attack. The user's HP is restored by up to half the damage taken by the target."
   },
   {
    "n": "Quick Guard",
@@ -30645,7 +32983,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "保護自己和同伴，防禦來自對手的先制攻擊。",
+   "de": "The user protects itself and its allies from priority moves.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Inferno",
@@ -30654,7 +32997,13 @@
    "dc": "Special",
    "pw": 100,
    "ac": 50,
-   "pp": 8
+   "pp": 8,
+   "d": "用猛烈的火焰包圍對手進行攻擊。能讓對手陷入灼傷狀態。",
+   "de": "The user attacks by engulfing the target in an intense fire. This leaves the target with a burn.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Memento",
@@ -30663,7 +33012,13 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "雖然自己會陷入瀕死，但可以大幅降低對手的攻擊和特攻。",
+   "de": "The user faints. In return, the target's Attack and Sp. Atk stats are harshly lowered.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Minimize",
@@ -30672,7 +33027,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "蜷縮身體使自己顯得很小，大幅提高自己的閃避率。",
+   "de": "The user compresses its body to make itself look smaller, which sharply boosts its evasiveness.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Frenzy Plant",
@@ -30681,7 +33041,15 @@
    "dc": "Special",
    "pw": 150,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "將大大的樹木甩向對手進行攻擊。下一回合自己將無法動彈。",
+   "de": "The user slams the target with the roots of an enormous tree. The user can't move on the next turn.",
+   "fl": [
+    3,
+    4,
+    7,
+    20
+   ]
   },
   {
    "n": "Hammer Arm",
@@ -30690,7 +33058,15 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "揮出強力而沉重的拳頭，給予對手傷害。自己的速度會降低。",
+   "de": "The user swings its strong, heavy fist at the target to inflict damage. This also lowers the user's Speed stat.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Spikes",
@@ -30699,7 +33075,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "將撒菱散布在對手的腳下。讓對手替換出場的寶可夢受到傷害。",
+   "de": "The user lays a trap of spikes at the feet of the opposing team. The spikes will damage opposing Pokémon that switch into battle.",
+   "fl": [
+    5,
+    20
+   ]
   },
   {
    "n": "Spiky Shield",
@@ -30708,7 +33090,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "防禦來自對手的攻擊，同時削減接觸到自己的對手的ＨＰ。",
+   "de": "In addition to protecting the user from attacks, this move also damages any attacker that makes direct contact."
   },
   {
    "n": "Super Fang",
@@ -30717,7 +33101,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "用銳利的門牙猛烈地咬住對手進行攻擊。對手的ＨＰ將會減半。",
+   "de": "The user chomps hard on the target with its sharp front fangs. This cuts the target's HP in half.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Synthesis",
@@ -30726,7 +33117,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "回復自己的ＨＰ。回復量會隨著天氣的不同而有所變化。",
+   "de": "The user restores its own HP. The amount of HP regained varies with the weather.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Boomburst",
@@ -30735,7 +33132,15 @@
    "dc": "Special",
    "pw": 140,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "利用震耳欲聾的爆炸聲所產生的破壞力，攻擊自己周圍所有的寶可夢。",
+   "de": "The user attacks everything around it with the destructive power of a terrible explosive sound.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Extrasensory",
@@ -30744,7 +33149,13 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "發送看不見的神奇力量進行攻擊。有時會使對手畏縮。",
+   "de": "The user attacks with an odd, unseeable power. This may also make the target flinch.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Gravity",
@@ -30753,7 +33164,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "在５回合內，飄浮特性和飛行屬性的寶可夢會被地面屬性的招式擊中。且無法使用飛向空中的招式。",
+   "de": "Enables Flying types or Pokémon with the Levitate Ability to be hit by Ground-type moves for five turns. Moves that involve flying can't be used.",
+   "fl": [
+    20
+   ]
   },
   {
    "n": "Heal Bell",
@@ -30762,7 +33178,15 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "發出悅耳的鈴聲，治癒我方全體的異常狀態。",
+   "de": "The user makes a soothing bell chime to cure the status conditions of all its fellow party Pokémon and allies.",
+   "fl": [
+    6,
+    9,
+    12,
+    14
+   ]
   },
   {
    "n": "Psychic Noise",
@@ -30771,7 +33195,9 @@
    "dc": "Special",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用令人不快的音波攻擊對手，使對手在２回合內變得無法透過招式、特性或攜帶的道具回復ＨＰ。",
+   "de": "The user attacks the target with unpleasant sound waves. For two turns, the target is prevented from recovering HP through moves, Abilities, or held items."
   },
   {
    "n": "Crabhammer",
@@ -30780,7 +33206,14 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "用巨大的鉗子敲打對手進行攻擊。容易擊中要害。",
+   "de": "The target is hammered with a large pincer. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Follow Me",
@@ -30789,7 +33222,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "吸引對手的注意，將對手的攻擊全部轉移到自己身上。",
+   "de": "The user draws attention to itself, making all opposing Pokémon take aim only at the user."
   },
   {
    "n": "Meteor Mash",
@@ -30798,7 +33233,15 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "使出如同彗星般的拳頭攻擊對手。有時會提高自己的攻擊。",
+   "de": "The target is hit with a hard punch fired like a meteor. This may also boost the user’s Attack stat.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Moonlight",
@@ -30807,7 +33250,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "回復自己的ＨＰ。回復量會隨著天氣的不同而有所變化。",
+   "de": "The user restores its own HP. The amount of HP regained varies with the weather.",
+   "fl": [
+    6,
+    13
+   ]
   },
   {
    "n": "Mach Punch",
@@ -30816,7 +33265,15 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "以迅雷不及掩耳之勢出拳。必定能夠發動先制攻擊。",
+   "de": "The user throws a punch at blinding speed. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Drill Peck",
@@ -30825,7 +33282,15 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "一邊旋轉，一邊將尖喙刺進對手進行攻擊。",
+   "de": "A corkscrewing attack that strikes the target with a sharp beak acting as a drill.",
+   "fl": [
+    1,
+    4,
+    7,
+    12
+   ]
   },
   {
    "n": "Power Trip",
@@ -30834,7 +33299,14 @@
    "dc": "Physical",
    "pw": 20,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "耀武揚威地攻擊對手，自己的能力提高得越多，威力就越大。",
+   "de": "The user boasts its strength and attacks the target. The more the user's stats are boosted, the greater the move's power.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Leaf Blade",
@@ -30843,7 +33315,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "如用劍般操控葉子切斬對手進行攻擊。容易擊中要害。",
+   "de": "The user handles a sharp leaf like a sword and cuts the target to inflict damage. This move has a heightened chance of landing a critical hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Spirit Shackle",
@@ -30852,7 +33331,13 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "攻擊的同時，縫住對手的影子，使其無法逃走。",
+   "de": "The user attacks while simultaneously stitching the target's shadow to the ground to prevent the target from fleeing.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Triple Arrows",
@@ -30861,7 +33346,9 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "使出腿技後同時發射３箭。有時會降低對手的防禦或讓對手畏縮。容易擊中要害。",
+   "de": "The user kicks, then fires three arrows. This move has a heightened chance of landing a critical hit and may also lower the target’s Defense stat or make it flinch."
   },
   {
    "n": "Magnet Rise",
@@ -30870,7 +33357,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "利用電氣產生的磁力浮在空中。在５回合內可以飄浮。",
+   "de": "The user levitates using electrically generated magnetism for five turns.",
+   "fl": [
+    6,
+    10
+   ]
   },
   {
    "n": "Nuzzle",
@@ -30879,7 +33372,14 @@
    "dc": "Physical",
    "pw": 20,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用帶電的臉頰磨蹭對手進行攻擊。能讓對手陷入麻痺狀態。",
+   "de": "The user attacks by nuzzling its electrified cheeks against the target. This also leaves the target with paralysis.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Tearful Look",
@@ -30888,7 +33388,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "變得淚眼汪汪，令對手喪失鬥志。進而降低對手的攻擊和特攻。",
+   "de": "The user gets teary-eyed to make the target lose its combative spirit. This lowers the target's Attack and Sp. Atk stats.",
+   "fl": [
+    5,
+    7
+   ]
   },
   {
    "n": "Transform",
@@ -30897,7 +33403,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "變身成對手寶可夢的樣子，能夠使用和對手完全相同的招式。",
+   "de": "The user transforms into a copy of the target, right down to having the same move set."
   },
   {
    "n": "Dragon Darts",
@@ -30906,7 +33414,13 @@
    "dc": "Physical",
    "pw": 50,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "讓多龍梅西亞進行２次攻擊。當對手場上有２隻寶可夢時，則向牠們各進行１次攻擊。",
+   "de": "The user attacks twice using Dreepy. If there are two opposing Pokémon, this move hits each of them once.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Lock-On",
@@ -30915,7 +33429,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "精確地瞄準，下次攻擊時一定會命中對手。",
+   "de": "The user takes sure aim at the target. This ensures the user's next move does not miss that target.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Triple Axel",
@@ -30924,7 +33444,14 @@
    "dc": "Physical",
    "pw": 20,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "連續踢對手３次進行攻擊。每踢中一次，威力就會提高。",
+   "de": "A consecutive three-kick attack that becomes more powerful with each successful hit.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Lumina Crash",
@@ -30933,7 +33460,9 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "發出對精神也會起作用的奇異光線進行攻擊。大幅降低對手的特防。",
+   "de": "The user attacks by unleashing a peculiar light that even affects the mind. This also harshly lowers the target's Sp. Def stat."
   },
   {
    "n": "Horn Drill",
@@ -30942,7 +33471,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 30,
-   "pp": 8
+   "pp": 8,
+   "d": "用旋轉的角刺進對手進行攻擊。只要命中就會一擊瀕死。",
+   "de": "The user stabs the target with a horn that rotates like a drill. The target faints instantly if this attack hits.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "No Retreat",
@@ -30951,16 +33487,23 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "提高自己所有的能力，但無法進行替換或逃走。",
+   "de": "This move boosts all the user's stats but prevents the user from switching out or fleeing.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Twin Beam",
-   "z": "双光束",
+   "z": "雙光束",
    "ty": "Psychic",
    "dc": "Special",
    "pw": 40,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "從雙眼發射不可思議的光線進行攻擊。連續２次給予傷害。",
+   "de": "The user shoots mystical beams from its eyes to inflict damage. The target is hit twice in a row."
   },
   {
    "n": "Grav Apple",
@@ -30969,7 +33512,13 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "讓蘋果從高處落下，給予對手傷害。可降低對手的防禦。",
+   "de": "The user inflicts damage by dropping an apple from high above. This also lowers the target's Defense stat.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Light of Ruin",
@@ -30978,7 +33527,13 @@
    "dc": "Special",
    "pw": 140,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "借用永恆之花的力量，發射出強力光線。自己也會受到非常大的傷害。",
+   "de": "Drawing power from the Eternal Flower, the user fires a powerful beam of light. This also damages the user quite a lot.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Petal Blizzard",
@@ -30987,7 +33542,13 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "猛烈地刮起飛雪般的落花，攻擊自己周圍所有的寶可夢。",
+   "de": "The user stirs up a violent petal blizzard and damages everything around it.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Petal Dance",
@@ -30996,7 +33557,15 @@
    "dc": "Special",
    "pw": 120,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "在２～３回合內不斷灑出花瓣攻擊對手。招式結束後自己會陷入混亂狀態。",
+   "de": "The user attacks the target by scattering petals for two to three turns. The user then becomes confused.",
+   "fl": [
+    1,
+    4,
+    7,
+    21
+   ]
   },
   {
    "n": "Explosion",
@@ -31005,7 +33574,13 @@
    "dc": "Physical",
    "pw": 250,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "引起大爆炸，攻擊自己周圍所有的寶可夢。使用後自己會陷入瀕死。",
+   "de": "The user attacks everything around it by causing a tremendous explosion. The user faints upon using this move.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Corrosive Gas",
@@ -31014,7 +33589,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "用強烈的酸性氣體包圍周圍所有的寶可夢，並將攜帶的道具融化掉。",
+   "de": "The user surrounds everything around it with highly acidic gas and melts away items they hold.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Salt Cure",
@@ -31023,7 +33605,9 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "讓對手陷入鹽醃狀態，每回合都會受到傷害。鋼、水屬性的寶可夢還會更痛苦。",
+   "de": "The user salt cures the target, inflicting damage every turn. Steel and Water types are more strongly affected by this move."
   },
   {
    "n": "Reflect Type",
@@ -31032,7 +33616,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "在自己身上反映出對手的屬性，讓自己也變成相同的屬性。",
+   "de": "The user reflects the target's type to become the same type as the target.",
+   "fl": [
+    4,
+    14
+   ]
   },
   {
    "n": "Make It Rain",
@@ -31041,16 +33631,20 @@
    "dc": "Special",
    "pw": 120,
    "ac": 95,
-   "pp": 8
+   "pp": 8,
+   "d": "撒出大量硬幣進行攻擊。自己的特攻會降低。戰鬥後還可以得到錢。",
+   "de": "The user attacks by throwing out a mass of coins. This also lowers the user's Sp. Atk stat. Money is earned after the battle."
   },
   {
    "n": "Mortal Spin",
-   "z": "晶光转转",
+   "z": "晶光轉轉",
    "ty": "Poison",
    "dc": "Physical",
    "pw": 30,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "藉由旋轉來攻擊對手。也可以擺脫綁緊、緊束、寄生種子等招式。讓對手陷入中毒狀態。",
+   "de": "The user performs a spin attack that can also eliminate the effects of such moves as Bind, Wrap, and Leech Seed. This also poisons opposing Pokémon."
   },
   {
    "n": "Power Whip",
@@ -31059,7 +33653,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 85,
-   "pp": 12
+   "pp": 12,
+   "d": "激烈地揮舞藤蔓或觸手向對手進行攻擊。",
+   "de": "The user violently whirls its vines, tentacles, or the like to lash the target.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Headlong Rush",
@@ -31068,7 +33669,9 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "向對手使出灌注了全心全力的撞擊。自己的防禦和特防會降低。",
+   "de": "The user smashes into the target in a full-body tackle. This also lowers the user’s Defense and Sp. Def stats."
   },
   {
    "n": "Shelter",
@@ -31077,7 +33680,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "讓皮膚變得像鐵盾般堅硬，大幅提高自己的防禦。",
+   "de": "The user makes its skin as hard as an iron shield, sharply boosting its Defense stat."
   },
   {
    "n": "Trick-or-Treat",
@@ -31086,7 +33691,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "邀請對手參加萬聖夜。讓對手追加幽靈屬性。",
+   "de": "The user takes the target trick-or-treating. This adds Ghost type to the target’s type.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Worry Seed",
@@ -31095,7 +33707,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "埋下令人心煩意亂的種子，讓對手睡不著，將對手的特性變成不眠。",
+   "de": "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Water Shuriken",
@@ -31104,7 +33723,13 @@
    "dc": "Special",
    "pw": 15,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "射出用黏液製成的手裡劍，連續攻擊２～５次。必定能夠發動先制攻擊。",
+   "de": "The user hits the target with throwing stars two to five times in a row. This move always goes first.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Parting Shot",
@@ -31113,7 +33738,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "拋下狠話恐嚇對手，降低對手的攻擊和特攻後，和後備寶可夢進行替換。",
+   "de": "With a parting threat, the user lowers the target's Attack and Sp. Atk stats. Then it switches places with a party Pokémon in waiting.",
+   "fl": [
+    4,
+    5,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Spirit Break",
@@ -31122,7 +33756,14 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用足以讓對手一蹶不振的氣勢進行攻擊。可降低對手的特攻。",
+   "de": "The user attacks the target with so much force that it could break the target's spirit. This also lowers the target's Sp. Atk stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Magic Powder",
@@ -31131,7 +33772,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "撒出魔法粉末，使對手變為超能力屬性。",
+   "de": "The user scatters a cloud of magic powder that changes the target's type to Psychic.",
+   "fl": [
+    4,
+    5,
+    7,
+    15
+   ]
   },
   {
    "n": "Quash",
@@ -31140,7 +33789,13 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "壓制對手，讓對手在回合的最後才能行動。",
+   "de": "The user suppresses the target and makes its move go last.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Flying Press",
@@ -31149,7 +33804,17 @@
    "dc": "Physical",
    "pw": 100,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "從空中俯衝向對手進行攻擊。此招式同時具有格鬥屬性和飛行屬性。",
+   "de": "The user dives down onto the target from the sky. This move is Fighting and Flying type simultaneously.",
+   "fl": [
+    1,
+    4,
+    7,
+    10,
+    12,
+    20
+   ]
   },
   {
    "n": "Electrify",
@@ -31158,7 +33823,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "如果在對手使用招式前輸電，該回合對手的招式會變成電屬性。",
+   "de": "If the target is electrified before it uses a move during that turn, the target’s move becomes Electric type.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Shed Tail",
@@ -31167,7 +33838,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "削減自己的ＨＰ，製造分身後返回，和後備寶可夢進行替換。",
+   "de": "The user creates a substitute for itself using its own HP before switching places with a party Pokémon in waiting."
   },
   {
    "n": "Circle Throw",
@@ -31176,7 +33849,14 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "摔飛對手，強制讓後備寶可夢上場。對手為野生寶可夢時，戰鬥將直接結束。",
+   "de": "The target is thrown, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Comeuppance",
@@ -31185,7 +33865,9 @@
    "dc": "Physical",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將發動攻擊前最後受到的招式傷害放大，向對手進行報復。",
+   "de": "The user retaliates with much greater force against the opponent that last inflicted damage on it."
   },
   {
    "n": "Fickle Beam",
@@ -31194,16 +33876,20 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "發射光線進行攻擊。有時會和其他的頭合力發射雷射，讓招式威力變成２倍。",
+   "de": "The user shoots a beam of light to inflict damage. Sometimes all the user's heads shoot beams in unison, doubling the move's power."
   },
   {
    "n": "Syrup Bomb",
-   "z": "",
+   "z": "糖漿炸彈",
    "ty": "Grass",
    "dc": "Special",
    "pw": 60,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "使黏稠的糖漿爆炸，使對手陷入滿身糖狀態，在３回合內持續降低對手的速度。",
+   "de": "The user sets off an explosion of sticky candy syrup, which coats the target and causes the target's Speed stat to drop each turn for three turns."
   },
   {
    "n": "Darkest Lariat",
@@ -31212,7 +33898,14 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "旋轉雙臂並打向對手。可不顧對手的能力變化給予傷害。",
+   "de": "The user swings both arms and hits the target. The target's stat changes don't affect the damage inflicted by this move.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Guillotine",
@@ -31221,7 +33914,14 @@
    "dc": "Physical",
    "pw": null,
    "ac": 30,
-   "pp": 8
+   "pp": 8,
+   "d": "用巨大的鉗子或剪刀等撕裂對手進行攻擊。只要命中就會一擊瀕死。",
+   "de": "A vicious tearing attack with big pincers. The target faints instantly if this attack hits.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Kowtow Cleave",
@@ -31230,7 +33930,9 @@
    "dc": "Physical",
    "pw": 85,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "向對手下跪使其大意，接著對其劈斬。攻擊必定會命中。",
+   "de": "The user slashes at the target after kowtowing to make the target let down its guard. This attack never misses."
   },
   {
    "n": "Stone Axe",
@@ -31239,7 +33941,9 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 90,
-   "pp": 16
+   "pp": 16,
+   "d": "用岩石之斧進行攻擊。散落的岩石碎片會在對手周圍飄浮。",
+   "de": "The user swings its stone axes at the target. Stone splinters left behind by this attack float around the target."
   },
   {
    "n": "Fairy Lock",
@@ -31248,7 +33952,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "封鎖對戰場地，下一回合所有的寶可夢都無法逃走。",
+   "de": "By locking down the battlefield, the user keeps all Pokémon from fleeing during the next turn.",
+   "fl": [
+    7,
+    14
+   ]
   },
   {
    "n": "Clanging Scales",
@@ -31257,7 +33967,15 @@
    "dc": "Special",
    "pw": 110,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "摩擦全身鱗片，發出響亮的聲音並進行攻擊。攻擊後自己的防禦會降低。",
+   "de": "The user rubs the scales on its entire body and makes a huge noise to attack opposing Pokémon. The user's Defense stat is lowered after the attack.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Clangorous Soul",
@@ -31266,7 +33984,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 8
+   "pp": 8,
+   "d": "消耗一些自己的ＨＰ，提高自己的所有能力。",
+   "de": "The user boosts all its stats by using some of its own HP.",
+   "fl": [
+    6,
+    9,
+    21
+   ]
   },
   {
    "n": "Noble Roar",
@@ -31275,7 +34000,16 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "發出戰吼威嚇對手，降低對手的攻擊和特攻。",
+   "de": "Letting out a noble roar, the user intimidates the target and lowers the target's Attack and Sp. Atk stats.",
+   "fl": [
+    4,
+    5,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Teeter Dance",
@@ -31284,7 +34018,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "搖搖晃晃地跳起舞，讓自己周圍的寶可夢陷入混亂狀態。",
+   "de": "The user performs a wobbly dance that confuses every Pokémon around it.",
+   "fl": [
+    4,
+    7,
+    21
+   ]
   },
   {
    "n": "Bone Rush",
@@ -31293,7 +34034,13 @@
    "dc": "Physical",
    "pw": 30,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "用堅硬的骨頭毆打對手進行攻擊。連續攻擊２～５次。",
+   "de": "The user attacks by striking the target with a hard bone. This move hits two to five times in a row.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Bullet Punch",
@@ -31302,7 +34049,15 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "向對手連續揮出如子彈般快速且堅硬的拳頭。必定能夠發動先制攻擊。",
+   "de": "The user strikes the target with tough punches as fast as bullets. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7,
+    8
+   ]
   },
   {
    "n": "Final Gambit",
@@ -31311,7 +34066,12 @@
    "dc": "Special",
    "pw": null,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "捨身攻擊對手。雖然自己會陷入瀕死，但能夠給予對手和自己現有ＨＰ相同的傷害。",
+   "de": "The user risks everything to attack the target. The user faints but inflicts damage equal to its own HP.",
+   "fl": [
+    4
+   ]
   },
   {
    "n": "Accelerock",
@@ -31320,7 +34080,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "迅速撞向對手進行攻擊。必定能夠發動先制攻擊。",
+   "de": "The user smashes into the target at high speed. This move always goes first.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Tail Slap",
@@ -31329,7 +34096,14 @@
    "dc": "Physical",
    "pw": 25,
    "ac": 85,
-   "pp": 12
+   "pp": 12,
+   "d": "將堅硬的尾巴掃向對手進行攻擊。可連續攻擊２～５次。",
+   "de": "The user attacks by striking the target with its hard tail. This move hits two to five times in a row.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Acupressure",
@@ -31338,7 +34112,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "利用點穴激發身體的活力，大幅提高某一項能力。",
+   "de": "The user applies pressure to stress points, sharply boosting one of its or its allies' stats."
   },
   {
    "n": "Topsy-Turvy",
@@ -31347,7 +34123,14 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "讓對手身上所有的能力變化顛倒過來，變成和原來相反的狀態。",
+   "de": "All stat changes affecting the target turn topsy-turvy and become the opposite of what they were.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Population Bomb",
@@ -31356,7 +34139,9 @@
    "dc": "Physical",
    "pw": 20,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "夥伴們紛紛聚集而來，以群體形式逐一給予攻擊。連續命中１～１０次。",
+   "de": "The user’s fellows gather in droves to perform a combo attack that hits the target one to ten times in a row."
   },
   {
    "n": "Tidy Up",
@@ -31365,7 +34150,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將撒菱、隱形岩、黏黏網、毒菱、替身全部清理乾淨。自己的攻擊和速度會提高。",
+   "de": "The user tidies up and removes the effects of Spikes, Stealth Rock, Sticky Web, Toxic Spikes, and Substitute. This also boosts the user’s Attack and Speed stats."
   },
   {
    "n": "Axe Kick",
@@ -31374,7 +34161,9 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "劈下踢起的腳跟攻擊對手。有時會使對手混亂。沒命中對手時自己會受到傷害。",
+   "de": "The user attacks by kicking up into the air and slamming its heel down upon the target. This may also confuse the target. If it misses, the user takes damage instead."
   },
   {
    "n": "Poison Powder",
@@ -31383,7 +34172,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 75,
-   "pp": 20
+   "pp": 20,
+   "d": "撒出大量的有毒粉末讓對手陷入中毒狀態。",
+   "de": "The user scatters a cloud of poisonous dust that poisons the target.",
+   "fl": [
+    4,
+    5,
+    7,
+    15
+   ]
   },
   {
    "n": "Flower Trick",
@@ -31392,7 +34189,9 @@
    "dc": "Physical",
    "pw": 70,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "將動過手腳的花束投向對手進行攻擊。必定會命中並擊中要害。",
+   "de": "The user throws a rigged bouquet of flowers at the target. This attack never misses and always lands a critical hit."
   },
   {
    "n": "Aura Wheel",
@@ -31401,7 +34200,13 @@
    "dc": "Physical",
    "pw": 110,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用儲存在頰囊中的能量進行攻擊，並提高自己的速度。招式屬性會隨著莫魯貝可的樣子而改變。",
+   "de": "Morpeko attacks and boosts its Speed stat with the energy stored in its cheeks. This move's type changes depending on the user's form.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Instruct",
@@ -31410,7 +34215,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "對手使出招式之後，能夠透過指令讓對手再次使出相同招式。",
+   "de": "The user instructs the target to reuse the move last used by the target.",
+   "fl": [
+    4,
+    14
+   ]
   },
   {
    "n": "Barb Barrage",
@@ -31419,16 +34230,20 @@
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用無數的毒針進行攻擊。有時還會讓對手陷入中毒狀態。攻擊處於中毒狀態的對手時，威力會變成２倍。",
+   "de": "The user launches countless toxic barbs to inflict damage. This may also poison the target. This move’s power is doubled if the target is already poisoned."
   },
   {
    "n": "Jet Punch",
-   "z": "喷射拳",
+   "z": "噴射拳",
    "ty": "Water",
    "dc": "Physical",
    "pw": 60,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "讓激流圍繞在拳頭上，以迅雷不及掩耳之勢出拳。必定能夠發動先制攻擊。",
+   "de": "The user summons a torrent around its fist and punches at blinding speed. This move always goes first."
   },
   {
    "n": "Volt Tackle",
@@ -31437,7 +34252,14 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用電流圍繞全身後猛撞對手。自己也會受到不小的傷害。有時會讓對手陷入麻痺狀態。",
+   "de": "The user electrifies itself and charges the target. This also damages the user quite a lot. This attack may leave the target with paralysis.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Bind",
@@ -31446,7 +34268,14 @@
    "dc": "Physical",
    "pw": 15,
    "ac": 85,
-   "pp": 20
+   "pp": 20,
+   "d": "使用長長的身體或藤蔓等，在４～５回合內綁緊對手進行攻擊。",
+   "de": "A long body, tentacles, or the like are used to bind and squeeze the target for four to five turns.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Pound",
@@ -31455,7 +34284,14 @@
    "dc": "Physical",
    "pw": 40,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "使用長長的尾巴或手等拍打對手進行攻擊。",
+   "de": "The target is physically pounded with a long tail, a foreleg, or the like.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Strength Sap",
@@ -31464,7 +34300,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將自己的ＨＰ回復到和對手的攻擊力相同。然後降低對手的攻擊。",
+   "de": "The user restores its own HP by the same amount as the target's Attack stat. It then lowers the target's Attack stat.",
+   "fl": [
+    4,
+    5,
+    7,
+    13
+   ]
   },
   {
    "n": "Teatime",
@@ -31473,7 +34317,12 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "舉辦茶會，在場上的寶可夢都會吃掉自己攜帶的樹果。",
+   "de": "The user has teatime with all the Pokémon currently in the battle. Each Pokémon eats its held Berry.",
+   "fl": [
+    14
+   ]
   },
   {
    "n": "Sparkling Aria",
@@ -31482,7 +34331,15 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "隨著歌聲放出許多水球。受此招式攻擊時，灼傷會被治癒。",
+   "de": "The user bursts into song, emitting many bubbles. Any Pokémon suffering from a burn will be cured by the touch of these bubbles.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Aqua Step",
@@ -31491,7 +34348,9 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "以盈盈欲滴的輕巧步伐戲弄對手，給予傷害。會提高自己的速度。",
+   "de": "The user toys with the target and attacks it using light and fluid dance steps. This also boosts the user's Speed stat."
   },
   {
    "n": "Rock Wrecker",
@@ -31500,7 +34359,15 @@
    "dc": "Physical",
    "pw": 150,
    "ac": 90,
-   "pp": 8
+   "pp": 8,
+   "d": "向對手發射巨大的岩石進行攻擊。下一回合自己將無法動彈。",
+   "de": "The user launches a huge boulder at the target to attack. The user can't move on the next turn.",
+   "fl": [
+    3,
+    4,
+    7,
+    18
+   ]
   },
   {
    "n": "Sleep Powder",
@@ -31509,7 +34376,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 75,
-   "pp": 16
+   "pp": 16,
+   "d": "撒出大量令人想睡的粉末，讓對手陷入睡眠狀態。",
+   "de": "The user scatters a cloud of soporific dust that puts the target to sleep.",
+   "fl": [
+    4,
+    5,
+    7,
+    15
+   ]
   },
   {
    "n": "Stun Spore",
@@ -31518,7 +34393,15 @@
    "dc": "Status",
    "pw": null,
    "ac": 75,
-   "pp": 20
+   "pp": 20,
+   "d": "撒出大量令人麻痺的粉末，讓對手陷入麻痺狀態。",
+   "de": "The user scatters a cloud of numbing powder that paralyzes the target.",
+   "fl": [
+    4,
+    5,
+    7,
+    15
+   ]
   },
   {
    "n": "Fire Lash",
@@ -31527,7 +34410,14 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用燃燒的鞭子抽打對手。受到攻擊的對手防禦會降低。",
+   "de": "The user strikes the target with a burning lash. This also lowers the target's Defense stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Ceaseless Edge",
@@ -31536,7 +34426,9 @@
    "dc": "Physical",
    "pw": 65,
    "ac": 90,
-   "pp": 16
+   "pp": 16,
+   "d": "用貝殼之劍進行攻擊。碎裂開的貝殼碎片會變成撒菱散落在對手腳下。",
+   "de": "The user slashes its shell blade at the target. Shell splinters left behind by this attack remain scattered under the target as spikes."
   },
   {
    "n": "Spicy Extract",
@@ -31545,7 +34437,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 16
+   "pp": 16,
+   "d": "放出相當強勁的辣味精華。對手的攻擊會大幅提高，防禦會大幅降低。",
+   "de": "The user emits an incredibly spicy extract, sharply boosting the target's Attack stat and harshly lowering the target's Defense stat."
   },
   {
    "n": "Stuff Cheeks",
@@ -31554,16 +34448,23 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "吃掉攜帶的樹果，大幅提高自己的防禦。",
+   "de": "The user eats its held Berry, then sharply boosts its Defense stat.",
+   "fl": [
+    6
+   ]
   },
   {
    "n": "Matcha Gotcha",
-   "z": "",
+   "z": "刷刷茶炮",
    "ty": "Grass",
    "dc": "Special",
    "pw": 80,
    "ac": 90,
-   "pp": 16
+   "pp": 16,
+   "d": "像大炮般發射攪拌過的茶。可以回復給予對手傷害的一半ＨＰ，有時還會讓對手陷入灼傷狀態。",
+   "de": "The user fires a blast of tea that it mixed. The user's HP is restored by up to half the damage taken by the target. This may also leave the target with a burn."
   },
   {
    "n": "Torch Song",
@@ -31572,7 +34473,9 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將熊熊燃燒的火焰如唱歌般地吹向對手將其燒焦。會提高自己的特攻。",
+   "de": "The user blows out raging flames as if singing a song, scorching the target. This also boosts the user's Sp. Atk stat."
   },
   {
    "n": "Shell Side Arm",
@@ -31581,7 +34484,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用物理攻擊和特殊攻擊中能夠給予更大傷害的能力進行攻擊。有時會讓對手陷入中毒狀態。",
+   "de": "This move is either physical or special—whichever will inflict more damage. This may also poison the target.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Chilly Reception",
@@ -31590,7 +34499,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "留下使場面凍結的笑話後，和後備寶可夢進行替換。在５回合內會下雪。",
+   "de": "The user tells a chillingly bad joke before switching places with a party Pokémon in waiting. This summons a snowstorm lasting five turns."
   },
   {
    "n": "Eerie Spell",
@@ -31599,7 +34510,15 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "用強大的精神力量攻擊。讓對手最近一次使用的招式減少３ＰＰ。",
+   "de": "The user attacks with its tremendous psychic power. This also drains 3 PP from the move last used by the target.",
+   "fl": [
+    4,
+    7,
+    9,
+    14
+   ]
   },
   {
    "n": "Dire Claw",
@@ -31608,7 +34527,9 @@
    "dc": "Physical",
    "pw": 80,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "以破滅之爪進行攻擊。有時還會讓對手陷入中毒、麻痺、睡眠之中的一種狀態。",
+   "de": "The user lashes out at the target with ruinous claws. This may also leave the target poisoned, paralyzed, or asleep."
   },
   {
    "n": "Snap Trap",
@@ -31617,7 +34538,14 @@
    "dc": "Physical",
    "pw": 35,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用捕獸夾，在４～５回合內夾住對手進行攻擊。",
+   "de": "The user snares the target in a snap trap for four to five turns.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Raging Bull",
@@ -31626,7 +34554,9 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "憤怒狂亂的暴牛發動之猛烈衝撞。招式的屬性會依形態而改變，並可破壞光牆和反射壁等。",
+   "de": "The user performs a tackle like a raging bull. This move's type depends on the user's form. It can also break barriers, such as Light Screen and Reflect."
   },
   {
    "n": "Gigaton Hammer",
@@ -31635,7 +34565,9 @@
    "dc": "Physical",
    "pw": 160,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "將大錘連同身體一起揮舞進行攻擊。這個招式無法連續２次使用。",
+   "de": "The user swings its whole body around to attack with its huge hammer. This move can't be used twice in a row."
   },
   {
    "n": "Beak Blast",
@@ -31644,7 +34576,13 @@
    "dc": "Physical",
    "pw": 120,
    "ac": 100,
-   "pp": 8
+   "pp": 8,
+   "d": "先加熱鳥嘴後再進行攻擊。若對手在加熱時觸碰的話，就會灼傷。",
+   "de": "The user first heats up its beak, and then it attacks the target. Making direct contact with the user while it's heating up its beak results in a burn.",
+   "fl": [
+    4,
+    18
+   ]
   },
   {
    "n": "Baneful Bunker",
@@ -31653,7 +34591,9 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 12
+   "pp": 12,
+   "d": "防住對手攻擊的同時，讓碰觸到自己的對手中毒。",
+   "de": "In addition to protecting the user from attacks, this move also poisons any attacker that makes direct contact."
   },
   {
    "n": "Forest's Curse",
@@ -31662,7 +34602,14 @@
    "dc": "Status",
    "pw": null,
    "ac": 100,
-   "pp": 20
+   "pp": 20,
+   "d": "向對手施加森林詛咒。中了詛咒的對手會被追加草屬性。",
+   "de": "The user puts a forest curse on the target. This adds Grass type to the target's type.",
+   "fl": [
+    4,
+    5,
+    7
+   ]
   },
   {
    "n": "Horn Leech",
@@ -31671,7 +34618,15 @@
    "dc": "Physical",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "將角刺進對手，吸取養分。可以回復給予對手傷害的一半ＨＰ。",
+   "de": "The user drains the target's energy with its horns. The user's HP is restored by up to half the damage taken by the target.",
+   "fl": [
+    1,
+    4,
+    7,
+    13
+   ]
   },
   {
    "n": "Trop Kick",
@@ -31680,7 +34635,14 @@
    "dc": "Physical",
    "pw": 85,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "向對手使出來自南國的火熱腳踢。進而降低對手的攻擊。",
+   "de": "The user lands an intense kick of tropical origins on the target. This also lowers the target's Attack stat.",
+   "fl": [
+    1,
+    4,
+    7
+   ]
   },
   {
    "n": "Infernal Parade",
@@ -31689,7 +34651,9 @@
    "dc": "Special",
    "pw": 65,
    "ac": 100,
-   "pp": 16
+   "pp": 16,
+   "d": "用無數的火球進行攻擊，有時會讓對手陷入灼傷狀態。攻擊處於異常狀態的對手時，威力會變成２倍。",
+   "de": "The user attacks with myriad fireballs. This may also leave the target with a burn. This move's power is doubled if the target has a status condition."
   },
   {
    "n": "Quiver Dance",
@@ -31698,7 +34662,13 @@
    "dc": "Status",
    "pw": null,
    "ac": null,
-   "pp": 20
+   "pp": 20,
+   "d": "輕巧地跳起神秘又美麗的舞蹈。提高自己的特攻、特防和速度。",
+   "de": "The user lightly performs a beautiful, mystic dance. This boosts the user's Sp. Atk, Sp. Def, and Speed stats.",
+   "fl": [
+    6,
+    21
+   ]
   },
   {
    "n": "Fiery Dance",
@@ -31707,7 +34677,14 @@
    "dc": "Special",
    "pw": 80,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "讓火焰圍繞全身後，振翅攻擊對手。有時會提高自己的特攻。",
+   "de": "Cloaked in flames, the user attacks the target by dancing and flapping its wings. This may also boost the user's Sp. Atk stat.",
+   "fl": [
+    4,
+    7,
+    21
+   ]
   },
   {
    "n": "Psyshield Bash",
@@ -31716,7 +34693,9 @@
    "dc": "Physical",
    "pw": 90,
    "ac": 90,
-   "pp": 12
+   "pp": 12,
+   "d": "讓意念的能量圍繞全身，撞向對手進行攻擊。提高自己的防禦。",
+   "de": "Cloaking itself in psychic energy, the user slams into the target. This also boosts the user’s Defense stat."
   },
   {
    "n": "Night Daze",
@@ -31725,7 +34704,13 @@
    "dc": "Special",
    "pw": 90,
    "ac": 95,
-   "pp": 12
+   "pp": 12,
+   "d": "放出黑暗的衝擊波攻擊對手。有時會降低對手的命中率。",
+   "de": "The user looses a pitch-black shock wave at the target to inflict damage. This may also lower the target's accuracy.",
+   "fl": [
+    4,
+    7
+   ]
   },
   {
    "n": "Bitter Malice",
@@ -31734,7 +34719,9 @@
    "dc": "Special",
    "pw": 75,
    "ac": 100,
-   "pp": 12
+   "pp": 12,
+   "d": "用令人毛骨悚然的怨念進行攻擊，降低對手的攻擊。",
+   "de": "The user attacks the target with spine-chilling resentment. This also lowers the target’s Attack stat."
   }
  ],
  "abilities": [

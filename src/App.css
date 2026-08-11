@@ -131,40 +131,6 @@
   margin-top: 6px;
 }
 
-/* ---------- masthead tally ---------- */
-
-.Tally {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 9px;
-}
-
-/* Inverts to the accent pair rather than gaining a new colour, so POCKET's four-tone contract
-   holds. The block carries the fill; the two text nodes carry the ink themselves, because a
-   colour set on a view does not reach a text node inside it. */
-.TallyItem {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--accent);
-  padding: 3px 6px;
-  margin-right: 9px;
-}
-
-.TallyFigure {
-  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 18px;
-  line-height: 1.1;
-  color: var(--accent-ink);
-}
-
-.TallyLabel {
-  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: var(--accent-ink);
-}
-
 /* ---------- controls ---------- */
 
 .MastheadRow {
@@ -286,6 +252,59 @@
 }
 
 .ChipTextOn {
+  color: var(--accent-ink);
+}
+
+/* ---------- shell tab deck ---------- */
+
+/* Sits between the screen and the shell's lower edge, so the two keys read as hardware under
+   the display rather than as another chip row inside it. */
+.TabDeck {
+  display: flex;
+  flex-direction: row;
+  margin-top: 9px;
+}
+
+/* The chip pair at key size, on the same two tokens: surface over line unselected, the accent
+   pair selected.
+
+   Bigger than a chip because these are the only controls that change what the screen shows, and
+   a chip's 3px vertical padding puts the target near 22px — the size `.TypeChip` records as
+   under any platform's minimum. It is the padding that grew; the text is the chip's own size.
+
+   The gutter is a margin on every key with the last one cancelling it, rather than a gap or a
+   pseudo-class. Both of those are unverified on this platform, and a gutter that silently does
+   nothing would leave the two keys touching — see design/HANDOFF.md §12 on declarations that
+   are accepted and have no effect. */
+.TabKey {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex: 1;
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 7px 6px;
+  margin-right: 9px;
+}
+
+.TabKeyOn {
+  background-color: var(--accent);
+}
+
+.TabKeyEnd {
+  margin-right: 0;
+}
+
+.TabKeyText {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.TabKeyTextOn {
   color: var(--accent-ink);
 }
 
@@ -1355,13 +1374,22 @@
 
 /* A cell rather than the glyph itself, so the column keeps its width on the header row where
    there is no glyph to hold it open. 18px for a 16px mark: the mark is fixed at whole
-   multiples of its 8px grid and cannot flex with the column. */
+   multiples of its 8px grid and cannot flex with the column.
+
+   The 4px gutter is a margin rather than more width, so the 18px stays the 16px mark's own
+   reservation and the gap is a separate, stated decision. Inside the cell the mark had 2px of
+   slack and the name began immediately after it, which read as the two touching.
+
+   It comes out of the name column, whose recorded budget absorbs it: the fixed columns take 128px
+   of the learnset table's 315px row, leaving 183px after this gutter against a widest name of
+   160.5px. The header row keeps its alignment because it carries this same empty cell. */
 .MoveGlyphCell {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 18px;
   flex: none;
+  margin-right: 4px;
 }
 
 /* One line. The species cards wrap their names and this deliberately does not: a table read down
@@ -1435,6 +1463,123 @@
    detail veil is the one layer allowed to do that. */
 .MoveFigureDash {
   color: var(--ink2);
+}
+
+/* ---------- move detail ---------- */
+
+/* Capped, not fixed, unlike `.DetailBody`: this layer's content is six figures, one description
+   and one control, so it should give a short dialog rather than always claim 60vh. The cap is
+   what makes an overflow scroll in the layer itself instead of in a second container inside it —
+   the limit the species panel's own nesting rule sets. */
+.MoveDetailBody {
+  max-height: 60vh;
+}
+
+/* Widens the key column for this layer only, over `.DetailAttrKey`'s 62px.
+
+   Measured out of Silkscreen-Regular.ttf's own advance widths at 12px with this rule's 1px of
+   tracking, rather than eyeballed — the web preview does not load the pixel face, so a width
+   read there is wrong (design/HANDOFF.md §12):
+
+     ACCURACY 81.5   DESCRIPTION 99.5   DAMAGE 60.0   Roster 57.0
+
+   Which is the whole story: 62px was sized for the species panel, whose longest English label is
+   `Roster`, and it holds `DAMAGE` with 2px to spare. `ACCURACY` overruns it by 19.5px and wrapped
+   to `ACCURA / CY`, taking the row's baseline out of line with the rows above. 88px clears the
+   longest label in this column by 6.5px. `DESCRIPTION` is not in this column — it heads the
+   description block at full width.
+
+   Applied alongside `.DetailAttrKey` rather than replacing it, so the face, size, tracking and
+   ink stay in one place. It has to sit below that rule to win — both are single-class selectors,
+   so source order decides. */
+.MoveDetailAttrKey {
+  width: 88px;
+}
+
+.MoveDetailType {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.MoveDetailDescKey {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+
+/* The prose face, as the ability descriptions use — this is the only running text on the layer.
+   `Lit` is the registered family name; the file is Literata-Prose.ttf, and naming the file rather
+   than the family resolves to nothing and falls silently through to the system serif. */
+.MoveDetailDesc {
+  font-family: Lit, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+
+/* The only path to the learner list. Bordered rather than filled: the accent fill is what marks a
+   selected state on this surface, and this control has no states. */
+.MoveDetailLearners {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 9px;
+}
+
+.MoveDetailLearnersKey {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.MoveDetailLearnersCount {
+  font-family: Silk, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 12px;
+  color: var(--ink2);
+}
+
+/* ---------- move index (the moves tab) ---------- */
+
+/* Fills the screen below the masthead. The header row above the scrolling container rather than
+   inside it, so the columns stay named while the rows move under them. */
+.MoveIndex {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.MoveIndexBody {
+  flex: 1;
+}
+
+/* Reserved row pitch — see .DexCell. Kept in step with src/state/rowMetrics.ts, which records
+   why this one is a reservation rather than a device reading.
+
+   Taller than `.MoveRow`'s 24px: this is the tab's primary target rather than a line in a table
+   inside a panel, and 24px is close to the size `.TypeChip` records as under any platform's
+   minimum. The cells inside are that table's, unchanged — the columns are the same six. */
+.MoveIndexRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 34px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--surface2);
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 /* A real text node, like the form switcher's Mega badge and for the same reason: the platform

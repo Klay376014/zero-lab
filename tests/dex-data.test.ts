@@ -75,6 +75,55 @@ describe('the meta block agrees with the collections it describes', () => {
   })
 })
 
+/**
+ * Example: the shape of the added fields — spec.md, "Move records carry a bilingual description
+ * and flag identifiers".
+ *
+ * The flag figures are asserted here and nowhere in the interface, because nothing renders them:
+ * this batch stores flags and displays none. Without a test they would be the one part of the
+ * record that no check reads, so a pipeline change that dropped or reshaped them would surface
+ * only whenever a later batch came to display them.
+ */
+describe('Example: the shape of the added move fields', () => {
+  const flagged = dex.moves.filter((move) => move.fl !== undefined)
+
+  it('every move carries a Chinese and an English description', () => {
+    expect(dex.moves.filter((move) => move.d).length).toBe(496)
+    expect(dex.moves.filter((move) => move.de).length).toBe(496)
+  })
+
+  it('every move carries a Chinese name', () => {
+    expect(dex.moves.filter((move) => move.z).length).toBe(496)
+  })
+
+  it('425 moves carry at least one flag and 71 omit the field', () => {
+    expect(flagged.length).toBe(425)
+    expect(dex.moves.length - flagged.length).toBe(71)
+  })
+
+  it('21 distinct flag identifiers are in use', () => {
+    const distinct = new Set(flagged.flatMap((move) => [...move.fl!]))
+    expect(distinct.size).toBe(21)
+  })
+
+  it('at most 6 flags apply to one move', () => {
+    const most = flagged.reduce((peak, move) => Math.max(peak, move.fl!.length), 0)
+    expect(most).toBe(6)
+  })
+
+  it('a move with no flags omits the field rather than carrying an empty array', () => {
+    expect(dex.moves.some((move) => move.fl !== undefined && move.fl.length === 0)).toBe(false)
+  })
+
+  it('flag identifiers ascend', () => {
+    const unsorted = flagged.filter((move) => {
+      const ids = [...move.fl!]
+      return ids.join() !== [...ids].sort((a, b) => a - b).join()
+    })
+    expect(unsorted.map((move) => move.n)).toEqual([])
+  })
+})
+
 describe('derived accessors', () => {
   const charizard = dex.species.find((species) => species.d === 6)!
   const ditto = dex.species.find((species) => species.d === 132)!

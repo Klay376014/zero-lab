@@ -4,11 +4,21 @@
 
 The bundled Champions dataset and the reference tables that read it. Covers how the dataset arrives as a pipeline artifact rather than hand-authored data, the load-time integrity assertions that turn upstream drift into a thrown error, the named types the rest of the app reads it through, the derived accessors for base-stat totals and cross-form type sets, bilingual name resolution, the eighteen-type reference tables, and the user-facing string table.
 
+Provenance is split by what each of the three upstream sources is authoritative for, and the split is enforced rather than described. The Champions tables supply the roster and every move's mechanics, because that game retunes them — 401 of the 496 moves disagree with the mainline figures the text sources publish, so the aggregation step asserts that the power, accuracy and power points it emits are the ones it parsed. The PokeAPI exports supply ability and form naming and the English move descriptions. The 52poke move list supplies Traditional Chinese move names and descriptions, joined by move identifier rather than by name, and its Traditional variant specifically: the PokeAPI name column is Simplified for 33 of these moves, and the shipped dataset showed only 8 because the rest had been corrected by hand-editing the dataset file — the edit this capability forbids, which a pipeline re-run would have silently undone.
+
+A move record therefore carries a description in both languages and the identifiers of the flags that apply to it. A missing description fails the pipeline rather than reaching the interface as a blank area. The flag identifiers are stored and read by nothing: `move-detail` requires the interface to leave them alone until a decision is made about which to show.
+
 ## Requirements
 
 ### Requirement: Dataset provenance
 
 The application dataset at src/data/dex.json SHALL be produced by the design pipeline's assembly step from the same in-memory dataset that produces design/champions-dex.json. The file SHALL NOT be hand-authored or hand-edited. Modules under src/ SHALL NOT import any file located under design/.
+
+The pipeline draws on three upstream sources, and each SHALL supply only what it is authoritative for. The roster table and every move's mechanics SHALL come from the Champions tables, because that game retunes values and its own numbers are authoritative for it. Traditional Chinese naming for abilities and forms SHALL come from the PokeAPI CSV exports. Traditional Chinese move names and move descriptions SHALL come from the 52poke move list, whose rows join to the PokeAPI move identifier by number rather than by name.
+
+An upstream source that is not authoritative for a field SHALL NOT supply that field. In particular, no source other than the Champions tables SHALL supply a move's power, accuracy, power points, type, or damage class.
+
+Fetching the 52poke move list requires a browser user-agent header; a request without one is refused. The fetch step SHALL be idempotent in the manner the existing fetch step already is, skipping a source that is already cached.
 
 #### Scenario: Pipeline emits the application dataset
 
@@ -27,73 +37,52 @@ The application dataset at src/data/dex.json SHALL be produced by the design pip
 - **WHEN** the application is built from a fresh checkout with no pipeline run
 - **THEN** src/data/dex.json is present in version control and the build succeeds
 
+#### Scenario: A non-authoritative source does not supply mechanics
+
+- **WHEN** the pipeline aggregates the move table
+- **THEN** each move's power, accuracy and power points are the values parsed from the Champions tables
+- **AND** none has been replaced by the corresponding value from another source
+
+##### Example: the two sources disagree on most moves, and Champions wins
+
+| Property                                                        | Value       |
+| ---------------------------------------------------------------- | ----------- |
+| moves in the shared move table                                    | 496         |
+| moves whose power, accuracy or power points differ from the mainline figures | 401 |
+| moves whose emitted figures come from the Champions tables        | 496         |
+
 
 <!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
+source: add-moves-tab
+updated: 2026-08-11
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
   - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
-  - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
-  - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
+  - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/data/dex.ts
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
-  - src/index.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
+  - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->
 
 ---
@@ -692,4 +681,196 @@ code:
   - src/data/dex.ts
   - src/data/i18n.ts
   - design/champions-dex.json
+-->
+
+---
+### Requirement: Move records carry a bilingual description and flag identifiers
+
+Each move record SHALL carry a Chinese description, an English description, and the identifiers of the move flags that apply to it.
+
+Every move in the table SHALL also carry a non-empty Chinese name in Traditional characters. The 52poke move list's `/zh-hant/` variant supplies one for every numbered row it holds, which the fetch step asserts, so the two moves that carried no Chinese name while PokeAPI was the naming source now carry one. This is why neither the `move-index` nor the `move-detail` capability requires a fallback to the English name.
+
+The variant matters and the naming source SHALL NOT revert to the PokeAPI name column: that column is Simplified for 33 of these 496 moves, and the shipped dataset showed only 8 because the other 25 had been corrected by editing the dataset file directly — the hand edit this capability forbids, which a pipeline re-run would have silently undone.
+
+Both descriptions SHALL be non-empty for every move in the table. The Chinese description SHALL come from the 52poke move list and the English description from the PokeAPI move flavour text, taking the entry from the highest version group present and normalising the in-game line breaks it contains to single spaces.
+
+The flag identifiers SHALL be a readonly array of numbers in ascending order. A move to which no flag applies SHALL omit the field rather than carry an empty array, because the dataset is serialised compactly and 71 of the 496 moves carry no flags.
+
+The record SHALL NOT carry the flags' labels. Flag labels are user-facing strings and belong to the string table, which this capability already requires; placing them in the dataset would make them hand-authored content in a file this capability forbids hand-authoring.
+
+#### Scenario: Both descriptions are present for every move
+
+- **WHEN** the move table is read
+- **THEN** every move carries a non-empty Chinese description
+- **AND** every move carries a non-empty English description
+
+#### Scenario: Every move carries a Chinese name
+
+- **WHEN** the move table is read
+- **THEN** every move carries a non-empty Chinese name
+
+#### Scenario: A move with no flags omits the field
+
+- **WHEN** a move to which no flag applies is read
+- **THEN** its record has no flag field
+- **AND** no empty array appears in its place
+
+#### Scenario: Flag labels are absent from the dataset
+
+- **WHEN** the dataset is inspected
+- **THEN** it carries flag identifiers
+- **AND** it carries no flag label text in either language
+
+##### Example: the shape of the added fields
+
+| Property                                          | Value        |
+| --------------------------------------------------- | ------------ |
+| moves with a Chinese name                           | 496          |
+| move names the change rewrites in the shipped dataset | 10         |
+| of those, Simplified names corrected                | 8            |
+| of those, names filled in that were empty           | 2            |
+| Simplified names a re-run would have reintroduced from PokeAPI | 33 |
+| moves with a Chinese description                    | 496          |
+| moves with an English description                   | 496          |
+| distinct flag identifiers in use                    | 21           |
+| moves carrying at least one flag                    | 425          |
+| moves carrying no flag field                        | 71           |
+| greatest number of flags on a single move           | 6            |
+| dataset size before this change                     | 195 KB       |
+| dataset size after this change                      | 297 KB       |
+
+
+<!-- @trace
+source: add-moves-tab
+updated: 2026-08-11
+code:
+  - design/pipeline/aggregate.py
+  - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - src/components/MoveDetail.vue
+  - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
+  - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
+-->
+
+---
+### Requirement: A move missing a description fails the pipeline
+
+The pipeline SHALL exit non-zero and name the affected moves when any move in the Champions move table resolves to no Chinese description or no English description. It SHALL NOT emit a dataset carrying an empty description.
+
+This follows the pattern every other pipeline stage already uses: assert the invariant, fail loudly, and leave the previous artifact in place. A dataset with an empty description would surface as a blank area on screen that no check reports, which is the failure shape this project has repeatedly paid for.
+
+#### Scenario: An unresolved description stops the build
+
+- **WHEN** the aggregation step resolves descriptions and one or more moves resolve to none
+- **THEN** the step exits non-zero
+- **AND** it names the moves that resolved to none
+
+#### Scenario: A complete resolution proceeds
+
+- **WHEN** every move in the Champions move table resolves to both descriptions
+- **THEN** the step writes the move table and exits zero
+
+
+<!-- @trace
+source: add-moves-tab
+updated: 2026-08-11
+code:
+  - design/pipeline/aggregate.py
+  - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - src/components/MoveDetail.vue
+  - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
+  - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
+-->
+
+---
+### Requirement: The string table carries the tab, move index and move detail strings in both languages
+
+The string table SHALL carry, in Chinese and English, the two tab labels, the column labels of the move index, the field labels of move detail, and the statement of a move's learner count.
+
+No such string SHALL appear as a literal in component source, consistent with this capability's existing treatment of user-facing strings.
+
+#### Scenario: Tab labels are resolved from the string table
+
+- **WHEN** the tab controls are rendered in either language
+- **THEN** both labels are read from the string table
+
+#### Scenario: Move detail's field labels are resolved from the string table
+
+- **WHEN** move detail is rendered in either language
+- **THEN** its field labels and its learner-count statement are read from the string table
+
+<!-- @trace
+source: add-moves-tab
+updated: 2026-08-11
+code:
+  - design/pipeline/aggregate.py
+  - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - src/components/MoveDetail.vue
+  - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
+  - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->

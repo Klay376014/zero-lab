@@ -40,6 +40,35 @@ export const MOVE_ROW: RowMetric = { height: 24, perRow: 1 }
 export const LEARNER_ROW: RowMetric = { height: 53.84, perRow: 1 }
 
 /**
+ * The move index's row, 496 of them — the longest fixed sequence in the application.
+ *
+ * Unlike the three above, this figure is a *reservation* rather than a device reading: the row
+ * is new, so there was nothing to measure. `.MoveIndexRow` declares the same number as its
+ * `min-height`, and this platform counts padding inside a declared height (the box model note
+ * on `.TypeCell`), so the drawn pitch is this number as long as the content fits inside it —
+ * which 12px text in a 34px row does with room to spare.
+ *
+ * That makes the row-height check a weaker guarantee here than for the other three: it asserts
+ * the constant and the stylesheet agree, not that either matches what the device draws. Scrolling
+ * the whole index on a device is what would catch it, and is listed as an acceptance step for
+ * that reason.
+ *
+ * Taller than the learnset table's 24px because this row is a primary navigation target on a
+ * full-width surface rather than a line in a table inside a panel.
+ */
+export const MOVE_INDEX_ROW: RowMetric = { height: 34, perRow: 1 }
+
+/**
+ * The height the move index's scrolling container gets, for deriving its visible range.
+ *
+ * The screen area less the masthead and the tab deck, at the 393pt viewport the other figures
+ * are calibrated at. Deliberately generous: overstating it renders more rows than are visible,
+ * which costs elements, while understating it lets the scroll outrun the window and blank an
+ * edge. Only the second failure is silent.
+ */
+export const MOVE_INDEX_VIEWPORT = 640
+
+/**
  * How far beyond each edge to keep rendered, in screens.
  *
  * Not chosen: §12.25 measured the container travelling at most 118.67px between two consecutive

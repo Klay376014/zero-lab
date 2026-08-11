@@ -2,7 +2,9 @@
 
 ## Purpose
 
-What the interface states about itself and about the dataset behind it. Covers the four scale counts in the masthead and the constraint that every such figure is read from the dataset's own meta block rather than written as a literal, the result count stated as a localised sentence rather than a bare ratio, and the footer's statement of font licensing and copyright. Also records what the footer deliberately does not state: the five provenance segments the design study carries were dropped by decision, so this interface makes no claim about where the roster, moves, stats, naming or artwork came from.
+What the interface states about itself and about the dataset behind it. Covers the constraint that every figure stated about the dataset as a whole is read from the dataset's own meta block rather than written as a literal, the result count stated as a localised sentence rather than a bare ratio, and the footer's statement of font licensing and copyright.
+
+Also records two things this interface deliberately does **not** state. The five provenance segments the design study carries were dropped by decision, so no claim is made about where the roster, moves, stats, naming or artwork came from. And the masthead's four scale counts — species, form entries, Mega forms, move table entries — were removed rather than repaired: they were constants of the bundled dataset that answered nothing a reader does, they had in fact gone unrendered since a hand edit removed them from the element tree, and the masthead height they claimed was contested by the tab controls. The four figures remain in the meta block and are still asserted at load time by `dex-data`, so nothing that depends on them was lost. The reasoning is recorded in the project roadmap's list of decisions taken against, because the four absent string-table keys would otherwise read as an undelivered feature.
 
 ## Requirements
 
@@ -10,7 +12,9 @@ What the interface states about itself and about the dataset behind it. Covers t
 
 Every figure the interface states about the dataset as a whole SHALL be read from the dataset's own meta block. No such figure SHALL appear as a literal value in component source, because the data layer already asserts these counts at load time and a second copy in the tree is a fact with no assertion protecting it.
 
-This SHALL hold for the species total the result count is stated against, and for each of the four scale counts. A component SHALL NOT recompute a figure the meta block already carries — recounting derives the number a second way, and a derivation that drifts from the pipeline's definition renders a figure that no invariant covers.
+This SHALL hold for the species total the result count is stated against. A component SHALL NOT recompute a figure the meta block already carries — recounting derives the number a second way, and a derivation that drifts from the pipeline's definition renders a figure that no invariant covers.
+
+A count derived from a relation rather than stated about the dataset as a whole is outside this requirement. The number of species that learn a given move is such a count: it is produced by the derived accessor the `move-learners` capability defines, not carried by the meta block.
 
 #### Scenario: The species total is not a literal
 
@@ -18,62 +22,50 @@ This SHALL hold for the species total the result count is stated against, and fo
 - **THEN** the species total is read from the dataset's meta block
 - **AND** the value 208 does not appear as a literal in the masthead's source
 
-#### Scenario: Scale counts are not recomputed
+#### Scenario: A whole-dataset figure is not recomputed
 
-- **WHEN** the source producing the four scale counts is inspected
-- **THEN** each count is read from the meta block
-- **AND** none is derived by iterating the species or form collections
+- **WHEN** a component states a figure that the meta block carries
+- **THEN** it reads that figure from the meta block
+- **AND** it does not derive the figure by iterating the species, form or move collections
 
+#### Scenario: A relation count is permitted to be derived
 
-<!-- @trace
-source: surface-dataset-facts
-updated: 2026-07-30
-code:
-  - design/HANDOFF.md
-  - src/components/DexGrid.vue
-  - src/components/DexFooter.vue
-  - src/App.css
-  - ROADMAP.md
-  - src/data/dex.ts
-  - src/App.vue
-  - src/data/i18n.ts
--->
-
----
-### Requirement: The masthead states the dataset's scale as four counts
-
-The masthead SHALL state four counts describing the dataset's scale: species, form entries, Mega forms, and move table entries, in that order. Each SHALL be presented as its figure together with a label naming what is counted.
-
-The order SHALL be fixed rather than driven by the meta block's field order, because the four read as a progression from the coarsest unit to the finest and a reordering makes the row read as an arbitrary list.
-
-#### Scenario: Four counts appear in the fixed order
-
-- **WHEN** the masthead is rendered
-- **THEN** four counts appear in the order species, forms, Mega, moves
-- **AND** each carries both its figure and its label
-
-##### Example: the four figures
-
-| Position | Counts        | Figure |
-| -------- | ------------- | ------ |
-| 1        | species       | 208    |
-| 2        | form entries  | 360    |
-| 3        | Mega forms    | 75     |
-| 4        | move entries  | 496    |
+- **WHEN** move detail states the number of species that learn its move
+- **THEN** that number comes from the derived learner accessor
+- **AND** this does not violate the rule above
 
 
 <!-- @trace
-source: surface-dataset-facts
-updated: 2026-07-30
+source: add-moves-tab
+updated: 2026-08-11
 code:
-  - design/HANDOFF.md
-  - src/components/DexGrid.vue
-  - src/components/DexFooter.vue
-  - src/App.css
-  - ROADMAP.md
-  - src/data/dex.ts
-  - src/App.vue
+  - design/pipeline/aggregate.py
+  - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
+  - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->
 
 ---

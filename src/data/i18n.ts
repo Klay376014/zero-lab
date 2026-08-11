@@ -7,10 +7,6 @@ export interface Strings {
   readonly lang: string
   readonly type: string
   readonly baseForm: string
-  readonly tSpecies: string
-  readonly tForms: string
-  readonly tMega: string
-  readonly tMoves: string
   readonly searchPlaceholder: string
   readonly sortDex: string
   readonly sortBst: string
@@ -39,6 +35,23 @@ export interface Strings {
   readonly mvStab: string
   readonly mvNone: string
   readonly mlTitle: string
+  readonly tabDex: string
+  readonly tabMoves: string
+  /**
+   * Move detail's field labels.
+   *
+   * A separate set from the `mv*` keys even where the text coincides: those label the learnset
+   * table's sort controls, and a control's wording is free to change without dragging a field
+   * label along with it. The move index reuses `moveHeads` instead, because its columns are the
+   * learnset table's columns.
+   */
+  readonly mdType: string
+  readonly mdClass: string
+  readonly mdPower: string
+  readonly mdAcc: string
+  readonly mdPp: string
+  readonly mdDesc: string
+  readonly mdLearners: string
 }
 
 export const I18N: Record<Lang, Strings> = {
@@ -46,10 +59,6 @@ export const I18N: Record<Lang, Strings> = {
     lang: '中文',
     type: '屬性',
     baseForm: '基本形態',
-    tSpecies: '種類',
-    tForms: '形態',
-    tMega: 'MEGA',
-    tMoves: '招式',
     searchPlaceholder: '名稱 / 編號 / 屬性 / 形態',
     sortDex: '編號',
     sortBst: '種族值',
@@ -77,16 +86,21 @@ export const I18N: Record<Lang, Strings> = {
     mvType: '屬性',
     mvStab: '★ 屬修',
     mvNone: '沒有符合的招式。',
-    mlTitle: '也會這個招式的寶可夢',
+    mlTitle: '會這個招式的寶可夢',
+    tabDex: '圖鑑',
+    tabMoves: '招式',
+    mdType: '屬性',
+    mdClass: '傷害類別',
+    mdPower: '威力',
+    mdAcc: '命中',
+    mdPp: 'PP',
+    mdDesc: '說明',
+    mdLearners: '哪些寶可夢會',
   },
   en: {
     lang: 'EN',
     type: 'Type',
     baseForm: 'Base Form',
-    tSpecies: 'SPECIES',
-    tForms: 'FORMS',
-    tMega: 'MEGA',
-    tMoves: 'MOVES',
     searchPlaceholder: 'Name / no. / type / form',
     sortDex: 'No.',
     sortBst: 'Stats',
@@ -116,7 +130,16 @@ export const I18N: Record<Lang, Strings> = {
     mvType: 'Type',
     mvStab: '★ STAB',
     mvNone: 'No moves match.',
-    mlTitle: 'ALSO LEARNED BY',
+    mlTitle: 'LEARNED BY',
+    tabDex: 'DEX',
+    tabMoves: 'MOVES',
+    mdType: 'Type',
+    mdClass: 'Damage',
+    mdPower: 'Power',
+    mdAcc: 'Accuracy',
+    mdPp: 'PP',
+    mdDesc: 'Description',
+    mdLearners: 'LEARNED BY',
   },
 }
 
@@ -198,8 +221,47 @@ export function damageClassAbbr(cls: MoveClass, lang: Lang): string {
   return DAMAGE_CLASS_ABBR[lang][cls]
 }
 
+/**
+ * The damage class in full, for move detail.
+ *
+ * The abbreviations above exist because a table column is 22px wide. A detail panel has room for
+ * the word, and the same split already holds for a form's kind: `kindLabel` states it in full
+ * where the card states a badge.
+ */
+export function damageClassName(cls: MoveClass, lang: Lang): string {
+  return DAMAGE_CLASS_NAME[lang][cls]
+}
+
 export function moveName(move: Move, lang: Lang): string {
   return lang === 'zh' ? (move.z || move.n) : move.n
+}
+
+/**
+ * A move's description in the leading language.
+ *
+ * No fallback to the other language, unlike {@link abilityDescription}: the pipeline exits
+ * non-zero rather than emit a move with either description empty, so a fallback here would be
+ * unreachable code standing in for an invariant that is enforced upstream. See the `dex-data`
+ * capability, "A move missing a description fails the pipeline".
+ */
+export function moveDescription(move: Move, lang: Lang): string {
+  return lang === 'zh' ? move.d : move.de
+}
+
+export function moveCountLabel(count: number, lang: Lang): string {
+  return lang === 'zh' ? `${count} 個招式` : `${count} moves`
+}
+
+/**
+ * A move's power or accuracy as it is stated, with an em dash for an absent value.
+ *
+ * Absent means different things per column — no fixed damage for power, never misses for
+ * accuracy — but both are rendered the same way, and the same way in all three places a move's
+ * figures appear. Here rather than in each component so the three cannot drift, and because the
+ * dash is a user-facing character like any other string in this table.
+ */
+export function moveFigure(value: number | null): string {
+  return value === null ? '—' : String(value)
 }
 
 const FOOTER: Record<Lang, readonly (readonly [string, string])[]> = {
@@ -229,4 +291,9 @@ const MOVE_HEADS: Record<Lang, readonly [string, string, string, string, string,
 const DAMAGE_CLASS_ABBR: Record<Lang, Record<MoveClass, string>> = {
   zh: { Physical: '物', Special: '特', Status: '變' },
   en: { Physical: 'PH', Special: 'SP', Status: 'ST' },
+}
+
+const DAMAGE_CLASS_NAME: Record<Lang, Record<MoveClass, string>> = {
+  zh: { Physical: '物理', Special: '特殊', Status: '變化' },
+  en: { Physical: 'Physical', Special: 'Special', Status: 'Status' },
 }

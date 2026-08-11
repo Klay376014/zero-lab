@@ -4,13 +4,13 @@ import { computed, ref, watch } from 'vue-lynx'
 import TypeGlyph from './TypeGlyph.vue'
 import { moveOf } from '../data/dex.js'
 import type { Move } from '../data/dex.js'
-import { damageClassAbbr, moveHeads, moveName, t } from '../data/i18n.js'
+import { damageClassAbbr, moveFigure, moveHeads, moveName, t } from '../data/i18n.js'
 import { TYPE_ORDER } from '../data/types.js'
 import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang } from '../state/display.js'
 import { bonusOnly, moveSort } from '../state/learnset.js'
 import type { MoveSort } from '../state/learnset.js'
-import { openMoveLearners } from '../state/moveLearners.js'
+import { openLayer } from '../state/layerStack.js'
 import { BUFFER_SCREENS, MOVE_ROW } from '../state/rowMetrics.js'
 import type { Range } from '../state/visibleRange.js'
 import { sliceForRange, visibleRange } from '../state/visibleRange.js'
@@ -126,17 +126,26 @@ function toggleBonusOnly(): void {
   bonusOnly.value = !bonusOnly.value
 }
 
-function openLearners(row: Row): void {
-  openMoveLearners(row.index)
+/**
+ * Opens move detail for this row's move — not the learner list, which this row reached directly
+ * until move detail existed.
+ *
+ * The change is deliberate. A reader looking at a move row most often wants to know what the move
+ * does, and this row could only answer a different question; routing it and the move index both
+ * through move detail keeps one gesture reaching one screen. It costs an extra tap on the way to
+ * the learners, which the layer stack's unwinding rule keeps from accumulating layers.
+ *
+ * The move carried is `row.index`, the reference the row was built from. Position is not usable:
+ * the three sort orders reorder these rows and the bonus filter removes some, so a position
+ * identifies a different move under each combination of the two.
+ */
+function openMoveDetail(row: Row): void {
+  openLayer({ kind: 'move', moveIndex: row.index })
 }
 
 const countLabel = computed(() => (
   bonusOnly.value ? `${all.value.length} → ${rows.value.length}` : String(all.value.length)
 ))
-
-function figure(value: number | null): string {
-  return value === null ? '—' : String(value)
-}
 
 function figureClass(value: number | null): string {
   return value === null ? 'MoveFigure MoveFigureDash' : 'MoveFigure'
@@ -202,7 +211,7 @@ function figureClass(value: number | null): string {
         :main-thread-bindtouchstart="onPressStart"
         :main-thread-bindtouchend="onPressEnd"
         :main-thread-bindtouchcancel="onPressEnd"
-        @tap="openLearners(row)"
+        @tap="openMoveDetail(row)"
       >
         <view class="MoveGlyphCell">
           <TypeGlyph :type="row.move.ty" :surface="row.stab ? 'surface2' : 'panel'" />
@@ -212,8 +221,8 @@ function figureClass(value: number | null): string {
         <!-- Real node: no generated-content property on this platform. -->
         <text v-if="row.stab" class="MoveStar">★</text>
         <text class="MoveClass">{{ row.abbr }}</text>
-        <text :class="figureClass(row.move.pw)">{{ figure(row.move.pw) }}</text>
-        <text :class="figureClass(row.move.ac)">{{ figure(row.move.ac) }}</text>
+        <text :class="figureClass(row.move.pw)">{{ moveFigure(row.move.pw) }}</text>
+        <text :class="figureClass(row.move.ac)">{{ moveFigure(row.move.ac) }}</text>
         <text class="MoveFigurePp">{{ row.move.pp }}</text>
       </view>
 

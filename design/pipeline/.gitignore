@@ -5,6 +5,7 @@
 *.csv
 *.wiki
 cat.json
+moves_zh.html
 learnsets/
 species_pages/
 
@@ -14,5 +15,6 @@ forms_resolved.json
 forms_verified.json
 learn.json
 learnset_titles.json
+moves_zh.json
 zh_names.json
 dex3.json

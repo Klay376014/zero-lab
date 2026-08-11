@@ -26,6 +26,7 @@ const PAIRS = [
   { constant: 'CARD_ROW', selector: '.DexCell', what: 'grid card' },
   { constant: 'MOVE_ROW', selector: '.MoveRow', what: 'learnset row' },
   { constant: 'LEARNER_ROW', selector: '.LearnersRow', what: 'learner row' },
+  { constant: 'MOVE_INDEX_ROW', selector: '.MoveIndexRow', what: 'move index row' },
 ]
 
 const metricsSrc = readFileSync(METRICS, 'utf8')

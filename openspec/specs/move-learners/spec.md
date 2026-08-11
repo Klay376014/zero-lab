@@ -2,7 +2,9 @@
 
 ## Purpose
 
-How a move resolves to the species that learn it, and how those species are presented as a layer above the detail panel. Covers the learner relation derived from the dataset and memoised rather than recomputed, the form opened for a learner being the one that actually knows the move, the list sitting above the panel as its own layer rather than replacing it, the move name and learner count in its heading with two species to a row and only the visible range of those rows materialised, choosing a learner replacing the selection rather than stacking another layer, and the open-move state being held separately from the selection.
+How a move resolves to the species that learn it, and how those species are presented as a layer of their own. Covers the learner relation derived from the dataset and memoised rather than recomputed, the form opened for a learner being the one that actually knows the move, the list sitting above the layer beneath it rather than nested inside it, the move name and learner count in its heading with two species to a row and only the visible range of those rows materialised, and choosing a learner replacing the selection rather than stacking another layer.
+
+The layer beneath the list is move detail, which `move-detail` establishes as the sole entry to it — this list is no longer reached directly from a learnset row. Two consequences follow. Choosing a learner is governed by `layer-stack`'s unwinding rule rather than by a rule of this capability's own: reached from a species, the stack unwinds to the species layer and discards this list; reached from the moves tab, species detail is pushed above it. And the move whose learners are shown is carried as this layer's own content, **not** by a module of its own — the reverse of what this capability previously required, because a second holder of that fact could disagree with the stack undetected.
 
 ## Requirements
 
@@ -153,46 +155,66 @@ code:
 ---
 ### Requirement: The learner list is presented above the detail panel as its own layer
 
-The learner list SHALL be rendered as an overlay that is a sibling of the detail panel's overlay inside the application's outermost view, drawn above it. It SHALL NOT be rendered as a section inside the detail panel.
+The learner list SHALL be rendered as a layer in the layer stack the `layer-stack` capability defines, drawn above whatever layer is beneath it. It SHALL NOT be rendered as a section inside the detail panel, nor inside move detail.
 
-The list SHALL declare its own scrolling container. Placing it inside the panel would make it a third nested scrolling layer and would violate the limit the `species-detail` capability places on the panel's scrolling containers — a violation the style check cannot detect, because that check reads the stylesheet and not the element tree.
+The layer beneath the learner list SHALL be move detail, because the `move-detail` capability establishes move detail as the sole entry to the learner list. When move detail was itself opened from the species detail panel, the panel remains in the stack beneath move detail and retains its content and its scroll position.
 
-While the learner list is open the detail panel beneath it SHALL retain its content and its scroll position. Closing the list SHALL return the reader to the panel unchanged.
+The list SHALL declare its own scrolling container. Placing it inside the detail panel would make it a third nested scrolling layer and would violate the limit the `species-detail` capability places on the panel's scrolling containers — a violation the style check cannot detect, because that check reads the stylesheet and not the element tree.
+
+Closing the learner list SHALL return the reader to move detail unchanged, as the `layer-stack` capability's closing rule requires.
 
 The list SHALL NOT be rendered with the species card used by the grid. Presenting up to 207 cards would pay a second time the first-paint cost this project has measured on the full card sequence.
 
-#### Scenario: The list is a sibling of the panel, not a descendant
+#### Scenario: The list is a layer, not a descendant of another layer
 
 - **WHEN** the learner list is open and the element tree is inspected
-- **THEN** the list's overlay is a sibling of the detail panel's overlay
-- **AND** the list's overlay is not a descendant of the detail panel
+- **THEN** the list's overlay is a sibling of the layer beneath it
+- **AND** the list's overlay is not a descendant of the detail panel or of move detail
 
-#### Scenario: The panel is undisturbed beneath the list
+#### Scenario: The layers beneath are undisturbed
 
-- **WHEN** the detail panel is scrolled to its learnset table, a move is opened, and the learner list is then closed
-- **THEN** the panel is showing the same content at the same scroll position as before the list opened
+- **WHEN** the detail panel is scrolled to its learnset table, a move is opened, the learner list is opened, and the learner list is then closed
+- **THEN** move detail is shown unchanged
+- **AND** closing move detail shows the panel at the same scroll position as before move detail opened
 
-#### Scenario: The list scrolls without moving the panel
+#### Scenario: The list scrolls without moving the layers beneath
 
 - **WHEN** the learner list for a move with 207 learners is scrolled to its end on a physical device
 - **THEN** the list scrolls
-- **AND** the detail panel beneath it does not scroll
+- **AND** the layer beneath it does not scroll
 
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: add-moves-tab
+updated: 2026-08-11
 code:
+  - design/pipeline/aggregate.py
   - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
   - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->
 
 ---
@@ -266,76 +288,122 @@ tests:
 ---
 ### Requirement: Choosing a learner replaces the selection and does not stack
 
-Choosing a species from the learner list SHALL open the detail for that species on the form the form accessor returns, replacing the current selection through the module that owns it. The learner list SHALL close.
+Choosing a species from the learner list SHALL open species detail for that species on the form the form accessor returns. The opening SHALL follow the `layer-stack` capability's rule: if species detail is already in the stack, the stack unwinds to it and its content is replaced; if it is not, species detail is pushed. In both cases the learner list SHALL close, along with every other layer above the layer that receives the species.
 
-No history of visited species SHALL be kept. Closing the detail panel after one or more replacements SHALL return the reader to the grid, not to the species the reader came from.
+No history of visited species SHALL be kept. Closing species detail after one or more replacements SHALL return the reader to the active tab, not to the species the reader came from.
 
 The learnset table's sort order and bonus filter SHALL survive the replacement, because that state is held outside the panel by the `learnset-table` capability and is deliberately not reset.
 
-#### Scenario: The selection is replaced
+#### Scenario: The selection is replaced when species detail is already open
 
-- **WHEN** a species is chosen from the learner list
-- **THEN** the detail panel shows that species
-- **AND** the learner list closes
+- **WHEN** species detail, move detail and the learner list are open, and a species is chosen from the list
+- **THEN** species detail shows the chosen species
+- **AND** the stack holds species detail alone
 
-#### Scenario: Closing returns to the grid, not to the source species
+#### Scenario: The selection is pushed when species detail is not open
 
-- **WHEN** the detail is opened for species A, a move is opened, species B is chosen from the learner list, and the detail is then closed
-- **THEN** the grid is shown
-- **AND** the detail for species A is not shown
+- **WHEN** move detail and the learner list are open on the moves tab, and a species is chosen from the list
+- **THEN** species detail shows the chosen species
+- **AND** it is drawn above move detail and the learner list
+
+#### Scenario: Closing returns to the tab, not to the source species
+
+- **WHEN** species detail is opened for species A, a move is opened, the learner list is opened, species B is chosen, and species detail is then closed
+- **THEN** the active tab is shown
+- **AND** species detail for species A is not shown
 
 #### Scenario: Table state survives the replacement
 
-- **WHEN** the learnset table is sorted by power with the bonus filter on, a move is opened, and another species is chosen
+- **WHEN** the learnset table is sorted by power with the bonus filter on, a move is opened, the learner list is opened, and another species is chosen
 - **THEN** the new species' learnset table is sorted by power with the bonus filter on
 
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: add-moves-tab
+updated: 2026-08-11
 code:
+  - design/pipeline/aggregate.py
   - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
   - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->
 
 ---
 ### Requirement: The state holding the open move is separate from the selection
 
-The move whose learners are being viewed SHALL be held by a module of its own, with named functions to open and to close it. That module SHALL NOT be owned by the module that holds the species selection.
+The move whose learners are being viewed SHALL be carried as the content of the learner-list layer in the layer stack, together with the move detail layer that opened it. It SHALL NOT be held by a module of its own.
 
-The two are separate because they close independently: closing the learner list SHALL leave the selection intact, and the selection SHALL be replaceable while the list is closing.
+This reverses the arrangement this capability previously required. A separate module was correct while the learner list had one entry point and one relationship to the selection. With the layer stack owning which layers are open and what each carries, a second module holding the same fact would allow the two to disagree — a layer present in the stack while the module reports none, or the reverse — and nothing would detect the disagreement.
 
-#### Scenario: Closing the list leaves the selection intact
+The selection SHALL remain separate from the layer stack's own bookkeeping in the sense the `layer-stack` capability defines: closing the learner list SHALL leave the species detail layer and its content intact.
+
+#### Scenario: Closing the list leaves the layer beneath intact
 
 - **WHEN** the learner list is closed without choosing a species
-- **THEN** the species selection is unchanged
-- **AND** the detail panel remains open
+- **THEN** the layer beneath it is shown with its content unchanged
 
-#### Scenario: The open move is cleared when the list closes
+#### Scenario: The open move is carried by the stack
 
-- **WHEN** the learner list is closed
-- **THEN** the module holds no open move
+- **WHEN** the learner list is open
+- **THEN** the move whose learners are shown is the content the learner-list layer carries
+
+#### Scenario: No separate module holds the open move
+
+- **WHEN** the application's state modules are inspected
+- **THEN** none holds an open move independently of the layer stack
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: add-moves-tab
+updated: 2026-08-11
 code:
+  - design/pipeline/aggregate.py
   - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
   - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->

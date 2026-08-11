@@ -2,7 +2,9 @@
 
 ## Purpose
 
-How one form's Champions learnset is presented as a six-column table. Covers one row per move in the section the displayed form points at with only the visible range of those rows materialised, the same-type attack bonus judged against the displayed form's types rather than the species' and excluding status moves, the closed set of three sort orders and the tie-break every one of them resolves by name, sort order and the bonus filter held as state that outlives the panel, the section heading stating both the learnset size and the filtered size, an empty filtered result stated in words, numeric columns fixed in width and right aligned with absent values as a dash, move names held to one line by an element attribute rather than a style property, bonus rows carrying both a background and a real star text node, the deliberate absence of the design study's hover tooltips with no substitute added, an English fallback for the two moves with no Chinese name, the platform list binding left unused because it renders neither removals nor reorders, and the table's own height bound and scrolling container above a row threshold with its column header outside them.
+How one form's Champions learnset is presented as a six-column table. Covers one row per move in the section the displayed form points at with only the visible range of those rows materialised, the same-type attack bonus judged against the displayed form's types rather than the species' and excluding status moves, the closed set of three sort orders and the tie-break every one of them resolves by name, sort order and the bonus filter held as state that outlives the panel, the section heading stating both the learnset size and the filtered size, an empty filtered result stated in words, numeric columns fixed in width and right aligned with absent values as a dash, move names held to one line by an element attribute rather than a style property, bonus rows carrying both a background and a real star text node, the deliberate absence of the design study's hover tooltips with no substitute added, an English fallback for a move with no Chinese name — kept as a guard although the dataset no longer has one — the platform list binding left unused because it renders neither removals nor reorders, and the table's own height bound and scrolling container above a row threshold with its column header outside them.
+
+A move row is a control, and what it opens changed: it opens that move's detail, governed by `move-detail`, not the learner list it reached directly until move detail existed. Routing this row and the move index through one screen keeps one gesture on a move reaching one place; the extra tap it costs on the way to the learners is bounded by `layer-stack`'s unwinding rule. The column header remains not a control.
 
 ## Requirements
 
@@ -454,12 +456,16 @@ When Chinese leads and a move has no Chinese name, the name column SHALL render 
 - **WHEN** Chinese leads and the table renders a move whose Chinese name is absent
 - **THEN** the name column shows that move's English name
 
-##### Example: the two moves in the dataset with no Chinese name
+##### Example: no move in the dataset currently exercises the fallback
 
-| Move          | Chinese name | Rendered when Chinese leads |
-| ------------- | ------------ | --------------------------- |
-| Syrup Bomb    | absent       | Syrup Bomb                  |
-| Matcha Gotcha | absent       | Matcha Gotcha               |
+| Property                       | Value |
+| ------------------------------ | ----- |
+| moves in the shared move table | 496   |
+| moves with no Chinese name     | 0     |
+
+Syrup Bomb and Matcha Gotcha were the two, for as long as the PokeAPI name column was the source. The `dex-data` capability now requires Traditional Chinese move names to come from the 52poke move list, which carries one for every numbered move and is asserted at fetch, so this requirement has no case left to answer.
+
+It is kept rather than removed because it is the guard for that source regressing: a name column that went empty again would otherwise render a blank cell that no check reports. The `move-index` and `move-detail` capabilities deliberately do **not** carry a fallback of their own — they were written after the guarantee was in place, and duplicating an unreachable branch in three places would have made the guarantee harder to find than the branches.
 
 <!-- @trace
 source: port-champions-dex-learnset
@@ -655,7 +661,9 @@ code:
 ---
 ### Requirement: A move row is a control that opens that move's learners
 
-Each rendered move row SHALL be a control. Tapping a row SHALL open the learner list for that row's move, governed by the `move-learners` capability.
+Each rendered move row SHALL be a control. Tapping a row SHALL open move detail for that row's move, governed by the `move-detail` capability. It SHALL NOT open the learner list directly; the learner list is reached from move detail, which the `move-detail` capability establishes as its sole entry.
+
+The change of destination is deliberate. A reader looking at a move row most often wants to know what the move does, and until move detail existed the row could only answer a different question. Routing both entry points — this row and the move index — through move detail keeps one concept reaching one screen. The extra tap it costs on the way to the learner list is bounded by the `layer-stack` capability's unwinding rule, which prevents the resulting navigation cycle from accumulating layers.
 
 The tap SHALL be bound on the row element itself rather than on a component boundary, because a binding placed on a component reaches an element only by attribute fall-through.
 
@@ -665,10 +673,11 @@ The column header row SHALL NOT be a control and SHALL NOT carry the press mark.
 
 The row's tappability SHALL NOT be signalled by a hover-dependent affordance, consistent with this capability's existing exclusion of hover-dependent tooltips.
 
-#### Scenario: Tapping a row opens its learners
+#### Scenario: Tapping a row opens its move detail
 
 - **WHEN** a move row is tapped
-- **THEN** the learner list for that row's move opens
+- **THEN** move detail for that row's move opens
+- **AND** the learner list does not open
 
 #### Scenario: A row press that becomes a scroll recovers
 
@@ -679,64 +688,98 @@ The row's tappability SHALL NOT be signalled by a hover-dependent affordance, co
 
 - **WHEN** the column header row is pressed
 - **THEN** it is not displaced
-- **AND** no learner list opens
+- **AND** no move detail opens
 
 ##### Example: which rows respond to a tap
 
-| Row                                  | Press mark | Tap opens learners |
-| ------------------------------------ | ---------- | ------------------ |
-| a move row                           | yes        | yes                |
-| a move row marked with the bonus     | yes        | yes                |
-| the column header row                | no         | no                 |
-| the words shown for an empty result  | no         | no                 |
+| Row                                  | Press mark | Tap opens move detail |
+| ------------------------------------ | ---------- | --------------------- |
+| a move row                           | yes        | yes                   |
+| a move row marked with the bonus     | yes        | yes                   |
+| the column header row                | no         | no                    |
+| the words shown for an empty result  | no         | no                    |
 
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: add-moves-tab
+updated: 2026-08-11
 code:
+  - design/pipeline/aggregate.py
   - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
   - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->
 
 ---
 ### Requirement: The row a tap opens is the row's move, not the row's position
 
-The move carried to the learner list SHALL be the move rendered in the tapped row, resolved through the same move reference the row was built from.
+The move carried to move detail SHALL be the move rendered in the tapped row, resolved through the same move reference the row was built from.
 
 The row's position SHALL NOT be used to identify the move. Rows are reordered by the three sort orders and removed by the bonus filter, so a position identifies a different move under each combination of the two.
 
 #### Scenario: A tap after sorting opens the right move
 
 - **WHEN** the table is sorted by power and the first row is tapped
-- **THEN** the learner list opens for the move rendered in that row
+- **THEN** move detail opens for the move rendered in that row
 
 #### Scenario: A tap under the bonus filter opens the right move
 
 - **WHEN** the bonus filter is on and a row is tapped
-- **THEN** the learner list opens for the move rendered in that row
+- **THEN** move detail opens for the move rendered in that row
 - **AND** not for the move that occupied the same position with the filter off
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: add-moves-tab
+updated: 2026-08-11
 code:
+  - design/pipeline/aggregate.py
   - design/champions-dex.html
+  - scripts/check-row-heights.mjs
+  - design/pipeline/fetch_sources.sh
+  - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
+  - src/components/MoveDetail.vue
   - src/data/i18n.ts
+  - src/state/tabs.ts
+  - src/components/MoveLearners.vue
+  - src/components/TabDeck.vue
+  - src/App.vue
+  - src/state/layerStack.ts
+  - design/pipeline/fetch_moves_zh.py
+  - ROADMAP.md
+  - src/App.css
   - design/champions-dex.json
+  - src/data/dex.ts
+  - src/components/MoveIndex.vue
+  - src/state/selection.ts
+  - scripts/check-styles.mjs
+  - src/components/LearnsetTable.vue
+  - src/state/moveLearners.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/layer-stack.test.ts
+  - tests/dex-data.test.ts
 -->
