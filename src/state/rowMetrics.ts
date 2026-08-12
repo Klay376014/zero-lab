@@ -65,6 +65,14 @@ export const MOVE_INDEX_ROW: RowMetric = { height: 34, perRow: 1 }
  * are calibrated at. Deliberately generous: overstating it renders more rows than are visible,
  * which costs elements, while understating it lets the scroll outrun the window and blank an
  * edge. Only the second failure is silent.
+ *
+ * **Not reduced for the filter row**, and that is a decision rather than an omission. The filter
+ * row makes the container shorter, so this figure becomes a larger overstatement and the failure
+ * it can produce stays the non-silent one — roughly four extra rows at this pitch and buffer,
+ * about 5ms of element cost. Reducing it would take a device reading: every other figure in this
+ * file is measured, and a hand-computed replacement would carry no relation to what the platform
+ * draws. Scrolling the whole index on a device is what would catch this having gone stale, and it
+ * is an acceptance step for that reason.
  */
 export const MOVE_INDEX_VIEWPORT = 640
 

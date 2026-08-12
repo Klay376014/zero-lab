@@ -17,30 +17,36 @@ import './App.css'
 import { onPressEnd, onPressStart } from './interaction/press.js'
 import DexGrid from './components/DexGrid.vue'
 import MoveDetail from './components/MoveDetail.vue'
+import MoveFilterBar from './components/MoveFilterBar.vue'
 import MoveIndex from './components/MoveIndex.vue'
 import MoveLearners from './components/MoveLearners.vue'
 import QueryBar from './components/QueryBar.vue'
 import SpeciesDetail from './components/SpeciesDetail.vue'
 import TabDeck from './components/TabDeck.vue'
 import { dex } from './data/dex.js'
-import { moveCountLabel, resultCountLabel, t } from './data/i18n.js'
+import { moveResultCountLabel, resultCountLabel, t } from './data/i18n.js'
 import { cycleMode, lang, mode, toggleLang, tokenStyle } from './state/display.js'
 import type { Layer } from './state/layerStack.js'
 import { layers } from './state/layerStack.js'
+import { moveResults } from './state/moveQuery.js'
 import { results } from './state/query.js'
 import { activeTab } from './state/tabs.js'
 
 /**
  * The masthead states what the active tab is showing.
  *
- * On the moves tab that is the size of the move table, read from the meta block rather than
- * counted here — the dex tab's result count is a statement about the query and would be a wrong
- * answer to a tab that has no query.
+ * Both tabs state a result count: matched, the dataset's total for the unit, and the unit. Each
+ * total is read from the meta block rather than counted here.
+ *
+ * The moves tab stated the move table's size until it had conditions to answer for. A matched
+ * count would have been an answer to a question nobody had asked; now that the conditions can
+ * shorten the sequence, the size alone leaves a reader who has filtered unable to tell a narrow
+ * result from a broken one.
  */
 const subtitle = computed(() => (
   activeTab.value === 'dex'
     ? resultCountLabel(results.value.length, dex.meta.species, lang.value)
-    : moveCountLabel(dex.meta.moves, lang.value)
+    : moveResultCountLabel(moveResults.value.length, dex.meta.moves, lang.value)
 ))
 
 /**
@@ -88,11 +94,14 @@ function layerKey(layer: Layer): string {
           </view>
         </view>
 
-        <!-- The query bar belongs to the dex tab. The move index carries no query controls, and
-             rendering the bar on that tab would offer controls with nothing to act on. -->
+        <!-- One bar per tab, and neither crosses over: the query bar's sort orders and its
+             Mega-only and multi-form-only filters are statements about species, which the move
+             table has no answer for, and the filter row's damage classes have no meaning for a
+             species. -->
         <QueryBar v-if="activeTab === 'dex'" />
         <DexGrid v-if="activeTab === 'dex'" :results="results" />
 
+        <MoveFilterBar v-if="activeTab === 'moves'" />
         <MoveIndex v-if="activeTab === 'moves'" />
       </view>
 

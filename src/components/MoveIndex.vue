@@ -1,14 +1,20 @@
 <script setup lang="ts">
 /**
- * The moves tab: every move in the shared table, one row each.
+ * The moves tab: the moves the active conditions admit, one row each.
  *
  * The order is the dataset's own — first-encounter order across the roster's learnsets — and not
- * a computed one. Re-ordering here would produce a second ordering that no invariant covers, and
- * the tab's purpose in this batch is reaching a move rather than surveying them.
+ * a computed one, under every condition: filtering removes rows without reordering the rows it
+ * keeps. Re-ordering here would produce a second ordering that no invariant covers.
  *
- * No query controls: no search field, no type filter, no sort. Each of those brings its own
- * state, its own result-count statement and its own interaction with the window below, which is
- * a separate decision. The query bar belongs to the dex tab and is not rendered here.
+ * The three conditions live in `moveQuery.ts`, and the filter row that sets them is a sibling
+ * component rather than part of this one — this component renders a sequence and knows nothing
+ * about how it was narrowed. **Sort order is still absent**, and deliberately: a third sort order
+ * needs the sort control reworked from a single cycling chip into something that shows how many
+ * members the set has, which is ROADMAP A6 and a decision of its own.
+ *
+ * The query bar is still not rendered here. It sets the dex tab's query state, whose sort orders
+ * and Mega-only and multi-form-only filters are statements about species that the move table has
+ * no answer for.
  *
  * The columns are the learnset table's columns, so the cell rules and the column headings are
  * that table's, reused rather than restated. The row is this component's own: it is a primary
@@ -19,11 +25,11 @@ import { computed, ref, watch } from 'vue-lynx'
 
 import TypeGlyph from './TypeGlyph.vue'
 import type { Move } from '../data/dex.js'
-import { dex } from '../data/dex.js'
-import { damageClassAbbr, moveFigure, moveHeads, moveName } from '../data/i18n.js'
+import { damageClassAbbr, moveFigure, moveHeads, moveName, t } from '../data/i18n.js'
 import { onPressEnd, onPressStart } from '../interaction/press.js'
 import { lang } from '../state/display.js'
 import { openLayer } from '../state/layerStack.js'
+import { moveResults } from '../state/moveQuery.js'
 import { BUFFER_SCREENS, MOVE_INDEX_ROW, MOVE_INDEX_VIEWPORT } from '../state/rowMetrics.js'
 import type { Range } from '../state/visibleRange.js'
 import { sliceForRange, visibleRange } from '../state/visibleRange.js'
@@ -36,11 +42,18 @@ interface Row {
   readonly abbr: string
 }
 
-const rows = computed<Row[]>(() => dex.moves.map((move, index) => ({
-  index,
-  move,
-  name: moveName(move, lang.value),
-  abbr: damageClassAbbr(move.dc, lang.value),
+/**
+ * The index carried here is the one the result already holds, not this list's position.
+ *
+ * `moveResults` takes it from the shared move table before applying any condition, so a filtered
+ * sequence still names its moves by their place in that table. Re-deriving it from this map's
+ * callback would renumber the moves the moment a condition removed an earlier one.
+ */
+const rows = computed<Row[]>(() => moveResults.value.map((result) => ({
+  index: result.index,
+  move: result.move,
+  name: moveName(result.move, lang.value),
+  abbr: damageClassAbbr(result.move.dc, lang.value),
 })))
 
 const heads = computed(() => moveHeads(lang.value))
@@ -48,10 +61,10 @@ const heads = computed(() => moveHeads(lang.value))
 /**
  * Only the rows within reach are made.
  *
- * 496 rows against the grid's 208 cards, on a tab one tap away. The platform charges roughly
- * 1.3ms per element created regardless of what it is (design/HANDOFF.md §12.24), and a fully
- * materialised index would pay that 496 times before anything appeared. The container reports an
- * absolute `scrollTop` (§12.25), so nothing here accumulates deltas.
+ * 496 rows unfiltered against the grid's 208 cards, on a tab one tap away. The platform charges
+ * roughly 1.3ms per element created regardless of what it is (design/HANDOFF.md §12.24), and a
+ * fully materialised index would pay that 496 times before anything appeared. The container
+ * reports an absolute `scrollTop` (§12.25), so nothing here accumulates deltas.
  */
 let offset = 0
 
@@ -73,8 +86,11 @@ function commit(next: Range): void {
   range.value = next
 }
 
-// The sequence is fixed at 496, but switching language rebuilds it; the derivation clamps to the
-// same length and nothing here tells the container to move.
+// A condition changes the sequence's length and switching language rebuilds it at the same
+// length. The derivation takes the total as an input, so clamping is already part of it: no index
+// beyond the last row is rendered. Nothing here tells the container to move — the reactive update
+// leaves the scroll position alone, and code that stores or restores one is rejected for this
+// project (`visible-range-window`).
 watch(rows, () => { commit(rangeAt(offset)) })
 
 const shown = computed(() => sliceForRange(rows.value, range.value))
@@ -148,6 +164,13 @@ function open(row: Row): void {
       </view>
 
       <view :style="{ height: `${range.trailing}px` }" />
+
+      <!-- Filtering to nothing is a normal outcome, so it is stated in words rather than left as
+           a blank region, and nothing is written to the console. `.MoveNone` is the learnset
+           table's rule, reused: both are prose and both lead with the reading face. The string is
+           this tab's own key — the two read alike today, and either surface has to be free to be
+           reworded without silently rewording the other. -->
+      <text v-if="rows.length === 0" class="MoveNone">{{ t('miNone', lang) }}</text>
     </scroll-view>
   </view>
 </template>

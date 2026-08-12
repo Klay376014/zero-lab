@@ -18,11 +18,12 @@ import type { Lang, Strings } from '../src/data/i18n.js'
 import {
   I18N,
   learnerCountLabel,
-  moveCountLabel,
   moveDescription,
   moveFlagLabel,
   moveHeads,
   moveName,
+  moveResultCountLabel,
+  resultCountLabel,
   t,
 } from '../src/data/i18n.js'
 
@@ -76,14 +77,47 @@ describe('the strings this change adds', () => {
 })
 
 describe('the count statements', () => {
-  it('states a move count in both languages', () => {
-    expect(moveCountLabel(dex.meta.moves, 'zh')).toBe('496 個招式')
-    expect(moveCountLabel(dex.meta.moves, 'en')).toBe('496 moves')
-  })
-
   it('states a learner count in both languages', () => {
     expect(learnerCountLabel(207, 'zh')).toBe('207 隻')
     expect(learnerCountLabel(207, 'en')).toBe('207 species')
+  })
+})
+
+/**
+ * Example: the same query in both languages — dataset-statements spec.md, "The result count is a
+ * localised statement, not a bare ratio".
+ *
+ * Both tabs, transcribed row for row. The moves tab's rows are what replaced a single-figure
+ * label: it stated the move table's size, which was correct only while that tab had no query.
+ */
+describe('Example: the same query in both languages', () => {
+  const dexRows: readonly (readonly [Lang, number, string])[] = [
+    ['zh', 208, '208 / 208 種類'],
+    ['zh', 19, '19 / 208 種類'],
+    ['en', 208, '208 / 208 species'],
+    ['en', 19, '19 / 208 species'],
+  ]
+
+  it.each(dexRows)('dex tab, %s, %i matched', (lang, matched, expected) => {
+    expect(resultCountLabel(matched, dex.meta.species, lang)).toBe(expected)
+  })
+
+  const moveRows: readonly (readonly [Lang, number, string])[] = [
+    ['zh', 496, '496 / 496 個招式'],
+    ['zh', 31, '31 / 496 個招式'],
+    ['zh', 0, '0 / 496 個招式'],
+    ['en', 496, '496 / 496 moves'],
+    ['en', 31, '31 / 496 moves'],
+    ['en', 0, '0 / 496 moves'],
+  ]
+
+  it.each(moveRows)('moves tab, %s, %i matched', (lang, matched, expected) => {
+    expect(moveResultCountLabel(matched, dex.meta.moves, lang)).toBe(expected)
+  })
+
+  it('both totals come from the meta block', () => {
+    expect(dex.meta.species).toBe(208)
+    expect(dex.meta.moves).toBe(496)
   })
 })
 

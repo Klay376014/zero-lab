@@ -53,6 +53,22 @@ export interface Strings {
   readonly mdDesc: string
   readonly mdLearners: string
   readonly mdFlags: string
+  /**
+   * The move index's own set: its filter row's placeholder and damage class label, and the
+   * sentence it shows when the conditions leave nothing.
+   *
+   * Separate from the `mv*` and `md*` sets on the same grounds those two are separate from each
+   * other — `miNone` reads exactly like `mvNone` today, and either surface has to be free to be
+   * reworded without silently rewording the other.
+   *
+   * `miSearchPlaceholder` states only what this field searches. It cannot reuse
+   * `searchPlaceholder`, which promises a number, a type and a form: the move corpus carries two
+   * names and nothing else, and a placeholder that promises more than the search delivers is the
+   * failure design/HANDOFF.md §12.18 records.
+   */
+  readonly miSearchPlaceholder: string
+  readonly miClass: string
+  readonly miNone: string
 }
 
 export const I18N: Record<Lang, Strings> = {
@@ -98,6 +114,9 @@ export const I18N: Record<Lang, Strings> = {
     mdDesc: '說明',
     mdLearners: '哪些寶可夢會',
     mdFlags: '性質',
+    miSearchPlaceholder: '招式名稱',
+    miClass: '傷害類別',
+    miNone: '沒有符合的招式。',
   },
   en: {
     lang: 'EN',
@@ -147,6 +166,9 @@ export const I18N: Record<Lang, Strings> = {
     // column's 1px of tracking. `Properties` is 91.0px and would wrap, taking the row's baseline
     // out of line with the five rows above — the failure `.MoveDetailAttrKey` already records.
     mdFlags: 'Flags',
+    miSearchPlaceholder: 'Move name',
+    miClass: 'Damage',
+    miNone: 'No moves match.',
   },
 }
 
@@ -255,8 +277,17 @@ export function moveDescription(move: Move, lang: Lang): string {
   return lang === 'zh' ? move.d : move.de
 }
 
-export function moveCountLabel(count: number, lang: Lang): string {
-  return lang === 'zh' ? `${count} 個招式` : `${count} moves`
+/**
+ * The moves tab's result count: matched, the move table's total, and the unit.
+ *
+ * Replaces a single-figure label that stated the move table's size. That was the right statement
+ * while the tab had no query — a matched count answers a question nobody had asked — and it is
+ * the wrong one now that conditions can shorten the sequence, because a reader who has filtered
+ * cannot otherwise tell a narrow result from a broken one. Same shape as
+ * {@link resultCountLabel} for the same reason the two tabs' counts sit in the same place.
+ */
+export function moveResultCountLabel(matched: number, total: number, lang: Lang): string {
+  return lang === 'zh' ? `${matched} / ${total} 個招式` : `${matched} / ${total} moves`
 }
 
 /**

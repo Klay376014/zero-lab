@@ -212,6 +212,7 @@ export function bestBst(species: Species): number {
 
 const typesBySpecies = new Map<Species, readonly string[]>()
 const haystackBySpecies = new Map<Species, string>()
+const haystackByMove = new Map<Move, string>()
 
 export function allTypes(species: Species): readonly string[] {
   const hit = typesBySpecies.get(species)
@@ -244,6 +245,30 @@ export function searchHaystack(species: Species): string {
     ...types.map((type) => typeName(type, 'zh')),
   ].join(' ').toLowerCase()
   haystackBySpecies.set(species, haystack)
+  return haystack
+}
+
+/**
+ * Everything about a move that the move index's search string is matched against, lower-cased.
+ *
+ * Both names, and nothing else. Deliberately narrower than {@link searchHaystack}, which carries
+ * its species' types: there, the search string is the only way to reach a type by name for a
+ * reader who has not found the type chips; here the type chips sit in the same block of controls
+ * and answer that question exactly, so carrying type names would let a search return all 94
+ * Normal moves and duplicate the control less precisely. Description text is excluded for the
+ * same reason §12.18 excludes bare generation tokens from the species corpus — prose matches too
+ * diffusely to distinguish from a broken search.
+ *
+ * Both languages are always present, independent of which one leads, so switching the leading
+ * language never changes which moves are reachable. The two are not symmetric and are not meant
+ * to be: 「牙」 reaches seven moves and `fang` six, because 以牙還牙 / Payback carries the
+ * character without carrying the word.
+ */
+export function moveSearchHaystack(move: Move): string {
+  const hit = haystackByMove.get(move)
+  if (hit !== undefined) return hit
+  const haystack = `${move.n} ${move.z}`.toLowerCase()
+  haystackByMove.set(move, haystack)
   return haystack
 }
 

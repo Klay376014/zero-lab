@@ -2,7 +2,9 @@
 
 ## Purpose
 
-What the interface states about itself and about the dataset behind it. Covers the constraint that every figure stated about the dataset as a whole is read from the dataset's own meta block rather than written as a literal, the result count stated as a localised sentence rather than a bare ratio, and the footer's statement of font licensing and copyright.
+What the interface states about itself and about the dataset behind it. Covers the constraint that every figure stated about the dataset as a whole is read from the dataset's own meta block rather than written as a literal, the result count stated as a localised sentence rather than a bare ratio — on both tabs, species matched against the species total and moves matched against the move table's total — and the footer's statement of font licensing and copyright.
+
+The moves tab's count is a result count rather than the move table's size. Stating the size alone was right while that tab had no query and wrong once conditions could shorten its sequence, because a reader who has filtered cannot otherwise tell a narrow result from a broken one. The single-figure label it replaced was removed rather than left unreferenced, and that removal is recorded in the project roadmap for the same reason the four masthead counts are: a missing string-table key otherwise reads as an undelivered feature.
 
 Also records two things this interface deliberately does **not** state. The five provenance segments the design study carries were dropped by decision, so no claim is made about where the roster, moves, stats, naming or artwork came from. And the masthead's four scale counts — species, form entries, Mega forms, move table entries — were removed rather than repaired: they were constants of the bundled dataset that answered nothing a reader does, they had in fact gone unrendered since a hand edit removed them from the element tree, and the masthead height they claimed was contested by the tab controls. The four figures remain in the meta block and are still asserted at load time by `dex-data`, so nothing that depends on them was lost. The reasoning is recorded in the project roadmap's list of decisions taken against, because the four absent string-table keys would otherwise read as an undelivered feature.
 
@@ -71,40 +73,70 @@ tests:
 ---
 ### Requirement: The result count is a localised statement, not a bare ratio
 
-The count of species matching the active query SHALL be stated as a localised string carrying the matched count, the dataset's species total, and the unit being counted. It SHALL NOT be rendered as two figures separated by a bare punctuation mark, because a bare ratio does not say what is being counted and reads identically in both languages while the rest of the interface changes.
+The count of entries matching the active query SHALL be stated as a localised string carrying the matched count, the dataset's total for the unit being counted, and the unit itself. It SHALL NOT be rendered as two figures separated by a bare punctuation mark, because a bare ratio does not say what is being counted and reads identically in both languages while the rest of the interface changes.
+
+This SHALL hold on both tabs. The dex tab states species matched against the species total; the moves tab states moves matched against the move table's total. Both totals SHALL be read from the dataset's own meta block rather than written as literals, as this capability already requires of every figure stated about the dataset.
+
+The moves tab's statement SHALL be a result count rather than the move table's size. Stating the size alone was correct while that tab had no query — a matched count would then have been an answer to a question nobody had asked — and it is wrong now that conditions can shorten the sequence, because a reader who has filtered cannot otherwise tell a narrow result from a broken one.
+
+The single-figure move count this replaces SHALL be removed rather than left unreferenced. Its absence from the string table SHALL be recorded as a replacement in the project roadmap's list of decisions taken against, because that roadmap treats a missing string-table key as the fastest indicator that a feature was never delivered, and this key's absence means the opposite.
 
 #### Scenario: The result count names its unit
 
 - **WHEN** the masthead's result count is rendered with the language set to Chinese
-- **THEN** it states the matched count, the species total, and the Chinese word for species
+- **THEN** it states the matched count, the total for the unit, and the Chinese word for that unit
 
 #### Scenario: The result count follows the language toggle
 
 - **WHEN** the language is switched
 - **THEN** the result count is restated in the new language
 
+#### Scenario: The moves tab states a result count
+
+- **WHEN** the moves tab is shown with conditions that leave 31 moves matching
+- **THEN** the count states 31 and the move table's total
+
+#### Scenario: An unfiltered moves tab states both figures
+
+- **WHEN** the moves tab is shown with no condition set
+- **THEN** the count states the move table's total as both the matched count and the total
+
+#### Scenario: Both totals come from the meta block
+
+- **WHEN** either tab's result count is rendered
+- **THEN** the total it states is read from the dataset's meta block
+
 ##### Example: the same query in both languages
 
-| Language | Matched | Rendered                |
-| -------- | ------- | ----------------------- |
-| Chinese  | 208     | 208 / 208 種類          |
-| Chinese  | 19      | 19 / 208 種類           |
-| English  | 208     | 208 / 208 species       |
-| English  | 19      | 19 / 208 species        |
+| Tab | Language | Matched | Rendered |
+| --- | -------- | ------- | -------- |
+| Dex | Chinese | 208 | 208 / 208 種類 |
+| Dex | Chinese | 19 | 19 / 208 種類 |
+| Dex | English | 208 | 208 / 208 species |
+| Dex | English | 19 | 19 / 208 species |
+| Moves | Chinese | 496 | 496 / 496 個招式 |
+| Moves | Chinese | 31 | 31 / 496 個招式 |
+| Moves | Chinese | 0 | 0 / 496 個招式 |
+| Moves | English | 496 | 496 / 496 moves |
+| Moves | English | 31 | 31 / 496 moves |
+| Moves | English | 0 | 0 / 496 moves |
 
 
 <!-- @trace
-source: surface-dataset-facts
-updated: 2026-07-30
+source: filter-move-index
+updated: 2026-08-12
 code:
-  - design/HANDOFF.md
-  - src/components/DexGrid.vue
-  - src/components/DexFooter.vue
-  - src/App.css
+  - src/state/moveQuery.ts
+  - src/state/rowMetrics.ts
+  - src/components/MoveIndex.vue
+  - src/App.vue
   - ROADMAP.md
   - src/data/dex.ts
-  - src/App.vue
+  - src/components/MoveFilterBar.vue
   - src/data/i18n.ts
+tests:
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
 -->
 
 ---
