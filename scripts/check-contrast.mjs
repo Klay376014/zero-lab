@@ -30,8 +30,15 @@ const CONTRAST = join(ROOT, 'src/theme/contrast.ts')
  */
 const FLOOR = 2.5
 
-/** Counts the parse must hit. A regex that silently matches less would check nothing. */
-const EXPECTED = { typeColours: 18, tones: 4, modernTokens: 10 }
+/**
+ * Counts the parse must hit. A regex that silently matches less would check nothing.
+ *
+ * `modes` is here because this check once read the theme with a non-global match for a single
+ * `tokens` block and a hand-written list of two modes. A third mode then measured nothing at all
+ * while the check still printed ok — the failure this file exists to prevent, in the file itself.
+ * Every mode is parsed now, and the count is asserted so a fourth cannot slip through either.
+ */
+const EXPECTED = { typeColours: 18, modes: 3, tones: 4, tokensPerMode: 10 }
 
 /** Every surface name the glyph fill selection accepts, as this check understands them. */
 const KNOWN_SURFACES = ['surface', 'panel', 'surface2', 'accent', 'typechip']
@@ -54,14 +61,42 @@ function hexTable(source, label) {
 }
 
 const typeColours = hexTable(typesSrc.match(/TYPE_COLORS[^}]+}/s)?.[0] ?? '', 'TYPE_COLORS')
-const tones = [...(modesSrc.match(/tones:\s*\[([^\]]+)\]/)?.[1] ?? '').matchAll(/'(#[0-9A-Fa-f]{6})'/g)]
-  .map((m) => m[1])
-const modernTokens = hexTable(modesSrc.match(/tokens:\s*\{[^}]+}/s)?.[0] ?? '', 'MODERN tokens')
+
+/**
+ * Every mode the theme declares, read from the MODES array rather than restated here.
+ *
+ * Split on the `id` field, so each chunk is one mode's declaration whatever order its other fields
+ * appear in. A mode either carries a four-tone ramp or its ten tokens outright, and the two flags
+ * that change how a glyph is painted are read from the same chunk.
+ */
+const modesBody = modesSrc.match(/export const MODES[^=]*=\s*\[([\s\S]*?)\n]/)?.[1] ?? ''
+if (!modesBody) fail('could not read the MODES declaration; the source shape changed')
+
+const parsedModes = modesBody.split(/(?=id: ')/).slice(1).map((chunk) => {
+  const id = chunk.match(/id: '(\w+)'/)?.[1] ?? '?'
+  const ramp = [...(chunk.match(/tones:\s*\[([^\]]+)\]/)?.[1] ?? '').matchAll(/'(#[0-9A-Fa-f]{6})'/g)]
+    .map((m) => m[1])
+  const declared = chunk.match(/tokens:\s*\{[^}]+}/s)?.[0]
+  return {
+    id,
+    tones: ramp.length ? ramp : null,
+    tokens: declared ? hexTable(declared, `${id} tokens`) : null,
+    typeColor: /typeColor:\s*true/.test(chunk),
+    plateGlyphs: /plateGlyphs:\s*true/.test(chunk),
+  }
+})
+
+if (parsedModes.some((mode) => !mode.tones && !mode.tokens)) {
+  fail(`a mode declares neither tones nor tokens: [${parsedModes.map((m) => m.id).join(', ')}]`)
+}
 
 const found = {
   typeColours: Object.keys(typeColours).length,
-  tones: tones.length,
-  modernTokens: Object.keys(modernTokens).length,
+  modes: parsedModes.length,
+  tones: parsedModes.find((mode) => mode.tones)?.tones.length ?? 0,
+  tokensPerMode: Math.min(
+    ...parsedModes.map((mode) => Object.keys(mode.tokens ?? {}).length || EXPECTED.tokensPerMode),
+  ),
 }
 for (const [what, want] of Object.entries(EXPECTED)) {
   if (found[what] !== want) {
@@ -112,27 +147,35 @@ function contrast(a, b) {
 
 const inkOn = (bg) => (contrast(INK_DARK, bg) >= contrast(INK_LIGHT, bg) ? INK_DARK : INK_LIGHT)
 
-/** tokensOf(), for the ramp mode: POCKET derives its ten tokens from four tones. */
-const pocketTokens = {
-  bg: tones[0], shell: tones[1], panel: tones[3], surface: tones[3], surface2: tones[2],
-  ink: tones[0], ink2: tones[1], line: tones[0], accent: tones[0], accentInk: tones[3],
+/** tokensOf(): a ramp mode derives its ten tokens from four tones, the others declare them. */
+function tokensOf(mode) {
+  if (mode.tokens) return mode.tokens
+  const [t0, t1, t2, t3] = mode.tones
+  return {
+    bg: t0, shell: t1, panel: t3, surface: t3, surface2: t2,
+    ink: t0, ink2: t1, line: t0, accent: t0, accentInk: t3,
+  }
 }
 
-const MODE_LIST = [
-  { id: 'POCKET', tones, tokens: pocketTokens, typeColor: false },
-  { id: 'MODERN', tones: null, tokens: modernTokens, typeColor: true },
-]
+const MODE_LIST = parsedModes.map((mode) => ({ ...mode, tokens: tokensOf(mode) }))
 
-function glyphOn(mode, type, surface) {
-  if (mode.tones) return surface === 'accent' ? mode.tones[3] : mode.tones[0]
-  if (surface === 'typechip') return inkOn(typeColours[type] ?? '#888888')
-  if (surface === 'accent') return mode.tokens.accentInk
-  return typeColours[type] ?? mode.tokens.ink
+/** glyphPaint(): the fill, and the plate the glyph paints behind itself where the mode plates. */
+function glyphPaint(mode, type, surface) {
+  if (mode.tones) return { fill: surface === 'accent' ? mode.tones[3] : mode.tones[0] }
+  if (surface === 'typechip') return { fill: inkOn(typeColours[type] ?? '#888888') }
+  if (surface === 'accent') return { fill: mode.tokens.accentInk }
+  if (mode.plateGlyphs) {
+    const plate = typeColours[type] ?? '#888888'
+    return { fill: inkOn(plate), plate }
+  }
+  return { fill: typeColours[type] ?? mode.tokens.ink }
 }
 
 function glyphBackdrop(mode, type, surface) {
   if (surface === 'accent') return mode.tokens.accent
   if (surface === 'typechip') return typeColours[type] ?? '#888888'
+  const { plate } = glyphPaint(mode, type, surface)
+  if (plate) return plate
   if (surface === 'panel') return mode.tokens.panel
   if (surface === 'surface2') return mode.tokens.surface2
   return mode.tokens.surface
@@ -156,7 +199,7 @@ for (const mode of MODE_LIST) {
   for (const surface of KNOWN_SURFACES) {
     if (!isRendered(mode, surface)) continue
     const measured = Object.keys(typeColours)
-      .map((type) => [type, contrast(glyphOn(mode, type, surface), glyphBackdrop(mode, type, surface))])
+      .map((type) => [type, contrast(glyphPaint(mode, type, surface).fill, glyphBackdrop(mode, type, surface))])
       .sort((a, b) => a[1] - b[1])
     const [lowType, low] = measured[0]
     const [highType, high] = measured[measured.length - 1]
@@ -165,7 +208,7 @@ for (const mode of MODE_LIST) {
       if (value < FLOOR) {
         violations.push(
           `${mode.id} ${surface} ${type}: ${value.toFixed(2)}, below the recorded floor of ${FLOOR}. `
-          + `Fill ${glyphOn(mode, type, surface)} on backdrop ${glyphBackdrop(mode, type, surface)}.`,
+          + `Fill ${glyphPaint(mode, type, surface).fill} on backdrop ${glyphBackdrop(mode, type, surface)}.`,
         )
       }
     }
@@ -185,7 +228,7 @@ if (violations.length) {
 console.log('ok    every glyph is visible on every surface it is drawn onto')
 for (const row of rows) {
   console.log(
-    `      ${row.mode.padEnd(6)} ${row.surface.padEnd(9)}`
+    `      ${row.mode.padEnd(7)} ${row.surface.padEnd(9)}`
     + ` ${row.low.toFixed(2)} (${row.lowType}) – ${row.high.toFixed(2)} (${row.highType})`,
   )
 }

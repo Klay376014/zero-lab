@@ -1,12 +1,6 @@
-# retro-theme Specification
+## MODIFIED Requirements
 
-## Purpose
-
-The colour modes and the shared state that drives them. Covers one ten-token semantic contract resolved by every mode in an ordered set — POCKET, MODERN and EMERALD — with no eleventh token admitted, POCKET's derivation from a four-tone greyscale ramp against the direct declaration the other two use, application of the active tokens as inline custom properties on the root view, ink selection by measured contrast rather than a fixed luminance threshold, one surface-aware selection returning both a glyph's fill and the plate a light mode paints behind it so the two cannot disagree with the background reported for measurement, and the reactive mode and language state that components read without prop threading, with the mode set by naming it rather than by advancing a position.
-
-## Requirements
-
-### Requirement: Colour modes share one token contract
+### Requirement: Two colour modes share one token contract
 
 The theme layer SHALL define at least two colour modes and SHALL define them as one ordered set, so that adding a mode is an addition to that set rather than a change to any control that reads it. The set currently holds three: POCKET, MODERN and EMERALD. Each mode SHALL resolve the same ten semantic tokens: bg, shell, panel, surface, surface2, ink, ink2, line, accent and accentInk. No component style SHALL hard-code a colour value; every colour SHALL be read from a token.
 
@@ -27,28 +21,6 @@ Adding a mode SHALL NOT add an eleventh token. A mode needing a colour the ten d
 - **WHEN** a control needs to present every available mode
 - **THEN** it reads the ordered set from the theme layer rather than naming the modes itself
 
-
-<!-- @trace
-source: add-emerald-mode
-updated: 2026-08-13
-code:
-  - design/theme-menu-variants.html
-  - src/components/ThemeMenuList.vue
-  - design/HANDOFF.md
-  - design/theme-emerald-mock.html
-  - f22d633073a187527790b2510e225c46.jpg
-  - src/components/ThemeMenu.vue
-  - src/theme/modes.ts
-  - src/components/TypeGlyph.vue
-  - src/App.vue
-  - src/App.css
-  - src/state/display.ts
-  - scripts/check-contrast.mjs
-tests:
-  - tests/theme.test.ts
--->
-
----
 ### Requirement: POCKET derives its tokens from four tones
 
 POCKET SHALL derive its ten tokens from an ordered four-tone greyscale ramp rather than declaring them individually, because the same ramp is the colour source for the sprite placeholders. MODERN and EMERALD SHALL each declare their ten tokens directly. The count of distinct colours POCKET's interface renders SHALL NOT exceed four, because the card bevel's secondary surface tone is painted even at rest, which puts the resting count at four rather than three. The invariant this count protects is that no colour outside the ramp is ever introduced; it does not pin the count to one particular value.
@@ -112,198 +84,6 @@ The theme menu is inside the count, not outside it: while POCKET is in force the
 | accent    | #E37C31 | —                 | —        |
 | accentInk | #15301F | accent            | 4.88     |
 
-
-<!-- @trace
-source: add-emerald-mode
-updated: 2026-08-13
-code:
-  - design/theme-menu-variants.html
-  - src/components/ThemeMenuList.vue
-  - design/HANDOFF.md
-  - design/theme-emerald-mock.html
-  - f22d633073a187527790b2510e225c46.jpg
-  - src/components/ThemeMenu.vue
-  - src/theme/modes.ts
-  - src/components/TypeGlyph.vue
-  - src/App.vue
-  - src/App.css
-  - src/state/display.ts
-  - scripts/check-contrast.mjs
-tests:
-  - tests/theme.test.ts
--->
-
----
-### Requirement: Tokens are applied as inline CSS variables on the root view
-
-The active mode's token set SHALL be applied as inline CSS custom properties on the application's outermost view. Changing the mode SHALL update those properties and SHALL NOT require remounting the component tree.
-
-#### Scenario: Switching mode recolours the running screen
-
-- **WHEN** the active mode changes while the screen is mounted
-- **THEN** every rendered surface, border and text colour updates to the new mode's tokens
-- **AND** no component is remounted
-
-
-<!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
-code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
-  - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
-  - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
-  - src/data/i18n.ts
-  - src/index.ts
--->
-
----
-### Requirement: Ink colour is chosen by measured contrast
-
-Ink selection over an arbitrary background SHALL compare the measured WCAG contrast of the dark ink candidate and the light ink candidate against that background and return whichever measures higher. Selection SHALL NOT use a fixed luminance threshold.
-
-#### Scenario: Ink selection returns the higher-contrast candidate
-
-- **WHEN** ink is selected for a background colour
-- **THEN** the returned candidate is the one whose measured contrast against that background is higher
-
-#### Scenario: A background near the crossover point
-
-- **WHEN** ink is selected for the Rock type colour
-- **THEN** the dark ink candidate is returned
-
-##### Example: measured contrast at the crossover
-
-- **GIVEN** the Rock type colour #AFA981
-- **WHEN** contrast is measured against both ink candidates
-- **THEN** the dark candidate #101010 measures 7.99 and the light candidate #ffffff measures 2.38, so the dark candidate is returned
-
-
-<!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
-code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
-  - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
-  - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
-  - src/data/i18n.ts
-  - src/index.ts
--->
-
----
 ### Requirement: Glyph fill is chosen by the surface it will sit on
 
 A type glyph's paint SHALL be selected from the type and the named surface it renders onto, where the surface is one of surface, accent, typechip, panel or surface2. The selection SHALL return a fill colour and, for modes that plate their glyphs, the colour of a plate the glyph paints behind itself. A glyph SHALL NOT be filled with the same colour as whatever is immediately beneath it.
@@ -394,28 +174,6 @@ below the floor against white is below it against every light surface there is.
 Counted across all eighteen types, the fill arrangement leaves 10 below the floor on surface,
 13 on panel and 15 on surface2.
 
-
-<!-- @trace
-source: add-emerald-mode
-updated: 2026-08-13
-code:
-  - design/theme-menu-variants.html
-  - src/components/ThemeMenuList.vue
-  - design/HANDOFF.md
-  - design/theme-emerald-mock.html
-  - f22d633073a187527790b2510e225c46.jpg
-  - src/components/ThemeMenu.vue
-  - src/theme/modes.ts
-  - src/components/TypeGlyph.vue
-  - src/App.vue
-  - src/App.css
-  - src/state/display.ts
-  - scripts/check-contrast.mjs
-tests:
-  - tests/theme.test.ts
--->
-
----
 ### Requirement: Active language and active mode are shared reactive state
 
 The active mode and the active language SHALL be held as shared reactive state readable by any component without prop threading. Both SHALL be switchable at runtime.
@@ -444,22 +202,7 @@ Setting the active mode to the mode already in force SHALL leave the interface u
 - **WHEN** the active mode is set to the mode already in force
 - **THEN** no token value changes and no component is remounted
 
-<!-- @trace
-source: add-emerald-mode
-updated: 2026-08-13
-code:
-  - design/theme-menu-variants.html
-  - src/components/ThemeMenuList.vue
-  - design/HANDOFF.md
-  - design/theme-emerald-mock.html
-  - f22d633073a187527790b2510e225c46.jpg
-  - src/components/ThemeMenu.vue
-  - src/theme/modes.ts
-  - src/components/TypeGlyph.vue
-  - src/App.vue
-  - src/App.css
-  - src/state/display.ts
-  - scripts/check-contrast.mjs
-tests:
-  - tests/theme.test.ts
--->
+## RENAMED Requirements
+
+- FROM: `### Requirement: Two colour modes share one token contract`
+- TO: `### Requirement: Colour modes share one token contract`

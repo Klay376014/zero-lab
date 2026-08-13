@@ -1444,3 +1444,30 @@ Paldean Form (Combat Breed) 27 字元、以及短名稱對照）在兩種語系�
 `vue-tsc` 不會抓 TDZ、node 下的測試碰不到元件、而症狀看起來像渲染 bug 而不是程式錯誤 ——
 與本文件反覆記載的「宣告得下去、不報錯、行為沒發生」同一族。
 **元件裡任何在 setup 期就求值的東西，它依賴的常數必須宣告在它前面**；一整塊 UI 無故消失時，先懷疑這個。
+
+### 12.28 元素量測（`SelectorQuery.fields`）在兩個 target 都不回 callback（2026-08-13，web 預覽 + iOS 實機）
+
+主題選單要放在觸發鈕底下，就得知道觸發鈕在哪。**樣式表答不出來**（與 §12.26 同一個形狀）：
+鈕的 x 在結果計數之後，而「208 / 208 種類」的寬度隨數字與語言改變；y 取決於標題與副標的行高，
+兩者都沒有宣告。
+
+vue-lynx 的 template ref 有 `fields(param, callback)`，轉給 Lynx 的 `SelectorQuery`
+（`node_modules/vue-lynx/runtime/dist/shadow-element.js` 就是這樣用的），這是各平台放下拉的標準做法：
+畫在最上層容器、位置跟著 anchor 的量測跑。
+
+**實測：`fields({ rect: true }, cb)` 的 callback 在 web 預覽與 iOS 實機都沒有被呼叫，兩邊都沒有任何
+錯誤或警告。** 不是回了空值 —— 是完全沒回。所以「量到就校正位置」那段程式一次都沒執行過。
+
+處置：**移除**。留著就是留一條沒人驗過的分支，等平台哪天開始回應時才第一次執行，那比沒有更糟。
+選單的位置改用樣式表宣告的偏移（機身 9 + 螢幕 12，自 root 的 padding 邊算起），畫成蓋在 masthead
+上的面板。開選單因此不依賴任何量測。
+
+**連帶結論：任何需要「元素現在在哪、有多大」的功能，在本平台目前都沒有可用的來源。**
+`SystemInfo` 在背景線程讀不到（§12.27）、`fields` 不回 callback，剩下的只有樣式表的字面值與
+`<scroll-view>` 的捲動欄位（§12.25）。要做跟隨 anchor 的浮層之前，先重測這一條。
+
+**重建條件**：在任一元件的 template ref 上呼叫 `fields({ rect: true }, cb)`，在 callback 裡寫一個
+可觀察的副作用（不要只 console，背景線程的 log 容易被當成沒印）。iOS 實機與 web 預覽各跑一次。
+**若日後 callback 開始回應**：位置可以改回取自 rect（左 = rect.left − root padding，
+上 = rect.bottom − root padding + 3），但必須連同「開選單不等量測」一起保留 ——
+否則量測回不來的那天，控制項就變成按了沒反應。

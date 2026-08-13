@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The eighteen type marks as rendered artwork. Covers vector output rather than canvas, each bitmap row emitted as merged horizontal runs, a fixed sixteen-pixel box that scales only by whole multiples, memoisation keyed by mode, type and surface, fill baked in from the theme layer's surface-aware selection rather than inherited from surrounding text, and the device-adjudicated fallback for which rendering mechanism is in force.
+The eighteen type marks as rendered artwork. Covers vector output rather than canvas, each bitmap row emitted as merged horizontal runs, a fixed sixteen-pixel mark box that scales only by whole multiples and that a plate surrounds rather than shrinks, memoisation keyed by mode, type and surface, fill and plate baked in from the theme layer's single surface-aware selection rather than inherited from surrounding text or chosen by the caller, and the device-adjudicated fallback for which rendering mechanism is in force.
 
 ## Requirements
 
@@ -129,85 +129,45 @@ code:
 ---
 ### Requirement: Glyph box size is fixed
 
-A glyph SHALL render into a box of exactly sixteen by sixteen pixels regardless of the surrounding font size, because an eight by eight source grid stays sharp only at integer scale factors.
+A glyph SHALL render its mark into a box of exactly sixteen by sixteen pixels regardless of the surrounding font size, because an eight by eight source grid stays sharp only at integer scale factors.
+
+A plate, when the theme layer reports one, SHALL surround that box with exactly one pixel on each side and SHALL NOT change the mark's box. The drawn control is then eighteen by eighteen pixels while the mark stays sixteen. Insetting the mark to keep the outer box at sixteen SHALL NOT be done: the mark would land on a fractional scale factor and stop being sharp, which is the same rule that fixes the box in the first place.
 
 #### Scenario: Glyph size is independent of text size
 
 - **WHEN** a glyph is placed next to text of any size
-- **THEN** its rendered box is sixteen by sixteen pixels
+- **THEN** its rendered mark box is sixteen by sixteen pixels
 
 #### Scenario: A larger glyph keeps the grid whole
 
 - **WHEN** a caller asks for a larger glyph, as the sprite placeholder does
 - **THEN** the rendered box is a whole-number multiple of eight pixels
 
+#### Scenario: A plate grows the control, not the mark
+
+- **WHEN** a glyph is rendered in a mode that plates it
+- **THEN** the mark box is unchanged at sixteen by sixteen pixels
+- **AND** the plate adds exactly one pixel on each side
+
 
 <!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
+source: add-emerald-mode
+updated: 2026-08-13
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
-  - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
+  - design/theme-menu-variants.html
+  - src/components/ThemeMenuList.vue
   - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
-  - src/data/dex.json
-  - src/data/dex.ts
-  - src/data/i18n.ts
-  - src/index.ts
+  - design/theme-emerald-mock.html
+  - f22d633073a187527790b2510e225c46.jpg
+  - src/components/ThemeMenu.vue
+  - src/theme/modes.ts
+  - src/components/TypeGlyph.vue
+  - src/App.vue
+  - src/App.css
+  - src/state/display.ts
+  - scripts/check-contrast.mjs
+tests:
+  - tests/theme.test.ts
 -->
 
 ---
@@ -297,7 +257,7 @@ code:
 ---
 ### Requirement: Glyph accepts a type and a target surface
 
-The glyph component SHALL take the type name and the target surface name as its inputs, and SHALL obtain its fill from the theme layer's surface-aware fill selection. The component SHALL NOT inherit its colour from surrounding text colour, because the fill is written into the SVG string at production time.
+The glyph component SHALL take the type name and the target surface name as its inputs, and SHALL obtain its fill and its plate from the theme layer's single surface-aware paint selection. The component SHALL NOT inherit its colour from surrounding text colour, because the fill is written into the SVG string at production time. The component SHALL NOT decide for itself whether a plate is drawn, and callers SHALL NOT be given a way to ask for one: the plate belongs to the mode, so every call site gets the plated or unplated form without naming it.
 
 The target surface SHALL be one of five named members: surface, accent, typechip, panel and surface2. The panel member names the panel's own background, which the unmarked learnset rows sit on. The surface2 member names the secondary surface, which the bonus-marked learnset rows sit on. A caller SHALL name the surface the glyph will actually sit on, and SHALL NOT reuse a near neighbour: the two ramp tones behind panel and surface coincide in POCKET but differ in MODERN, so reusing one for the other reports a background the glyph is not on and makes the measured contrast meaningless.
 
@@ -321,24 +281,36 @@ The target surface SHALL be one of five named members: surface, accent, typechip
 - **WHEN** a learnset row marked for the bonus renders its type glyph
 - **THEN** the glyph names the surface2 surface
 
+#### Scenario: The plate follows the mode without the caller asking
+
+- **WHEN** the active mode changes between one that plates its glyphs and one that does not
+- **THEN** every glyph on a neutral surface gains or loses its plate
+- **AND** no call site changed the inputs it passes
+
+#### Scenario: Callers cannot request a plate
+
+- **WHEN** the glyph component's inputs are inspected
+- **THEN** they name a type, a target surface and a size, and carry nothing that selects a plate
+
 
 <!-- @trace
-source: port-champions-dex-learnset
-updated: 2026-07-30
+source: add-emerald-mode
+updated: 2026-08-13
 code:
-  - scripts/check-contrast.mjs
-  - src/App.css
-  - README.md
-  - src/components/SpeciesDetail.vue
-  - src/data/i18n.ts
-  - src/state/learnset.ts
-  - src/data/dex.ts
-  - package.json
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/query.ts
-  - src/theme/modes.ts
+  - design/theme-menu-variants.html
+  - src/components/ThemeMenuList.vue
   - design/HANDOFF.md
+  - design/theme-emerald-mock.html
+  - f22d633073a187527790b2510e225c46.jpg
+  - src/components/ThemeMenu.vue
+  - src/theme/modes.ts
+  - src/components/TypeGlyph.vue
+  - src/App.vue
+  - src/App.css
+  - src/state/display.ts
+  - scripts/check-contrast.mjs
+tests:
+  - tests/theme.test.ts
 -->
 
 ---

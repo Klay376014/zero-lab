@@ -2,7 +2,7 @@
 
 ## Purpose
 
-How a control answers a press in the frame the finger lands, ahead of the thread the handler runs on. Covers the pressed appearance drawn by a main-thread function bound through the platform's main-thread event attributes, that function reading only the target the event carries and touching no application state, no background-thread invocation and no element reference, the existing tap bindings left as the only thing that changes state, the mark as a one-pixel downward displacement with the three separate contracts that forbid a colour, a transparency and a shadow instead, the displacement expressed exactly once and why that one place is the main-thread module rather than the stylesheet — the platform substitutes no custom property in a value a main-thread function writes, measured with the property declared in the stylesheet and inline alike, the mark cleared by a cancellation binding as well as a release one because a press that becomes a scroll inside the detail panel produces the former and never the latter, a background-thread inline-style update ending the mark accepted as correct rather than worked around because that platform replaces inline styles wholesale and so cannot leave one stuck, and the control set that carries the mark against the card sequence and the veil that deliberately do not.
+How a control answers a press in the frame the finger lands, ahead of the thread the handler runs on. Covers the pressed appearance drawn by a main-thread function bound through the platform's main-thread event attributes, that function reading only the target the event carries and touching no application state, no background-thread invocation and no element reference, the existing tap bindings left as the only thing that changes state, the mark as a one-pixel downward displacement with the three separate contracts that forbid a colour, a transparency and a shadow instead, the displacement expressed exactly once and why that one place is the main-thread module rather than the stylesheet — the platform substitutes no custom property in a value a main-thread function writes, measured with the property declared in the stylesheet and inline alike, the mark cleared by a cancellation binding as well as a release one because a press that becomes a scroll inside the detail panel produces the former and never the latter, a background-thread inline-style update ending the mark accepted as correct rather than worked around because that platform replaces inline styles wholesale and so cannot leave one stuck, and the control set that carries the mark — the theme menu's trigger and rows among them — against the card sequence, the two veils and the theme menu's transparent dismiss layer that deliberately do not.
 
 ## Requirements
 
@@ -147,7 +147,9 @@ code:
 ---
 ### Requirement: Press feedback covers the control set and excludes the card sequence and the veil
 
-Press feedback SHALL be carried by the mode button, the language button, the query reset button, the sort cycle button, every type filter button, every form button, every move sort button, the same-type-bonus button, the detail panel's close button, every move row in the learnset table, and the learner list's close button.
+Press feedback SHALL be carried by the theme menu's trigger, every theme menu row, the language button, the query reset button, the sort cycle button, every type filter button, every form button, every move sort button, the same-type-bonus button, the detail panel's close button, every move row in the learnset table, and the learner list's close button.
+
+The theme menu's trigger is the control the mode button became. It carries the mark for the same reason the mode button did, and the menu's rows carry it because a row has no other signal that it became a control — the same reason the learnset table's move rows carry it. The row sequence is bounded by the number of colour modes, which is three, so the binding count stays far below the sequences excluded below.
 
 The control set names one sort button, not several. The query bar states the sort order as a single button whose text is the order in force, so there is exactly one control to press and exactly one to displace.
 
@@ -161,11 +163,31 @@ The detail panel's veil SHALL NOT carry press feedback. A pressed appearance on 
 
 The learner list's veil SHALL NOT carry press feedback, for the same reason as the detail panel's veil.
 
+The theme menu's dismiss layer SHALL NOT carry press feedback, for the same reason as the two veils: its only behaviour is to close the menu, and it paints nothing at all, so a displacement would have nothing to displace.
+
 #### Scenario: The sort cycle button is pressed
 
 - **WHEN** the query bar's sort button is pressed
 - **THEN** the button is displaced by the press mark
 - **AND** the sort order advances to the next member of the sort set on release
+
+#### Scenario: The theme menu's trigger is pressed
+
+- **WHEN** the theme menu's trigger is pressed
+- **THEN** the trigger is displaced by the press mark
+- **AND** the menu opens on release, or closes if it was already open
+
+#### Scenario: A theme menu row is pressed
+
+- **WHEN** a row in the theme menu is pressed
+- **THEN** the row is displaced by the press mark
+- **AND** the active mode becomes that row's mode on release
+
+#### Scenario: The theme menu's dismiss layer is pressed
+
+- **WHEN** the theme menu's dismiss layer is pressed
+- **THEN** the layer is not displaced
+- **AND** the menu closes
 
 #### Scenario: A card is pressed
 
@@ -194,8 +216,8 @@ The learner list's veil SHALL NOT carry press feedback, for the same reason as t
 #### Scenario: The learner list's veil is pressed
 
 - **WHEN** the learner list's veil is pressed
-- **THEN** the veil is not displaced
-- **AND** the learner list closes
+- **THEN** the learner list closes
+- **AND** the veil is not displaced
 
 ##### Example: the two bounded sequences and the choice each one drives
 
@@ -205,14 +227,24 @@ The learner list's veil SHALL NOT carry press feedback, for the same reason as t
 | learner list entries      | 207          | no               | same measure; an entry announces itself                     |
 | move rows in one section  | 105          | yes              | the row has no other signal that it became a control        |
 | type filter buttons       | 18           | yes              | bounded, and each is a control with no other press signal   |
+| theme menu rows           | 3            | yes              | bounded by the mode set; a row has no other press signal    |
 
 <!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
+source: add-emerald-mode
+updated: 2026-08-13
 code:
-  - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
+  - design/theme-menu-variants.html
+  - src/components/ThemeMenuList.vue
+  - design/HANDOFF.md
+  - design/theme-emerald-mock.html
+  - f22d633073a187527790b2510e225c46.jpg
+  - src/components/ThemeMenu.vue
+  - src/theme/modes.ts
+  - src/components/TypeGlyph.vue
+  - src/App.vue
   - src/App.css
-  - src/components/QueryBar.vue
+  - src/state/display.ts
+  - scripts/check-contrast.mjs
+tests:
+  - tests/theme.test.ts
 -->

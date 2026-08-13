@@ -255,6 +255,88 @@
   color: var(--accent-ink);
 }
 
+/* ---------- theme menu ---------- */
+
+/* The trigger is a chip that also carries the caret, so it declares a row: a Lynx view lays its
+   children out in a column by default, and the mark would otherwise sit under the text. */
+.ThemeMenuTrigger {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ThemeMenuCaret {
+  width: 16px;
+  height: 16px;
+  margin-left: 3px;
+  flex: none;
+}
+
+/* Drawn on the surface token rather than the panel: this layer sits above the screen, alongside
+   the chips and cards, and in POCKET the two coincide anyway so the border is what separates it.
+
+   Carries no position of its own — where it is drawn is the caller's decision, and the three
+   arrangements below are what is being compared. */
+.ThemeMenu {
+  background-color: var(--surface);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line);
+  padding: 2px;
+}
+
+/* Over the masthead, not under the trigger, and the offsets are literals rather than a measurement.
+   Both parts are measured decisions, not preferences:
+
+   The band, because a menu drawn beside its trigger inside the masthead is painted over by the
+   query bar — this interface stacks by document order alone and declares no stacking index for
+   anything to lift it with. This band is where the detail overlay already sits (§12.15).
+
+   The literals, because the platform does not answer for the trigger's position on either target
+   this project ships to (§12.28). A placement derived from a runtime rect would be a code path
+   that never runs. 9 + 12 is the shell's padding plus the screen's, from the root's padding edge —
+   which is where an absolutely positioned child is placed. */
+.ThemeMenuPanel {
+  position: absolute;
+  left: 21px;
+  top: 21px;
+}
+
+/* Covers the root so a press outside the menu closes it. Declares no background colour, so it
+   paints nothing and composites nothing — the four-tone contract is untouched, and the veil stays
+   the only exemption. Whether a view that paints nothing receives touches is unmeasured on this
+   platform, which is why the trigger closes the menu on its own as well. */
+.ThemeMenuCatcher {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.ThemeMenuRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px 6px;
+}
+
+/* Directly below its base rule, base first — see the note above `.Chip`. */
+.ThemeMenuRowOn {
+  background-color: var(--accent);
+}
+
+.ThemeMenuText {
+  font-family: SilkBold, "PingFang TC", "PingFang SC", "Heiti TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.ThemeMenuTextOn {
+  color: var(--accent-ink);
+}
+
 /* ---------- shell tab deck ---------- */
 
 /* Sits between the screen and the shell's lower edge, so the two keys read as hardware under

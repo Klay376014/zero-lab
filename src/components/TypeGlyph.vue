@@ -23,7 +23,7 @@ import { glyphRows } from '../data/types.js'
 import { mode } from '../state/display.js'
 import { buildGlyphSvg } from '../theme/glyphSvg.js'
 import type { GlyphSurface } from '../theme/modes.js'
-import { glyphOn } from '../theme/modes.js'
+import { glyphPaint } from '../theme/modes.js'
 
 const props = withDefaults(defineProps<{
   type: string
@@ -32,22 +32,45 @@ const props = withDefaults(defineProps<{
   size?: number
 }>(), { size: 16 })
 
+/**
+ * The mode decides whether a plate is drawn, not the caller: the plate belongs to the arrangement
+ * a mode's surfaces force, and nine call sites each deciding it would be the same decision copied
+ * nine times.
+ */
+const paint = computed(() => glyphPaint(mode.value, props.type, props.surface))
+
 const content = computed(() => {
   const key = `${mode.value.id}:${props.type}:${props.surface}`
   const hit = cache.get(key)
   if (hit !== undefined) return hit
-  const svg = buildGlyphSvg(glyphRows(props.type), glyphOn(mode.value, props.type, props.surface))
+  const svg = buildGlyphSvg(glyphRows(props.type), paint.value.fill)
   cache.set(key, svg)
   return svg
 })
+
+const box = computed(() => ({ width: `${props.size}px`, height: `${props.size}px` }))
 </script>
 
 <template>
-  <svg class="TypeGlyph" :content="content" :style="{ width: `${size}px`, height: `${size}px` }" />
+  <!-- Two forms rather than one wrapper that is sometimes painted: an unplated mode renders exactly
+       what it rendered before, which keeps a view per glyph off the card sequence's first paint. -->
+  <view v-if="paint.plate" class="TypeGlyphPlate" :style="{ backgroundColor: paint.plate }">
+    <svg class="TypeGlyph" :content="content" :style="box" />
+  </view>
+  <svg v-else class="TypeGlyph" :content="content" :style="box" />
 </template>
 
 <style>
 .TypeGlyph {
+  flex: none;
+}
+
+/* One pixel on each side, so the mark's box stays sixteen and stays on whole multiples of its
+   eight-pixel grid. Insetting the mark to hold the outer box at sixteen would land it on a
+   fractional scale factor, which is the thing the fixed box exists to prevent. */
+.TypeGlyphPlate {
+  display: flex;
+  padding: 1px;
   flex: none;
 }
 </style>

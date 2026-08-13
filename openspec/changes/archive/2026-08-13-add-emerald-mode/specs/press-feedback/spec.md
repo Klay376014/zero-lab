@@ -1,0 +1,85 @@
+## MODIFIED Requirements
+
+### Requirement: Press feedback covers the control set and excludes the card sequence and the veil
+
+Press feedback SHALL be carried by the theme menu's trigger, every theme menu row, the language button, the query reset button, the sort cycle button, every type filter button, every form button, every move sort button, the same-type-bonus button, the detail panel's close button, every move row in the learnset table, and the learner list's close button.
+
+The theme menu's trigger is the control the mode button became. It carries the mark for the same reason the mode button did, and the menu's rows carry it because a row has no other signal that it became a control — the same reason the learnset table's move rows carry it. The row sequence is bounded by the number of colour modes, which is three, so the binding count stays far below the sequences excluded below.
+
+The control set names one sort button, not several. The query bar states the sort order as a single button whose text is the order in force, so there is exactly one control to press and exactly one to displace.
+
+No generation filter button appears in the control set, because the query bar presents no control that selects a generation.
+
+The species cards SHALL NOT carry press feedback. Binding three main-thread events to each of the two hundred and eight cells would add those bindings to the one path this project has measured as slower than expected — the first paint of the full card sequence — and a card already answers a press by opening the detail panel.
+
+The learner list's species entries SHALL NOT carry press feedback, for the same two reasons and by the same measure: a single move reaches up to two hundred and seven species, and an entry already answers a press by replacing the detail panel's species. The move rows that open that list are bounded differently — the largest learnset section holds one hundred and five moves, and rows are the control that has no other way to announce itself as one.
+
+The detail panel's veil SHALL NOT carry press feedback. A pressed appearance on the veil would present it as a control, when its only behaviour is to dismiss the panel.
+
+The learner list's veil SHALL NOT carry press feedback, for the same reason as the detail panel's veil.
+
+The theme menu's dismiss layer SHALL NOT carry press feedback, for the same reason as the two veils: its only behaviour is to close the menu, and it paints nothing at all, so a displacement would have nothing to displace.
+
+#### Scenario: The sort cycle button is pressed
+
+- **WHEN** the query bar's sort button is pressed
+- **THEN** the button is displaced by the press mark
+- **AND** the sort order advances to the next member of the sort set on release
+
+#### Scenario: The theme menu's trigger is pressed
+
+- **WHEN** the theme menu's trigger is pressed
+- **THEN** the trigger is displaced by the press mark
+- **AND** the menu opens on release, or closes if it was already open
+
+#### Scenario: A theme menu row is pressed
+
+- **WHEN** a row in the theme menu is pressed
+- **THEN** the row is displaced by the press mark
+- **AND** the active mode becomes that row's mode on release
+
+#### Scenario: The theme menu's dismiss layer is pressed
+
+- **WHEN** the theme menu's dismiss layer is pressed
+- **THEN** the layer is not displaced
+- **AND** the menu closes
+
+#### Scenario: A card is pressed
+
+- **WHEN** a species card is pressed
+- **THEN** the card is not displaced
+- **AND** the detail panel opens for that card's species and displayed form
+
+#### Scenario: The veil is pressed
+
+- **WHEN** the detail panel's veil is pressed
+- **THEN** the veil is not displaced
+- **AND** the panel closes
+
+#### Scenario: A move row is pressed
+
+- **WHEN** a move row in the learnset table is pressed
+- **THEN** the row is displaced by the press mark
+- **AND** the learner list opens for that row's move on release
+
+#### Scenario: A learner entry is pressed
+
+- **WHEN** a species entry in the learner list is pressed
+- **THEN** the entry is not displaced
+- **AND** the detail panel is replaced with that species on release
+
+#### Scenario: The learner list's veil is pressed
+
+- **WHEN** the learner list's veil is pressed
+- **THEN** the learner list closes
+- **AND** the veil is not displaced
+
+##### Example: the two bounded sequences and the choice each one drives
+
+| Sequence                  | Largest size | Carries the mark | Why                                                        |
+| ------------------------- | ------------ | ---------------- | ---------------------------------------------------------- |
+| species cards in the grid | 208          | no               | the measured first-paint path; a card announces itself      |
+| learner list entries      | 207          | no               | same measure; an entry announces itself                     |
+| move rows in one section  | 105          | yes              | the row has no other signal that it became a control        |
+| type filter buttons       | 18           | yes              | bounded, and each is a control with no other press signal   |
+| theme menu rows           | 3            | yes              | bounded by the mode set; a row has no other press signal    |

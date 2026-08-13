@@ -23,9 +23,11 @@ import MoveLearners from './components/MoveLearners.vue'
 import QueryBar from './components/QueryBar.vue'
 import SpeciesDetail from './components/SpeciesDetail.vue'
 import TabDeck from './components/TabDeck.vue'
+import ThemeMenu from './components/ThemeMenu.vue'
+import ThemeMenuList from './components/ThemeMenuList.vue'
 import { dex } from './data/dex.js'
 import { moveResultCountLabel, resultCountLabel, t } from './data/i18n.js'
-import { cycleMode, lang, mode, toggleLang, tokenStyle } from './state/display.js'
+import { closeThemeMenu, lang, themeMenuOpen, toggleLang, tokenStyle } from './state/display.js'
 import type { Layer } from './state/layerStack.js'
 import { layers } from './state/layerStack.js'
 import { moveResults } from './state/moveQuery.js'
@@ -73,15 +75,7 @@ function layerKey(layer: Layer): string {
           <text class="Title">CHAMPIONS DEX</text>
           <view class="MastheadRow">
             <text class="Sub">{{ subtitle }}</text>
-            <view
-              class="Chip"
-              :main-thread-bindtouchstart="onPressStart"
-              :main-thread-bindtouchend="onPressEnd"
-              :main-thread-bindtouchcancel="onPressEnd"
-              @tap="cycleMode"
-            >
-              <text class="ChipText">{{ mode.id }}</text>
-            </view>
+            <ThemeMenu />
             <view
               class="Chip"
               :main-thread-bindtouchstart="onPressStart"
@@ -109,6 +103,17 @@ function layerKey(layer: Layer): string {
            another chip row in the display. -->
       <TabDeck />
     </view>
+
+    <!-- The theme menu is drawn here rather than beside its trigger, because document order is the
+         only thing that stacks on this platform: a menu inside the masthead is painted over by the
+         query bar, a later sibling in the screen. This band is where the detail panel already sits.
+
+         The catcher goes first, so the menu paints above it. It declares no background colour at
+         all — nothing painted, nothing composited, so POCKET's four-tone contract is untouched. -->
+    <template v-if="themeMenuOpen">
+      <view class="ThemeMenuCatcher" @tap="closeThemeMenu" />
+      <ThemeMenuList class="ThemeMenuPanel" />
+    </template>
 
     <!-- Drawn in stack order, so a layer opened later covers the one beneath it. The key carries
          the layer's content as well as its kind — see layerKey. -->
