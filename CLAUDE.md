@@ -69,6 +69,13 @@ Two things it *does* buy, which are worth doing without a sync skill:
   the placeholder.
 - **A MODIFIED requirement can leave its spec's Purpose describing less than the spec now
   requires**, because deltas carry no Purpose text. Re-read it against the requirements.
+- **A RENAMED block is not always applied.** On 2026-08-13 (`spectra 2.3.1`) archiving
+  `add-emerald-mode` reported `renamed: 0` and left the old heading in place, from a delta whose
+  `## RENAMED Requirements` block was byte-identically formatted to the one in
+  `2026-08-08-optimize-query-bar` that did apply. Not diagnosed — the difference may be the
+  version. **Check the heading after archiving whenever a delta renames one**, and fix the live
+  spec by hand if it did not take. A stale heading is the worst kind here: the title says two
+  modes while the body says three.
 
 `.claude/skills/spectra-archive/SKILL.md` has been edited to drop the dispatch and fold both into
 a post-archive step — **but `spectra update` regenerates every skill file and reverts it**
