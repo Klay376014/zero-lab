@@ -233,15 +233,20 @@ function isUncoveredMark(code) {
  * subtable formats the project's own subsetting step emits are understood — anything else throws
  * rather than returning a partial set, because a partial set would pass the check by accident.
  */
-function fontCodePoints(path) {
-  const font = new DataView(readFileSync(path).buffer.slice(0))
+function tableOffsets(font) {
   const tableCount = font.getUint16(4)
-  let cmapOffset = null
+  const offsets = {}
   for (let i = 0; i < tableCount; i += 1) {
     const record = 12 + i * 16
     const tag = String.fromCharCode(...[0, 1, 2, 3].map((b) => font.getUint8(record + b)))
-    if (tag === 'cmap') cmapOffset = font.getUint32(record + 8)
+    offsets[tag] = font.getUint32(record + 8)
   }
+  return offsets
+}
+
+function fontCodePoints(path) {
+  const font = new DataView(readFileSync(path).buffer.slice(0))
+  const cmapOffset = tableOffsets(font).cmap ?? null
   if (cmapOffset === null) throw new Error(`${path} has no cmap table`)
 
   // Prefer a full-repertoire subtable over a basic-plane one; either is enough for Latin.
@@ -315,11 +320,166 @@ function checkProseCoverage() {
   ]
 }
 
+const PIXEL_FACE = join(SRC, 'assets/fonts/Silkscreen-Bold.ttf')
+const MODES = join(SRC, 'theme/modes.ts')
+const SHEET = join(SRC, 'App.css')
+
+/**
+ * How wide a string is drawn, from the face's own advance widths.
+ *
+ * A second walk of the character map rather than a reuse of `fontCodePoints`: that one answers
+ * which code points exist, this one needs the glyph each maps to so it can look up an advance.
+ * Deriving one from the other would mean filtering out the code points that map to no glyph,
+ * which would change what the prose check measures.
+ *
+ * Reading the face is the whole point. The same question asked of the web preview gets a
+ * confident wrong answer, because the pixel face does not load there and Latin text is drawn in
+ * a system font — see the top of design/HANDOFF.md §12.
+ */
+function textWidth(path, text, sizePx, letterSpacingPx) {
+  const font = new DataView(readFileSync(path).buffer.slice(0))
+  const t = tableOffsets(font)
+  for (const required of ['head', 'hhea', 'hmtx', 'cmap']) {
+    if (t[required] === undefined) throw new Error(`${path} has no ${required} table`)
+  }
+  const unitsPerEm = font.getUint16(t.head + 18)
+  const metricCount = font.getUint16(t.hhea + 34)
+
+  const encodingCount = font.getUint16(t.cmap + 2)
+  let best = null
+  for (let i = 0; i < encodingCount; i += 1) {
+    const record = t.cmap + 4 + i * 8
+    const platform = font.getUint16(record)
+    const encoding = font.getUint16(record + 2)
+    const subtable = t.cmap + font.getUint32(record + 4)
+    if (!((platform === 3 && (encoding === 1 || encoding === 10)) || platform === 0)) continue
+    const format = font.getUint16(subtable)
+    if (best === null || format === 12) best = { subtable, format }
+  }
+  if (best === null) throw new Error(`${path} has no Unicode cmap subtable`)
+  if (best.format !== 4 && best.format !== 12) {
+    throw new Error(`${path} uses cmap subtable format ${best.format}, which this check cannot read`)
+  }
+
+  const glyphOf = (code) => {
+    if (best.format === 12) {
+      const groupCount = font.getUint32(best.subtable + 12)
+      for (let g = 0; g < groupCount; g += 1) {
+        const group = best.subtable + 16 + g * 12
+        const start = font.getUint32(group)
+        const end = font.getUint32(group + 4)
+        if (code >= start && code <= end) return font.getUint32(group + 8) + (code - start)
+      }
+      return 0
+    }
+    const segCount = font.getUint16(best.subtable + 6) / 2
+    const ends = best.subtable + 14
+    const starts = ends + segCount * 2 + 2
+    const deltas = starts + segCount * 2
+    const rangeOffsets = deltas + segCount * 2
+    for (let s = 0; s < segCount; s += 1) {
+      const start = font.getUint16(starts + s * 2)
+      const end = font.getUint16(ends + s * 2)
+      if (code < start || code > end) continue
+      const rangeOffset = font.getUint16(rangeOffsets + s * 2)
+      if (rangeOffset === 0) return (code + font.getInt16(deltas + s * 2)) & 0xffff
+      const glyph = font.getUint16(rangeOffsets + s * 2 + rangeOffset + (code - start) * 2)
+      return glyph === 0 ? 0 : (glyph + font.getInt16(deltas + s * 2)) & 0xffff
+    }
+    return 0
+  }
+
+  let units = 0
+  for (const char of text) {
+    const glyph = glyphOf(char.codePointAt(0))
+    if (glyph === 0) throw new Error(`${path} cannot draw ${JSON.stringify(char)}`)
+    // The last entry of `hmtx` repeats for every glyph beyond it — monospaced tails are stored once.
+    units += font.getUint16(t.hmtx + Math.min(glyph, metricCount - 1) * 4)
+  }
+  return (units / unitsPerEm) * sizePx + letterSpacingPx * [...text].length
+}
+
+/** One rule's declared values, so the check asserts against the stylesheet rather than a copy. */
+function declaredValues(css, selector) {
+  const block = css.match(new RegExp(`^\\.${selector}\\s*\\{([^}]*)\\}`, 'm'))
+  if (block === null) return null
+  const values = new Map()
+  for (const line of block[1].split('\n')) {
+    const declaration = line.match(/^\s*([a-z-]+)\s*:\s*(.+?);/)
+    if (declaration) values.set(declaration[1], declaration[2].trim())
+  }
+  return values
+}
+
+/** The left-or-right component of a padding shorthand, which is the second value when there is one. */
+function sidePadding(shorthand) {
+  const parts = (shorthand ?? '0').trim().split(/\s+/).map((p) => Number.parseFloat(p) || 0)
+  return parts.length === 1 ? parts[0] : parts[1]
+}
+
+/**
+ * The theme menu's declared width must hold the longest mode name on one line.
+ *
+ * This is here because of how the failure looks. The menu hangs beneath a trigger carrying the
+ * *active* mode's name, and an absolutely positioned box is capped at its containing block — so a
+ * menu without a width of its own is as wide as whichever name is in force, and its longest row
+ * wraps in every mode except the one that names it. That reached a device once already.
+ *
+ * The reason it is worth a check rather than a careful number is the promise it protects:
+ * `theme-menu` says adding a mode adds a row and nothing else. A fourth mode with a longer name
+ * would break that silently — a wrapped row raises nothing and builds fine. This turns it into a
+ * failure here, before anyone opens the menu.
+ *
+ * Every figure is read back out of the stylesheet, so the check cannot drift from the rules it is
+ * about. The width is treated as covering padding and border — the stricter box model, which is
+ * the safe assumption while the platform has not been asked which one it uses.
+ */
+function checkThemeMenuWidth() {
+  const css = readFileSync(SHEET, 'utf8')
+  const menu = declaredValues(css, 'ThemeMenu')
+  const row = declaredValues(css, 'ThemeMenuRow')
+  const text = declaredValues(css, 'ThemeMenuText')
+  if (menu === null || row === null || text === null) {
+    return [`${relative(ROOT, SHEET)}: expected .ThemeMenu, .ThemeMenuRow and .ThemeMenuText rules`]
+  }
+
+  const declared = Number.parseFloat(menu.get('width') ?? '')
+  if (!Number.isFinite(declared)) {
+    return [
+      `${relative(ROOT, SHEET)}: .ThemeMenu declares no width. Without one the menu is capped at `
+      + 'its trigger, and the longest mode name wraps in every mode but its own.',
+    ]
+  }
+
+  const chrome = 2 * sidePadding(menu.get('padding'))
+    + 2 * (Number.parseFloat(menu.get('border-width') ?? '0') || 0)
+    + 2 * sidePadding(row.get('padding'))
+  const size = Number.parseFloat(text.get('font-size') ?? '')
+  const letterSpacing = Number.parseFloat(text.get('letter-spacing') ?? '0') || 0
+
+  const modes = [...readFileSync(MODES, 'utf8').matchAll(/\bid:\s*'([^']+)'/g)].map((m) => m[1])
+  if (modes.length === 0) return [`${relative(ROOT, MODES)}: found no mode ids to measure`]
+
+  const failures = []
+  for (const mode of modes) {
+    const needed = textWidth(PIXEL_FACE, mode, size, letterSpacing) + chrome
+    if (needed <= declared) continue
+    failures.push(
+      `${relative(ROOT, SHEET)}: .ThemeMenu is ${declared}px wide but the ${mode} row needs `
+      + `${needed.toFixed(2)}px — the name wraps onto a second line, with no error anywhere. `
+      + `Widen .ThemeMenu to at least ${Math.ceil(needed)}px.`,
+    )
+  }
+  return failures
+}
+
 const CHECKS = [
   { name: 'selected-state rules follow the rules they override', run: checkSelectedStateOrder },
   { name: 'no inset box shadows', run: checkNoInsetShadow },
   // Asks about one asset and one corpus, not about each stylesheet in turn.
   { name: 'prose face covers the prose corpus', run: checkProseCoverage, once: true },
+  // Asks about one rule against one mode set, likewise.
+  { name: 'the theme menu holds its longest mode name', run: checkThemeMenuWidth, once: true },
 ]
 
 const sources = styleSources()

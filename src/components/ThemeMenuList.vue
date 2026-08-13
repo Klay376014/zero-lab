@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
  * The menu's rows. Where it is drawn is the caller's business — the caller passes the positioning
- * class — so the same list serves the anchored arrangement and the overlay-band one.
+ * class — so this file has nothing to say about placement and did not change when the placement
+ * did. It is currently `AnchorPanel`, which hangs the list below the control it is wrapped in.
  *
  * The rows come from the theme layer's ordered mode set rather than a list here: a fourth mode is
  * then an addition to `MODES` and nothing else.

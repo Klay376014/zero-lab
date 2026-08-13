@@ -255,6 +255,52 @@
   color: var(--accent-ink);
 }
 
+/* ---------- anchored overlay ----------
+
+   A pair of rules, not a component: wrap a control in `.Anchor`, give the panel `.AnchorPanel`,
+   and the panel hangs below that control. Neither name says what the control is, because a second
+   consumer is already known — ROADMAP A6 wants the two sort controls to open a list rather than
+   advance through one — and copying the positioning into a theme-shaped class would mean copying
+   its reasoning too.
+
+   It stays a pair of rules rather than a component while the theme menu is the only caller. What
+   the next consumer needs is the positioning, and that is what these two carry; wrapping them in a
+   component now would be fixing an interface before there is a second thing to fit it. */
+
+/* The containing block for a panel that hangs off a control. Carries position and nothing else:
+   it wraps a control that already declares its own layout, and a second opinion here would
+   change how that control sits in its row.
+
+   It has to be a node of its own, never the control itself. The controls this pairs with are
+   displaced while they are held (see the note above `.Chip` about press feedback having no
+   presence in this stylesheet), and a panel positioned against a displaced node travels with it.
+   A transform also establishes a containing block for positioned descendants under the rules this
+   sheet is written against, and whether the platform does that here is unmeasured — anchoring to a
+   node that is never transformed means the answer does not matter. */
+.Anchor {
+  position: relative;
+}
+
+/* Hangs below whatever `.Anchor` wraps, left edges aligned. Both values are relationships rather
+   than measurements, which is the whole point: the theme menu's trigger sits after a result count
+   whose width changes with the number and with the language, so no constant names where it is, and
+   the platform answers for no element's rectangle on either target this project ships to (§12.28).
+   An offset from the root was the previous arrangement and was wrong for exactly that reason.
+
+   The stacking index lifts the panel over the controls it hangs across, which are later siblings of
+   the masthead inside the screen and would otherwise paint over it. §12.29 measured this on an iOS
+   device: a positioned node anchored inside the masthead paints above the query bar, and no
+   ancestor clips it at the masthead's edge.
+
+   That measurement covers this arrangement and no other. Crossing a `<scroll-view>` boundary, or
+   anchoring deeper than this, is unmeasured — measure before relying on either. */
+.AnchorPanel {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 10;
+}
+
 /* ---------- theme menu ---------- */
 
 /* The trigger is a chip that also carries the caret, so it declares a row: a Lynx view lays its
@@ -275,43 +321,66 @@
 /* Drawn on the surface token rather than the panel: this layer sits above the screen, alongside
    the chips and cards, and in POCKET the two coincide anyway so the border is what separates it.
 
-   Carries no position of its own — where it is drawn is the caller's decision, and the three
-   arrangements below are what is being compared. */
+   Carries no position of its own — the caller passes the positioning class, which is `.AnchorPanel`
+   above. Keeping the two apart is what lets the same list hang off a different control without
+   this rule knowing about it.
+
+   The width is declared because an absolutely positioned box is capped at its containing block,
+   and here that is the wrapper around a trigger carrying the *active* mode's name. Left to derive
+   its own width the menu is as wide as whichever name happens to be in force, so the longest row
+   wrapped in every mode except the one that names it — POCKET left 94.25px against the 101.38px
+   this list needs, MODERN 99.13px, and only EMERALD's own 105.00px cleared it. That is a
+   regression this anchoring introduced: in the overlay band there was no containing block narrow
+   enough to cap anything.
+
+   108px is the widest row plus half a character. EMERALD sets the widest at 83.38px in SilkBold
+   13px with the 1px letter-spacing below; add the row's 12px of side padding, this rule's 4px and
+   2px of border and the box wants 101.38px. Measured by reading the advance widths out of the face
+   itself, NOT in the web preview, where the pixel face does not load and Latin text is drawn in a
+   system font at the wrong width (see the top of design/HANDOFF.md §12).
+
+   That arithmetic treats this width as covering the padding and border, which is the stricter of
+   the two box models and the one that leaves less room. Which one the platform uses here is not
+   established — the sibling checks measure row heights on device precisely because the stylesheet
+   cannot be made to answer that kind of question. Being wrong in this direction costs 6px of
+   slack; being wrong the other way would wrap the row again.
+
+   `check-styles.mjs` re-derives this from `MODES` and the shipped face on every run, so a fourth
+   mode with a longer name fails the check instead of quietly wrapping — which is what keeps the
+   promise that adding a mode adds a row and nothing else. Change this number and the check will
+   tell you whether you were right. */
 .ThemeMenu {
   background-color: var(--surface);
   border-width: 1px;
   border-style: solid;
   border-color: var(--line);
   padding: 2px;
-}
-
-/* Over the masthead, not under the trigger, and the offsets are literals rather than a measurement.
-   Both parts are measured decisions, not preferences:
-
-   The band, because a menu drawn beside its trigger inside the masthead is painted over by the
-   query bar — this interface stacks by document order alone and declares no stacking index for
-   anything to lift it with. This band is where the detail overlay already sits (§12.15).
-
-   The literals, because the platform does not answer for the trigger's position on either target
-   this project ships to (§12.28). A placement derived from a runtime rect would be a code path
-   that never runs. 9 + 12 is the shell's padding plus the screen's, from the root's padding edge —
-   which is where an absolutely positioned child is placed. */
-.ThemeMenuPanel {
-  position: absolute;
-  left: 21px;
-  top: 21px;
+  width: 108px;
 }
 
 /* Covers the root so a press outside the menu closes it. Declares no background colour, so it
    paints nothing and composites nothing — the four-tone contract is untouched, and the veil stays
    the only exemption. Whether a view that paints nothing receives touches is unmeasured on this
-   platform, which is why the trigger closes the menu on its own as well. */
+   platform, which is why the trigger closes the menu on its own as well.
+
+   The stacking index is below `.AnchorPanel`'s, and it has to be declared rather than left to
+   document order. The menu used to sit here in the overlay band, after this layer, so the order
+   put the menu on top for free; now the menu is anchored inside the masthead and this layer is the
+   later node. Painting is not what is at stake — this layer paints nothing — but a layer that
+   takes the press is, and if it took them, every menu row would dismiss the menu instead of
+   selecting a mode.
+
+   That ordering is one level above what §12.29 measured, so it is the thing to watch on device.
+   If a row press still lands here, remove this layer entirely rather than leave a declaration with
+   no effect: the trigger already closes the menu on its own, which is what `theme-menu` requires
+   of it precisely so that this layer stays optional. */
 .ThemeMenuCatcher {
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  z-index: 1;
 }
 
 .ThemeMenuRow {
