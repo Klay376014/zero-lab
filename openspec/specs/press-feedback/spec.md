@@ -237,7 +237,7 @@ code:
   - src/components/ThemeMenuList.vue
   - design/HANDOFF.md
   - design/theme-emerald-mock.html
-  - f22d633073a187527790b2510e225c46.jpg
+  - design/emerald-palette-source.jpg
   - src/components/ThemeMenu.vue
   - src/theme/modes.ts
   - src/components/TypeGlyph.vue
