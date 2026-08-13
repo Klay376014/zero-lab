@@ -53,19 +53,38 @@ export const MODES: readonly Mode[] = [
   },
   /*
    * Daylight, and the only mode whose neutral surfaces are lighter than the type colours — which
-   * is why it plates its glyphs. The ten values come from a Hoenn overworld map: shell is the tree
-   * canopy, panel the sand path, surface2 the path's shadow and accent the Pokémon Centre roof,
-   * each the mean of a sampled block; bg, ink and line are the canopy darkened, surface the
-   * building wall lightened, ink2 the grass darkened. See design/theme-emerald-mock.html.
+   * is why it plates its glyphs. The ten values come from a Hoenn overworld map.
+   *
+   * The source image, design/emerald-palette-source.jpg, is 460x916 and stacks two generations:
+   * rows 8-452 are the generation this mode is named for, rows 470-912 a later one. Naming the
+   * depicted feature is not enough to say where a value came from, because every feature name
+   * holds in both halves — this palette was once sampled entirely from the wrong half and nothing
+   * caught it. So each value below records the rectangle it is the channel mean of, as top-left
+   * through bottom-right pixels, or the factor it scales an already-sampled value's HSL lightness
+   * by. All rectangles are inside rows 8-452.
+   *
+   *   shell     sampled  tree canopy          (120,246)-(132,304)
+   *   panel     sampled  sand path            (218,145)-(252,190)
+   *   surface2  sampled  ochre building roof   (196,62)-(264,96)
+   *   accent    sampled  house roof           (141,258)-(194,276)
+   *   bg        derived  shell        x0.5149 HSL lightness; ink and line reuse it
+   *   ink2      derived  grass        x0.40   from (202,142)-(212,180), measuring #73BF9F
+   *   surface   derived  house wall   x1.43   from (142,284)-(151,300), measuring #BAA376
+   *
+   * accentInk reuses surface rather than bg because accent is dark: bg measures 1.97 against it,
+   * under the floor scripts/check-contrast.mjs enforces, and surface measures 3.80. An accent
+   * light enough to flip that comparison has to flip accentInk with it.
+   *
+   * See design/theme-emerald-mock.html.
    */
   {
     id: 'EMERALD',
     typeColor: true,
     plateGlyphs: true,
     tokens: {
-      bg: '#15301F', shell: '#266047', panel: '#E1CF95', surface: '#F0E7C6',
-      surface2: '#C2BE8E', ink: '#15301F', ink2: '#3D5A2F', line: '#15301F',
-      accent: '#E37C31', accentInk: '#15301F',
+      bg: '#2C491E', shell: '#568E3A', panel: '#D8C780', surface: '#E6DDCD',
+      surface2: '#CCAB67', ink: '#2C491E', ink2: '#265441', line: '#2C491E',
+      accent: '#AE505D', accentInk: '#E6DDCD',
     },
   },
 ]

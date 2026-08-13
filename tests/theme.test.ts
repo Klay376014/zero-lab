@@ -73,8 +73,8 @@ describe('POCKET derives its tokens from four tones', () => {
 describe('EMERALD declares the sampled palette', () => {
   /** The spec's table of EMERALD's ten tokens. */
   const EMERALD: Record<keyof Tokens, string> = {
-    bg: '#15301F', shell: '#266047', panel: '#E1CF95', surface: '#F0E7C6', surface2: '#C2BE8E',
-    ink: '#15301F', ink2: '#3D5A2F', line: '#15301F', accent: '#E37C31', accentInk: '#15301F',
+    bg: '#2C491E', shell: '#568E3A', panel: '#D8C780', surface: '#E6DDCD', surface2: '#CCAB67',
+    ink: '#2C491E', ink2: '#265441', line: '#2C491E', accent: '#AE505D', accentInk: '#E6DDCD',
   }
 
   it('resolves the ten values the spec records', () => {
@@ -83,10 +83,10 @@ describe('EMERALD declares the sampled palette', () => {
 
   /** The spec's measured text contrast table. */
   it.each([
-    ['ink', 'panel', 9.20],
-    ['ink', 'surface', 11.50],
-    ['ink2', 'surface', 6.27],
-    ['accentInk', 'accent', 4.88],
+    ['ink', 'panel', 5.97],
+    ['ink', 'surface', 7.50],
+    ['ink2', 'surface', 6.42],
+    ['accentInk', 'accent', 3.80],
   ] as const)('%s on %s measures %s', (fore, back, expected) => {
     expect(contrast(EMERALD[fore], EMERALD[back])).toBeCloseTo(expected, 2)
   })
@@ -142,23 +142,23 @@ describe('glyph fill is chosen by the surface it will sit on', () => {
     },
   )
 
-  it('measures 4.88 for every type on the accent surface', () => {
+  it('measures 3.80 for every type on the accent surface', () => {
     for (const type of ['Normal', 'Fairy'] as const) {
       expect(contrast(
         glyphPaint(emerald, type, 'accent').fill,
         glyphBackdrop(emerald, type, 'accent'),
-      )).toBeCloseTo(4.88, 2)
+      )).toBeCloseTo(3.80, 2)
     }
   })
 
   /** Why a light surface cannot take the type colour as a fill, from the spec's third table. */
   it.each([
-    ['Electric', '#FAC000', 1.67, 1.34],
-    ['Ice', '#3DCEF3', 1.85, 1.50],
-    ['Flying', '#81B9EF', 2.08, 1.68],
+    ['Electric', '#FAC000', 1.67, 1.24],
+    ['Ice', '#3DCEF3', 1.85, 1.38],
+    ['Flying', '#81B9EF', 2.08, 1.54],
   ] as const)('%s measures %s on white and %s on EMERALD surface', (_type, colour, onWhite, onSurface) => {
     expect(contrast(colour, '#ffffff')).toBeCloseTo(onWhite, 2)
-    expect(contrast(colour, '#F0E7C6')).toBeCloseTo(onSurface, 2)
+    expect(contrast(colour, '#E6DDCD')).toBeCloseTo(onSurface, 2)
   })
 })
 
