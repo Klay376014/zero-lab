@@ -117,7 +117,7 @@ Two more that cost real time:
 ## Verifying a change
 
 ```bash
-pnpm run check                                    # four style/contrast invariants
+pnpm run check                                    # the invariants that fail silently
 pnpm run typecheck                                # vue-tsc — NOT tsc, see below
 pnpm test                                         # vitest, runs the spec's Example tables
 ```
@@ -126,9 +126,15 @@ All three run in CI (`.github/workflows/check.yml`), so a push catches what you 
 
 `pnpm run check` asserts the failures that are invisible rather than loud: selected-state rules
 cancelled by their own base rule, `inset` shadows the platform ignores, prose characters the
-subset font cannot draw, and the measured contrast of every type mark on every surface it is
-drawn onto. Adding a `GlyphSurface` member without teaching the contrast check about it fails
-the check rather than going unmeasured.
+subset font cannot draw, a theme menu narrower than its longest mode name, the measured contrast
+of every type mark on every surface it is drawn onto, row pitches that have drifted from the
+heights the stylesheet reserves, and engine objects read through `globalThis` or optional-chained
+rather than guarded by `typeof` (§12.30). Adding a `GlyphSurface` member without teaching the
+contrast check about it fails the check rather than going unmeasured.
+
+**Do not quote a count here.** This paragraph said "four" from 2026-07 to 2026-08-14 while the
+scripts grew to six, because two changes added a check and neither updated the prose. The
+scripts' own output is the authority — it prints one `ok` line per check and a total.
 
 **`pnpm run typecheck` runs `vue-tsc`. Do not substitute `tsc`** — it does not understand
 `.vue`, so it silently skips every component file and still exits 0. That is not a guess: it

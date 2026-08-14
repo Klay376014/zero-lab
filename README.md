@@ -80,9 +80,11 @@ pnpm run check
 Asserts the invariants that fail silently if broken, and exits non-zero on violation — the same
 idea as the pipeline's stage assertions below. A wrong colour is visible; a selected control
 that renders identically to an unselected one is not, nor is a type mark filled with the colour
-it is sitting on. Four checks: selected-state rule ordering, absence of inset shadows, prose-face
-coverage of the prose corpus, and the measured contrast of every type mark on every surface it is
-drawn onto.
+it is sitting on, nor is a native object read through `globalThis` where the platform does not
+keep it. It covers selected-state rule ordering, absence of inset shadows, prose-face coverage of
+the prose corpus, the theme menu's width against its longest mode name, the measured contrast of
+every type mark on every surface it is drawn onto, row pitches against the heights the stylesheet
+reserves, and how the engine's JS objects are reached. The run prints one line per check.
 
 ## Rebuilding the dataset
 
