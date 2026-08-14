@@ -1,11 +1,22 @@
-import { computed, ref } from 'vue-lynx'
+import { computed, ref, watch } from 'vue-lynx'
 
 import type { Lang } from '../data/i18n.js'
+import { persistLang, persistModeId, restoreLang, restoreModeId } from '../platform/settings.js'
 import { MODES, tokensOf } from '../theme/modes.js'
 import type { Mode, ModeId, Tokens } from '../theme/modes.js'
 
-const modeId = ref<ModeId>(MODES[0]!.id)
-const lang = ref<Lang>('zh')
+const modeId = ref<ModeId>(restoreModeId())
+const lang = ref<Lang>(restoreLang())
+
+/**
+ * Watched rather than written inside `setMode` and `toggleLang`, so a future way of changing
+ * either value persists without knowing persistence exists.
+ *
+ * Synchronous flush because the case this exists for is "change a setting, then force-quit":
+ * the default defers to the next tick, and a force-quit gives the app no chance to flush.
+ */
+watch(modeId, persistModeId, { flush: 'sync' })
+watch(lang, persistLang, { flush: 'sync' })
 
 /** Falls back to the first mode, so a removed id cannot leave the screen with no tokens at all. */
 export const mode = computed<Mode>(() => MODES.find((m) => m.id === modeId.value) ?? MODES[0]!)

@@ -1407,6 +1407,19 @@ Paldean Form (Combat Breed) 27 字元、以及短名稱對照）在兩種語系�
 | 處置 | 可視高度用**刻意寬鬆的常數**（900）。方向是安全的：高估只是多渲染幾列（慢一點但正確），低估才會讓捲動前緣露白 |
 | 若日後為假 | `SystemInfo` 出現時，`src/state/viewport.ts` 已經有讀取路徑，改的只是它走哪一條分支，元件不必動 |
 
+> **更正（2026-08-14，§12.30 第四條）：上面那一列的實測讀錯了地方，所以這條結論現在是「未證實」
+> 而不是「已證偽」。** `globalThis.SystemInfo` 不存在是真的，但引擎的 JS 物件（`NativeModules`、
+> `lynx`，很可能也包括 `SystemInfo`）**都不是 `globalThis` 的屬性** —— 它們是包住 bundle 那層作用域
+> 的綁定。同一個形狀的東西在 §12.30 花了五輪探針才發現：`globalThis.NativeModules` 是 `undefined`，
+> 而裸的 `NativeModules` 是 object。
+>
+> **要重驗只需要一行**：用 `typeof SystemInfo === 'undefined'` 守衛去讀**裸識別字** `SystemInfo`
+> （不能用 optional chaining，理由見 §12.30 第四條）。若它其實在，`src/state/viewport.ts` 的
+> 常數 900 就可以換成真的可視高度，而該檔案已經有讀取路徑，改的只是走哪一條分支。
+>
+> 沒有順手驗掉，是因為 §12.30 那一輪的範圍是儲存設定，而動 viewport 會改三處視窗化的行為 ——
+> 那是另一個 change 的事。**但不要再引用上面那一列去論證「背景線程拿不到引擎物件」。**
+
 #### ✅ 視窗化的效果：詳情面板 897ms → 285ms
 
 | 情境 | 改前 | 改後 |
@@ -1560,3 +1573,103 @@ containing block 的 **padding box**，Lynx 這裡不是，所以照 CSS 直覺�
 
 實務上專案早就隱含了這一條：`.ThemeMenuPanel` 的 `left: 21px` 是機身 9 + 螢幕 12，**沒有**把
 root 的 12 算進去。若是 padding 邊起算，選單會往右多 12px。
+
+---
+
+### 12.30 引擎的 JS 物件不在 `globalThis` 上；平台沒有儲存 API；`initData` 在 vue-lynx 被丟掉（2026-08-14，iOS 實機 + 原始碼實查）
+
+為了回答「主題與語言能不能記住」而查的（change `persist-display-settings`）。四條。前兩條是原始碼
+實查（決定要不要自己寫 native、推翻最自然的那個做法），後兩條是實機實測（實際採用的通道，以及
+**本節最貴的一條 —— 存取路徑**）。
+
+**第四條是這一節的重點，而它花了五輪探針。** 前三輪都在 `globalThis` 上找名字，三輪都是「東西
+不在」，而真正的原因不是名字錯，是**找的地方錯**。任何要碰引擎 JS 物件的人先讀第四條。
+
+#### 一、平台沒有任何耐久儲存 API
+
+| | |
+|---|---|
+| 狀態 | `原始碼實查`（Lynx 4.0.1 / PrimJS 4.0.0 / LynxService 4.0.1 / XElement 4.0.1） |
+| 量到什麼 | 沒有 `localStorage`，`lynx` 物件上沒有儲存方法，四個 pod 沒有一個提供儲存 |
+| 所以 | 官方文件把「本地持久化」列為**自寫 native module 的教學範例**（iOS `NSUserDefaults`／Android `SharedPreferences`／HarmonyOS `Preferences`），這不是缺漏而是設計如此 |
+
+生態裡也沒有對應 `AsyncStorage` 的現成套件。任何跨啟動保存都得從宿主 app 那一側開始。
+
+#### 二、⚠️ `initData` 交得出去，但 vue-lynx 0.4.0 把它丟掉
+
+| | |
+|---|---|
+| 狀態 | `原始碼實查`（`node_modules/vue-lynx` 的建置產出，對照 `@lynx-js/react` 0.116.5） |
+| 量到什麼 | 三件事同時成立：主線程進入點的 `renderPage` 收下參數後**完全不用**它、兩個線程的 `updatePage` 都是空函式、整包 vue-lynx **從來沒有寫過** `lynx.__initData` |
+| 對照組 | ReactLynx 有寫 —— 它的 `renderPage(data)` 第一件事就是 `lynx.__initData = data ?? {}`。所以「Lynx 的 initData 能用」這個經驗是從 ReactLynx 來的，**在 vue-lynx 不成立** |
+
+**這是 §12 反覆記載的那個形狀，而且是最完整的一次。** 宿主端
+`loadTemplateFromURL:initData:` 的簽章在（收 `LynxTemplateData`），呼叫點在
+（`ViewController` 目前傳 nil），呼叫不報錯，資料就是不會抵達任何地方。四層都看起來成立，
+只有最後一哩是空的。
+
+順帶查到的一條相關事實：`lynx.__globalProps` **是引擎級的**（`core/runtime/js/bindings/lynx.cc`
+直接回應這個名字），不像 `__initData` 那樣靠框架去設，所以它不受這一條影響。宿主端用
+`updateGlobalPropsWithDictionary:`（`LynxViewBuilder` 上**沒有**對應屬性，只能在 view 建好之後、
+`loadTemplate` 之前呼叫）。這條路沒有走，因為第三條更短；記在這裡是因為它是第三條的退路。
+
+**若日後為假**（vue-lynx 開始轉發 initData）：那時可以把第三條的讀取簡化成「宿主同步讀完塞進
+initData」，少一次跨邊界呼叫。判準是 `renderPage` 開始用它的參數。
+
+#### 三、native module 的方法在 iOS 可以同步回傳值
+
+| | |
+|---|---|
+| 狀態 | ✅ `iOS 實機實測`（iPhone 14 Pro，5 項驗收逐項通過） |
+| 量到什麼 | `LynxConfig` 有 `registerModule:`（Swift 端被改名為 `register(_:)`，直接寫 `registerModule` 會編譯失敗），`LynxModule` 以 `methodLookup` 把 JS 方法名映到 selector，官方 iOS 範例的 `getLabel:` 直接回傳 `NSString` |
+| 為什麼不是回呼 | 官方那份儲存範例用回呼，是 HarmonyOS 的形狀 —— 只有 ArkTS 那邊要 `@Sendable` 標註才同步。iOS 與 Android 的回傳值方法本身就是同步的 |
+
+**Swift 實作有一個會擋住編譯的坑**：`LynxModule` 把 `init` 與 `initWithParam:` 都標成
+`@optional`，但 **Swift 沒有 optional initializer requirement** —— 少寫 `init(param:)` 不是
+沿用預設，而是整個 conformance 失敗。`name` 與 `methodLookup` 兩個 class 屬性用 Swift 的
+`static var` 就過。
+
+**時序也成立，這是本次最關鍵的一項**：選 EMERALD、從應用切換器移除 app、重開，**第一個畫到的
+畫面就是 EMERALD，沒有任何一帧 POCKET**。所以同步回傳在「背景線程模組求值時」就拿得到，
+「還原值在第一個畫到的畫面就生效」不需要退路。另外四項驗收（語言、模式與語言互不影響、
+全新安裝回到預設、重複選同一模式畫面不動）也都通過，儲存的鍵與值以 `devicectl` 從裝置的
+`NSUserDefaults` 直接核對過：`display.mode => MODERN`、`display.lang => en`，就這兩個鍵。
+
+`UserDefaults.synchronize()` 有留著。它被文件說成「一般情況不必要」，但這裡的驗收案就是
+「改完設定立刻從應用切換器殺掉」——force-quit 不給 app 任何 termination callback。實測寫入
+在啟動後數秒內就在 plist 裡，沒有丟。
+
+**若日後為假**（回傳值到不了、或到得太晚）：退路依序是第二條末尾的 `__globalProps`，再不行就是
+接受一帧預設主題然後閃成還原值 —— **後者不接受**，寧可停下來重新談規格。
+
+**未解的一項**：module 同時註冊在 `AppDelegate` 的 global config（`prepareConfig:`，官方文件的
+做法）與 `ViewController` 自己建的 per-view config 上。**哪一個才是生效的那個沒有分辨** ——
+兩者是一起加上去的，加上去就通了。要分辨得再跑一輪實機。
+
+#### 四、⚠️ `NativeModules`、`lynx`、`SystemInfo` 都**不是** `globalThis` 的屬性
+
+| | |
+|---|---|
+| 狀態 | ✅ `iOS 實機實測`（五輪探針，前三輪都是錯的方向） |
+| 量到什麼 | `globalThis.NativeModules` 是 `undefined`，而**裸識別字** `NativeModules` 是 object。`lynx` 一模一樣：`globalThis.lynx` 是 `undefined`，裸的 `lynx` 是 object |
+| 所以 | 引擎的 JS 物件是**包住 bundle 的那層作用域裡的綁定**，不是全域物件的屬性。官方文件寫 `declare let NativeModules` 並直接寫 `NativeModules.X`，那不只是風格，是唯一可行的寫法 |
+
+**這一條解釋了 §12.27 記的「`SystemInfo` 在背景線程讀不到」** —— 同一個根因。那一節量到的是症狀，
+而症狀的形狀取決於當時怎麼讀它。**§12.27 的結論要照這一條重讀。**
+
+寫法上有一個必須配套的細節：**裸識別字要用 `typeof` 守衛，不能用 optional chaining。**
+`NativeModules?.X` 在 `NativeModules` 真的不存在的環境（網頁預覽）會丟 `ReferenceError` ——
+optional chaining 不保護未宣告的識別字，`typeof` 才會回 `'undefined'` 而不丟。
+
+`globalThis` 本身沒有壞：探針在上面找到了 `nativeConsole` 與 `__lynxDisableModuleCache`，
+所以那確實是真正的全域物件，只是引擎的便利物件不放在那裡。順帶量到的還有兩件事：
+`__CreatePage`／`__FlushElementTree`／`lynxCoreInject` 三個都不在 `globalThis` 上，
+而 `nativeModuleProxy`（引擎內部建立 module table 的名字，見
+`core/runtime/js/js_executor.cc`）**不對 JS 開放** —— 裸的與 globalThis 上的都是 `undefined`。
+
+**為什麼這條特別貴**：它與 §12 反覆記載的失效是同一個形狀，而且是最完整的一次 —— 宣告被接受、
+沒有任何錯誤、事情就是沒發生。更糟的是這個 change 的設計刻意讓「儲存區不存在」保持安靜（網頁預覽
+的正常狀態），所以錯誤的存取路徑不但沒有報錯，連一行訊息都沒有。**在這個平台上，任何「讀不到
+就安靜退化」的設計都必須配一次實機驗證，否則安靜本身會蓋掉存取路徑寫錯這件事。**
+
+**Android 這條全部沒有查。** §12.17 末尾定調 Android 不在範圍內，這一節照該範圍辦。

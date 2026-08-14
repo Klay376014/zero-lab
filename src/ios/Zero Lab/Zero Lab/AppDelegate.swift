@@ -14,6 +14,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         LynxEnv.sharedInstance()
+
+        // Also registered on the view's own config in ViewController; which of the two the
+        // background runtime's module table is built from was never established.
+        let globalConfig = LynxConfig(provider: nil)
+        globalConfig.register(DisplaySettingsModule.self)
+        LynxEnv.sharedInstance().prepareConfig(globalConfig)
+
         return true
     }
 

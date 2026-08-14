@@ -39,6 +39,10 @@ interface Mode {
  *
  * Ordered rather than keyed, because the menu presents them as a sequence and a fourth mode should
  * be an addition here and nowhere else.
+ *
+ * **An `id` is persisted** (`src/platform/settings.ts`), and the menu draws it verbatim, so
+ * renaming one is both a visible change and a silent reset for everyone who had selected it.
+ * Adding a mode costs nothing.
  */
 export const MODES: readonly Mode[] = [
   { id: 'POCKET', tones: ['#0d0d0d', '#4f4f4f', '#a1a1a1', '#e8e8e8'] },

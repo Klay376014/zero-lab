@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The colour modes and the shared state that drives them. Covers one ten-token semantic contract resolved by every mode in an ordered set — POCKET, MODERN and EMERALD — with no eleventh token admitted, POCKET's derivation from a four-tone greyscale ramp against the direct declaration the other two use, the provenance each directly declared EMERALD token carries so that it can be checked back to a rectangle of the palette source or to the factor deriving it rather than to a feature name that both generations in that image answer to, application of the active tokens as inline custom properties on the root view, ink selection by measured contrast rather than a fixed luminance threshold, one surface-aware selection returning both a glyph's fill and the plate a light mode paints behind it so the two cannot disagree with the background reported for measurement and so that replacing a neutral token cannot move what the plated arrangement measures, and the reactive mode and language state that components read without prop threading, with the mode set by naming it rather than by advancing a position.
+The colour modes and the shared state that drives them. Covers one ten-token semantic contract resolved by every mode in an ordered set — POCKET, MODERN and EMERALD — with no eleventh token admitted, POCKET's derivation from a four-tone greyscale ramp against the direct declaration the other two use, the provenance each directly declared EMERALD token carries so that it can be checked back to a rectangle of the palette source or to the factor deriving it rather than to a feature name that both generations in that image answer to, application of the active tokens as inline custom properties on the root view, ink selection by measured contrast rather than a fixed luminance threshold, one surface-aware selection returning both a glyph's fill and the plate a light mode paints behind it so the two cannot disagree with the background reported for measurement and so that replacing a neutral token cannot move what the plated arrangement measures, and the reactive mode and language state that components read without prop threading, with the mode set by naming it rather than by advancing a position, with each one's initial value restored at launch rather than defaulted and each change to it persisted — both by `display-persistence`, which owns the store and leaves this layer holding only the state whose change triggers the write, and which makes a mode identifier already in the ordered set an external contract that a rename silently breaks.
 
 ## Requirements
 
@@ -424,9 +424,15 @@ tests:
 
 The active mode and the active language SHALL be held as shared reactive state readable by any component without prop threading. Both SHALL be switchable at runtime.
 
+The initial value of each SHALL come from the settings restored at launch by `display-persistence` rather than from a fixed default. The fixed defaults — the first mode of the ordered mode set, and Chinese — SHALL remain the value used when nothing is restored, so a first run and a run with an unreadable store both start where the application has always started.
+
+A change to either value SHALL be persisted. The shared state layer SHALL NOT decide when to write: it is the layer whose change triggers the write, and the durable storage keys, their value domains and the writing itself belong to `display-persistence`. This keeps a new way of changing either value persistent without that code path knowing persistence exists.
+
 The active mode SHALL be set by naming a mode, not by advancing a position in the mode set. No operation that advances the active mode to the next member SHALL be exposed, because a control built on it states neither how many modes exist nor which one is in force, and the set is expected to grow.
 
-Setting the active mode to the mode already in force SHALL leave the interface unchanged.
+Setting the active mode to the mode already in force SHALL leave the interface unchanged and SHALL persist nothing.
+
+The identifier of a mode already present in the ordered mode set SHALL be treated as carrying an external contract, because it is what gets stored. Adding a mode to the set carries no such cost; renaming one returns every reader who had selected it to the default mode.
 
 #### Scenario: Two components observe the same switch
 
@@ -446,24 +452,36 @@ Setting the active mode to the mode already in force SHALL leave the interface u
 #### Scenario: Setting the active mode again is inert
 
 - **WHEN** the active mode is set to the mode already in force
-- **THEN** no token value changes and no component is remounted
+- **THEN** no token value changes, no component is remounted, and nothing is written to durable storage
+
+#### Scenario: The initial values come from the restored settings
+
+- **WHEN** the shared state is first read after launch and durable storage holds a mode and a language
+- **THEN** the active mode and the active language are the stored ones rather than the fixed defaults
+
+#### Scenario: The fixed defaults survive as the fallback
+
+- **WHEN** the shared state is first read after launch and nothing is restored
+- **THEN** the active mode is the first mode of the ordered mode set and the active language is Chinese
+
+#### Scenario: A change to either value is persisted
+
+- **WHEN** the active mode or the active language changes
+- **THEN** the new value is written to durable storage without the changing code path referring to persistence
 
 <!-- @trace
-source: add-emerald-mode
-updated: 2026-08-13
+source: persist-display-settings
+updated: 2026-08-14
 code:
-  - design/theme-menu-variants.html
-  - src/components/ThemeMenuList.vue
+  - src/ios/Zero Lab/Zero Lab/AppDelegate.swift
   - design/HANDOFF.md
-  - design/theme-emerald-mock.html
-  - design/emerald-palette-source.jpg
-  - src/components/ThemeMenu.vue
-  - src/theme/modes.ts
-  - src/components/TypeGlyph.vue
-  - src/App.vue
-  - src/App.css
+  - ROADMAP.md
+  - src/ios/Zero Lab/Zero Lab/ViewController.swift
   - src/state/display.ts
-  - scripts/check-contrast.mjs
+  - src/theme/modes.ts
+  - src/platform/settings.ts
+  - src/rspeedy-env.d.ts
+  - src/ios/Zero Lab/Zero Lab/DisplaySettingsModule.swift
 tests:
-  - tests/theme.test.ts
+  - tests/displayPersistence.test.ts
 -->

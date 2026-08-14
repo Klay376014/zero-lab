@@ -36,6 +36,7 @@ class ViewController: UIViewController {
         config.registerUI(LynxUIInput.self, withName: "input")
         config.registerShadowNode(LynxUIInputShadowNode.self, withName: "input")
         config.registerUI(LynxUISVG.self, withName: "svg")
+        config.register(DisplaySettingsModule.self)
 
         lynxView = LynxView { builder in
             builder.config = config
