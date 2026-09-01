@@ -109,8 +109,12 @@ Two more that cost real time:
 
 - **`src/data/dex.json` is a pipeline product.** Same dataset as `design/champions-dex.json` and
   serialised from one source, so the two cannot drift apart — but not the same bytes: this one is
-  compact (200KB), that one is indented (393KB). Never hand-edit either — change
-  `design/pipeline/` and re-run, and re-running should leave both unchanged.
+  compact, that one is indented, so the second is the larger by a wide margin. Never hand-edit
+  either — change `design/pipeline/` and re-run, and re-running should leave both unchanged.
+  **Do not quote their sizes here.** This paragraph said 200KB and 393KB from 2026-07 until
+  2026-09-01, by which point they were 305KB and 514KB — the dataset grows whenever the roster
+  does, and nothing updates a number written in prose. A size that looks wrong is checked with
+  `wc -c`, not against this file.
 - **Text widths measured in the web preview are wrong.** The pixel face does not load there, so
   Latin text is drawn in a system font. §12 gives the workaround.
 
