@@ -16,7 +16,7 @@ learn    = json.load(open('learn.json', encoding='utf-8'))
 zhn      = json.load(open('zh_names.json', encoding='utf-8'))
 ZH_SPECIES, ZH_GENUS, ZH_FORM = zhn['species'], zhn['genus'], zhn['forms']
 
-body = [r for r in champs['body'] if r['dex'] != 923]
+body = champs['body']
 
 GEN = [(1,151,1),(152,251,2),(252,386,3),(387,493,4),(494,649,5),
        (650,721,6),(722,809,7),(810,905,8),(906,1025,9)]
@@ -64,6 +64,27 @@ poke_ab = collections.defaultdict(list)
 for r in csv.DictReader(open('pokemon_abilities.csv', encoding='utf-8')):
     poke_ab[int(r['pokemon_id'])].append(
         (int(r['slot']), r['ability_id'], r['is_hidden'] == '1'))
+
+# The overlay's ability rows stand in for rows pokemon_abilities.csv does not have — PokeAPI has
+# the Mega Z varieties and their stats but no ability rows at all — so they join the same table
+# in the same shape, and everything downstream is unaware they were hand-authored. An ability
+# PokeAPI does not have either is added to the name and description lookups the same way.
+overlay = json.load(open('overlay.json', encoding='utf-8'))
+for a in overlay['abilities']:
+    aid = a['ability_id']
+    assert aid not in ab_en, f'ability id {aid} is now carried upstream — delete it from overlay.json'
+    ab_en[aid], ab_zh[aid] = a['name_en'], a['name_zh']
+    if a['desc_zh']:
+        ab_desc[aid] = a['desc_zh']
+    if a['desc_en']:
+        ab_desc_en[aid] = a['desc_en']
+for pid, slots in overlay['pokemon_abilities'].items():
+    pid = int(pid)
+    assert not poke_ab[pid], f'pokemon {pid} now has upstream abilities — delete it from overlay.json'
+    for r in slots:
+        poke_ab[pid].append((int(r['slot']), r['ability_id'], r['is_hidden']))
+print(f'overlay abilities: {len(overlay["abilities"])} new, '
+      f'{len(overlay["pokemon_abilities"])} forms wired')
 
 ability_table, ability_idx = [], {}
 def ability_ref(aid):
@@ -162,7 +183,7 @@ for dx in sorted({r['dex'] for r in body}):
 
 # ---------- checks ----------
 assert len(species) == 208
-assert sum(1 for s in species for f in s['f'] if f['k'] == 'mega') == 75
+assert sum(1 for s in species for f in s['f'] if f['k'] == 'mega') == 78
 assert sum(1 for s in species for f in s['f'] if f['k'] == 'regional') == 16
 for s in species:
     for f in s['f']:
@@ -183,7 +204,7 @@ assert not bad, bad
 meta = {
     'species': len(species),
     'formEntries': sum(len(s['f']) for s in species),
-    'megas': 75, 'regional': 16,
+    'megas': 78, 'regional': 16,
     'moves': len(learn['moves']),
     'moveRefs': sum(len(m) for s in species for m in s['sec']),
     'abilities': len(ability_table),

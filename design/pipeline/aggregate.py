@@ -20,8 +20,8 @@ from parse_learn import parse
 LS = pathlib.Path('learnsets')
 titles = json.load(open('learnset_titles.json', encoding='utf-8'))
 champs = json.load(open('champions.json', encoding='utf-8'))
-species_names = sorted({r['name'] for r in champs['body'] if r['dex'] != 923})
-name_by_dex = {r['dex']: r['name'] for r in champs['body'] if r['dex'] != 923}
+species_names = sorted({r['name'] for r in champs['body']})
+name_by_dex = {r['dex']: r['name'] for r in champs['body']}
 
 # ---- the move id behind each Champions move name ----
 # PokeAPI writes King’s Shield with U+2019; Bulbapedia uses a plain ASCII apostrophe.

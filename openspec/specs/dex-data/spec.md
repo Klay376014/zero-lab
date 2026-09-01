@@ -6,6 +6,8 @@ The bundled Champions dataset and the reference tables that read it. Covers how 
 
 Provenance is split by what each of the three upstream sources is authoritative for, and the split is enforced rather than described. The Champions tables supply the roster and every move's mechanics, because that game retunes them — 401 of the 496 moves disagree with the mainline figures the text sources publish, so the aggregation step asserts that the power, accuracy and power points it emits are the ones it parsed. The PokeAPI exports supply ability and form naming and the English move descriptions. The 52poke move list supplies Traditional Chinese move names and descriptions, joined by move identifier rather than by name, and its Traditional variant specifically: the PokeAPI name column is Simplified for 33 of these moves, and the shipped dataset showed only 8 because the rest had been corrected by hand-editing the dataset file — the edit this capability forbids, which a pipeline re-run would have silently undone.
 
+Two rules bound what reaches that split. Only a roster row outside an HTML comment counts as roster data at all: the roster page stages a future release as commented-out rows, and exclusion turns on the comment rather than on the placeholder version those rows carry, because either can appear without the other. And where no upstream source carries a field, a hand-authored overlay supplies it — the roster entry and the abilities for a form PokeAPI has stats and a sprite for but the roster page has no released row for. The overlay is an input to the pipeline, not an edit of its output: the dataset stays wholly produced by a run and still reproduces byte for byte, the overlay supplies only fields that have no source, and each entry records where its values came from and the condition under which it is deleted.
+
 A move record therefore carries a description in both languages and the identifiers of the flags that apply to it. A missing description fails the pipeline rather than reaching the interface as a blank area. A separate table names all 21 flag identifiers, including the four no screen draws, so that the dataset does not encode which flags are displayed — that is decided by which identifiers the string table gives a short label to, and changing it never means re-running the pipeline. The two hops, id to upstream identifier here and identifier to label in the string table, are what make an upstream renumbering harmless and an upstream rename detectable; a load-time assertion throws when a move references an identifier the table cannot name.
 
 ## Requirements
@@ -105,79 +107,31 @@ The data layer SHALL assert six dataset invariants when its module initialises. 
 | Invariant                  | Expected | A failure means                              |
 | -------------------------- | -------- | -------------------------------------------- |
 | species count              | 208      | the game roster changed                      |
-| form entries across species| 360      | forms were added or removed                  |
-| forms of kind mega         | 75       | a Mega evolution was added or removed        |
+| form entries across species| 363      | forms were added or removed                  |
+| forms of kind mega         | 78       | a Mega evolution was added or removed        |
 | forms of kind regional     | 16       | a regional form was added or removed         |
 | shared move table entries  | 496      | the move table changed upstream              |
-| ability entries            | 200      | the ability table changed upstream           |
+| ability entries            | 201      | the ability table changed upstream           |
 
 
 <!-- @trace
-source: port-champions-dex-foundation
-updated: 2026-07-29
+source: add-mega-z-forms
+updated: 2026-09-01
 code:
-  - shots/12-native-image-events.png
-  - shots/04-cards-pocket-zh.png
-  - lynx.config.ts
-  - AGENTS.md
-  - design/pipeline/f700.txt
-  - design/pipeline/template.html
-  - design/champions-dex.html
-  - design/pipeline/verify_forms.py
-  - shots/07-narrow-500.png
-  - shots/10-native-pocket.png
-  - shots/01-pocket-zh.png
-  - src/components/SpeciesCard.vue
-  - src/rspeedy-env.d.ts
-  - README.md
-  - .spectra.yaml
-  - src/App.vue
-  - src/assets/fonts/OFL.txt
-  - src/theme/contrast.ts
-  - shots/11-native-modern-upscale.png
-  - src/components/TypeGlyph.vue
-  - tsconfig.json
-  - src/shims-vue.d.ts
-  - design/pipeline/build_data3.py
-  - src/assets/fonts/Silkscreen-Regular.ttf
-  - design/pipeline/parse_learn.py
-  - src/theme/glyphSvg.ts
-  - design/pipeline/f400.txt
-  - package.json
-  - design/pipeline/fetch_fonts.sh
-  - shots/05-upscale-check.png
-  - src/theme/modes.ts
-  - src/state/display.ts
-  - shots/06-sprite-fallback.png
-  - .vscode/extensions.json
-  - design/pipeline/parse.py
-  - design/pipeline/fetch_sources.sh
-  - design/pipeline/run.sh
-  - design/pipeline/zh_forms.py
-  - design/pipeline/__pycache__/parse_learn.cpython-314.pyc
-  - design/pipeline/fetch_learnsets.py
-  - design/pipeline/fprose.txt
-  - shots/02-pixel-face.png
-  - design/pipeline/aggregate.py
-  - design/pipeline/resolve_forms.py
-  - shots/03-glyphs-pocket.png
-  - design/champions-dex.json
-  - src/App.css
-  - src/tsconfig.json
-  - tsconfig.node.json
-  - src/data/types.ts
-  - pnpm-workspace.yaml
-  - design/pipeline/build.py
-  - CLAUDE.md
-  - design/HANDOFF.md
-  - shots/08-modern-1400.png
-  - shots/09-user-server-modern.png
-  - shots/13-native-svg-probes.png
-  - src/assets/fonts/Silkscreen-Bold.ttf
+  - .workflow-comment.patch
   - src/data/dex.json
+  - design/pipeline/aggregate.py
+  - design/pipeline/overlay.json
+  - design/pipeline/resolve_forms.py
+  - design/pipeline/zh_forms.py
+  - design/pipeline/build_data3.py
+  - ROADMAP.md
+  - design/champions-dex.json
+  - design/pipeline/parse.py
   - src/data/dex.ts
-  - src/data/i18n.ts
-  - src/index.ts
+  - design/champions-dex.html
+tests:
+  - tests/dex-data.test.ts
 -->
 
 ---
@@ -626,8 +580,8 @@ The roster designation and the provenance statement SHALL be exposed as strings 
 | Meta count         | Value | Asserted invariant   |
 | ------------------ | ----- | -------------------- |
 | species total      | 208   | species count        |
-| form entry total   | 360   | form entries         |
-| Mega form total    | 75    | mega forms           |
+| form entry total   | 363   | form entries         |
+| Mega form total    | 78    | mega forms           |
 | move table entries | 496   | move table entries   |
 
 #### Scenario: An empty roster designation is not a load failure
@@ -636,18 +590,25 @@ The roster designation and the provenance statement SHALL be exposed as strings 
 - **THEN** the data layer loads without raising an error
 - **AND** the empty value is exposed to consumers unchanged
 
+
 <!-- @trace
-source: surface-dataset-facts
-updated: 2026-07-30
+source: add-mega-z-forms
+updated: 2026-09-01
 code:
-  - design/HANDOFF.md
-  - src/components/DexGrid.vue
-  - src/components/DexFooter.vue
-  - src/App.css
+  - .workflow-comment.patch
+  - src/data/dex.json
+  - design/pipeline/aggregate.py
+  - design/pipeline/overlay.json
+  - design/pipeline/resolve_forms.py
+  - design/pipeline/zh_forms.py
+  - design/pipeline/build_data3.py
   - ROADMAP.md
+  - design/champions-dex.json
+  - design/pipeline/parse.py
   - src/data/dex.ts
-  - src/App.vue
-  - src/data/i18n.ts
+  - design/champions-dex.html
+tests:
+  - tests/dex-data.test.ts
 -->
 
 ---
@@ -999,4 +960,95 @@ code:
 tests:
   - tests/dex-data.test.ts
   - tests/i18n.test.ts
+-->
+
+---
+### Requirement: Roster parsing admits only released entries
+
+The pipeline's roster parsing step SHALL remove HTML comment regions from the roster wikitext before matching roster row templates against it. A roster row that appears only inside an HTML comment SHALL NOT reach any downstream step.
+
+The upstream roster page carries entries for a future release as commented-out rows, with a placeholder in place of the version in which they were added. The parsing step matches row templates by pattern and does not otherwise distinguish a commented row from a released one, so without this requirement an unreleased entry enters the dataset as though it had shipped.
+
+Exclusion SHALL be decided by the row being inside a comment region, and SHALL NOT be decided by the value of the version field, because a commented row can carry a real version and a released row can carry a placeholder.
+
+#### Scenario: A commented roster row is not parsed
+
+- **WHEN** the roster wikitext carries a roster row template entirely inside an HTML comment
+- **THEN** the parsing step emits no entry for that row
+
+#### Scenario: An uncommented roster row is parsed
+
+- **WHEN** the roster wikitext carries a roster row template outside any HTML comment
+- **THEN** the parsing step emits an entry for that row
+
+##### Example: rows of both kinds for one species
+
+| Roster wikitext row                                                    | Parsed |
+| ---------------------------------------------------------------------- | ------ |
+| a released Mega form row for Absol, outside any comment                 | yes    |
+| a Mega Garchomp Z row wrapped in an HTML comment, version placeholder   | no     |
+| a Mega Heatran row wrapped in an HTML comment, version placeholder      | no     |
+| a Heatran species row wrapped in an HTML comment, version placeholder   | no     |
+
+
+<!-- @trace
+source: add-mega-z-forms
+updated: 2026-09-01
+code:
+  - .workflow-comment.patch
+  - src/data/dex.json
+  - design/pipeline/aggregate.py
+  - design/pipeline/overlay.json
+  - design/pipeline/resolve_forms.py
+  - design/pipeline/zh_forms.py
+  - design/pipeline/build_data3.py
+  - ROADMAP.md
+  - design/champions-dex.json
+  - design/pipeline/parse.py
+  - src/data/dex.ts
+  - design/champions-dex.html
+tests:
+  - tests/dex-data.test.ts
+-->
+
+---
+### Requirement: A pipeline overlay supplies form data upstream does not carry
+
+The pipeline SHALL accept an overlay of hand-authored input covering exactly the fields no upstream source carries for a form: its roster entry and its abilities. Every overlay entry SHALL record the source of its values and the condition under which it is to be deleted.
+
+The overlay is an input to the pipeline, not an edit of its output. The requirement that the application dataset SHALL NOT be hand-authored or hand-edited continues to apply in full: the dataset SHALL remain produced entirely by a pipeline run, and re-running the pipeline against unchanged inputs SHALL continue to reproduce it byte for byte.
+
+The overlay SHALL NOT supply a field an upstream source carries. A form's roster entry carries its English form label, its types and its roster status, and the overlay supplies all three for a form upstream has no released row for. Base stats and sprite paths SHALL continue to come from the PokeAPI exports for every form, including a form the overlay introduces.
+
+When an upstream source begins carrying a field the overlay supplies, the corresponding overlay entry SHALL be deleted and the pipeline re-run, and the resulting dataset SHALL be unchanged.
+
+#### Scenario: The overlay supplies only the fields upstream lacks
+
+- **WHEN** the pipeline assembles a form introduced by the overlay
+- **THEN** its roster entry and abilities come from the overlay
+- **AND** its base stats and sprite path come from the PokeAPI exports
+
+#### Scenario: A pipeline run with an overlay is still reproducible
+
+- **WHEN** the pipeline assembly step is re-run against unchanged upstream caches and an unchanged overlay
+- **THEN** the application dataset is byte-identical to the committed copy
+
+<!-- @trace
+source: add-mega-z-forms
+updated: 2026-09-01
+code:
+  - .workflow-comment.patch
+  - src/data/dex.json
+  - design/pipeline/aggregate.py
+  - design/pipeline/overlay.json
+  - design/pipeline/resolve_forms.py
+  - design/pipeline/zh_forms.py
+  - design/pipeline/build_data3.py
+  - ROADMAP.md
+  - design/champions-dex.json
+  - design/pipeline/parse.py
+  - src/data/dex.ts
+  - design/champions-dex.html
+tests:
+  - tests/dex-data.test.ts
 -->

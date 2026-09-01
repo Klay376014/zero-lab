@@ -1,0 +1,63 @@
+{
+  "_what": "Hand-authored pipeline INPUT. Not an edit of any pipeline output — src/data/dex.json stays wholly produced by a run, and a re-run against unchanged inputs still reproduces it byte for byte.",
+  "_why": "Three Mega forms exist in the PokeAPI exports (varieties absol-mega-z, garchomp-mega-z, lucario-mega-z: base stats, sprites, English/Japanese/French form names) but two fields have no upstream source at all — the Champions roster entry and the abilities. This file supplies exactly those two and nothing else. The roster entry is where a form's English label, its types and its roster status come from. Base stats and sprite paths keep coming from PokeAPI for these forms like every other.",
+  "_delete_when": "An upstream source starts carrying a field below. Delete that entry, re-run the pipeline, and the dataset must come out unchanged. When every entry is gone, delete this file and the two hooks that read it.",
+
+  "megas": [
+    {
+      "_source": "Types decided by the project owner 2026-09-01. Bulbapedia's Champions page carries no row for this form at all, commented or otherwise, and PokeAPI carries no types for any form.",
+      "_delete_when": "Bulbapedia's Champions page lists Mega Absol Z as a released row.",
+      "dex": 359,
+      "name": "Absol",
+      "form": "Mega Absol Z",
+      "types": ["Dark", "Ghost"],
+      "in_current_roster": true,
+      "roster_note": "",
+      "added": "1.0.2"
+    },
+    {
+      "_source": "Types copied from Bulbapedia's own commented-out row for this form (single-type Dragon, unlike Mega Garchomp's Dragon/Ground). Corroborated by the ability: Levitate replaces the Ground typing rather than stacking with it.",
+      "_delete_when": "Bulbapedia's Champions page lists Mega Garchomp Z as a released row.",
+      "dex": 445,
+      "name": "Garchomp",
+      "form": "Mega Garchomp Z",
+      "types": ["Dragon"],
+      "in_current_roster": true,
+      "roster_note": "",
+      "added": "1.0.2"
+    },
+    {
+      "_source": "Types copied from Bulbapedia's own commented-out row for this form, unchanged from Mega Lucario.",
+      "_delete_when": "Bulbapedia's Champions page lists Mega Lucario Z as a released row.",
+      "dex": 448,
+      "name": "Lucario",
+      "form": "Mega Lucario Z",
+      "types": ["Fighting", "Steel"],
+      "in_current_roster": true,
+      "roster_note": "",
+      "added": "1.0.2"
+    }
+  ],
+
+  "_added_note": "'added' is set to each species' own version so the assembled form carries no separate version field. Upstream has assigned these forms no version yet — its rows show a placeholder — and the detail panel shows the species version either way, so an empty value would change nothing on screen while putting an empty field in the dataset.",
+
+  "_abilities_note": "Rows that pokemon_abilities.csv would carry if PokeAPI had them. Same shape as that file: pokemon_id keyed, each slot naming an ability_id and whether it is hidden.",
+  "pokemon_abilities": {
+    "10307": [{ "slot": 1, "ability_id": "292", "is_hidden": false, "_name": "Sharpness / 鋒銳" }],
+    "10309": [{ "slot": 1, "ability_id": "26", "is_hidden": false, "_name": "Levitate / 飄浮" }],
+    "10310": [{ "slot": 1, "ability_id": "90001", "is_hidden": false, "_name": "Aura Guard / 波導防護" }]
+  },
+
+  "_new_abilities_note": "An ability PokeAPI does not have at all, so it needs the rows abilities.csv, ability_names.csv and ability_flavor_text.csv would carry. The id is far outside the upstream range (max upstream id is 10060) so it can never collide with a real one, and so that its being synthetic is visible at a glance.",
+  "abilities": [
+    {
+      "_source": "Supplied by the project owner 2026-09-01. Absent from every PokeAPI export.",
+      "_delete_when": "PokeAPI carries this ability; then use its real id.",
+      "ability_id": "90001",
+      "name_en": "Aura Guard",
+      "name_zh": "波導防護",
+      "desc_zh": "受到接觸類物理招式的傷害減半",
+      "desc_en": "Halves damage from physical contact moves"
+    }
+  ]
+}

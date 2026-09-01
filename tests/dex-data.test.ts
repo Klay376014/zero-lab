@@ -17,6 +17,7 @@ import {
   bst,
   dex,
   hasMega,
+  learnsetOf,
   megaForms,
   searchHaystack,
 } from '../src/data/dex.js'
@@ -24,11 +25,11 @@ import {
 /** Example: asserted invariants — spec.md, "Dataset integrity is asserted at load time". */
 const EXPECTED = {
   'species count': 208,
-  'form entries': 360,
-  'mega forms': 75,
+  'form entries': 363,
+  'mega forms': 78,
   'regional forms': 16,
   'move table entries': 496,
-  'ability entries': 200,
+  'ability entries': 201,
 } as const
 
 describe('the six asserted invariants', () => {
@@ -60,6 +61,47 @@ describe('the six asserted invariants', () => {
 
   it('ability entries', () => {
     expect(dex.abilities.length).toBe(EXPECTED['ability entries'])
+  })
+})
+
+/**
+ * A second Mega form shares its species' learnset with the first.
+ *
+ * The three forms added here are the case the sharing rule is easiest to get wrong: each species
+ * carries exactly one learnset section, and one of the three retypes the species (Mega Garchomp Z
+ * is Dragon where Mega Garchomp is Dragon/Ground). A form whose typing has no section of its own
+ * falls back to the species' section, so the retyped one must still read the same moves as the
+ * form it sits beside — a regression here would show as a Mega with a silently emptier learnset.
+ */
+describe('Example: a second Mega form shares the species learnset', () => {
+  const cases = [
+    { dex: 359, label: 'Mega Absol Z', zh: '超級阿勃梭魯Ｚ', types: ['Dark', 'Ghost'], moves: 71 },
+    { dex: 445, label: 'Mega Garchomp Z', zh: '超級烈咬陸鯊Ｚ', types: ['Dragon'], moves: 58 },
+    { dex: 448, label: 'Mega Lucario Z', zh: '超級路卡利歐Ｚ', types: ['Fighting', 'Steel'], moves: 83 },
+  ]
+
+  it.each(cases)('$label is a Mega form of $dex typed $types', ({ dex: number, label, zh, types }) => {
+    const species = dex.species.find((entry) => entry.d === number)!
+    const form = species.f.find((entry) => entry.l === label)!
+    expect(form.k).toBe('mega')
+    expect(form.lz).toBe(zh)
+    expect(form.t).toEqual(types)
+    expect(form.si).toBe(0)
+  })
+
+  it.each(cases)('$label reads the same learnset as the species first Mega', ({ dex: number, label, moves }) => {
+    const species = dex.species.find((entry) => entry.d === number)!
+    const added = species.f.find((entry) => entry.l === label)!
+    const first = megaForms(species).find((entry) => entry.l !== label)!
+    expect(learnsetOf(species, added)).toEqual(learnsetOf(species, first))
+    expect(learnsetOf(species, added)).toHaveLength(moves)
+  })
+
+  it.each(cases)('$label carries a Chinese label distinct from the first Mega', ({ dex: number, label }) => {
+    const species = dex.species.find((entry) => entry.d === number)!
+    const labels = megaForms(species).map((entry) => entry.lz)
+    expect(new Set(labels).size).toBe(labels.length)
+    expect(labels).toContain(species.f.find((entry) => entry.l === label)!.lz)
   })
 })
 

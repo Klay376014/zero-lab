@@ -2,6 +2,13 @@ import re, json, collections
 
 raw = open('champions.wiki', encoding='utf-8').read()
 
+# Upstream stages a future release as commented-out roster rows whose version column is a
+# placeholder, and the row templates below match by pattern — a comment is not a delimiter to
+# them. Stripping comment regions first is what makes "released" the parser's own definition:
+# excluding by the placeholder version instead would misjudge both directions, because a
+# commented row can carry a real version and a released row can carry a placeholder.
+raw = re.sub(r'<!--.*?-->', '', raw, flags=re.S)
+
 # split into sections
 def section(start_pat, end_pat):
     s = re.search(start_pat, raw)
@@ -79,6 +86,17 @@ def gen(d):
     return '?'
 c = collections.Counter(gen(d) for d in species)
 print('species per gen:', {g: c[g] for _,_,g in GEN})
+
+# Overlay rows join here rather than in each consumer, so that champions.json stays the one
+# answer to "which forms does the pipeline know about" and resolve_forms/build_data3 need no
+# knowledge of the overlay at all. Keys starting with '_' are the entry's own provenance notes.
+overlay = json.load(open('overlay.json', encoding='utf-8'))
+extra = [{k: v for k, v in r.items() if not k.startswith('_')} for r in overlay['megas']]
+for r in extra:
+    assert not any(x['dex'] == r['dex'] and x['form'] == r['form'] for x in m), \
+        f"overlay row {r['form']!r} is now carried by the roster page — delete it from overlay.json"
+m += extra
+print(f'overlay mega rows merged: {len(extra)}  -> mega rows total: {len(m)}')
 
 json.dump({'body': b, 'megas': m, 'other_forms': o, 'untransferable': u},
           open('champions.json','w',encoding='utf-8'), ensure_ascii=False, indent=1)

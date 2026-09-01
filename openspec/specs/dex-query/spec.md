@@ -104,7 +104,7 @@ The search string SHALL be split on whitespace, and a species SHALL match only w
 | 0475          | 1    | the same species, by the zero-padded number                           |
 | dragon        | 19   | exactly the species the Dragon type filter selects                    |
 | 龍            | 25   | those 19, plus 6 whose Chinese name contains 龍 without the type      |
-| mega          | 73   | every species carrying a Mega form (75 Mega forms over 73 species)    |
+| mega          | 73   | every species carrying a Mega form (78 Mega forms over 73 species)    |
 | 超級          | 73   | the same 73 species, by the Chinese Mega label                        |
 | gen5          | 29   | every species introduced in the fifth generation                      |
 | alola         | 2    | Raichu and Ninetales, by form label                                   |
@@ -115,16 +115,34 @@ The search string SHALL be split on whitespace, and a species SHALL match only w
 
 The 25 for 龍 is the specified outcome, not a defect to fix. The Chinese type name and the Chinese species names occupy one haystack, and partial name matching is required above; the six extra species are 暴鯉龍, 化石翼龍, 戰槌龍, 護城龍, 龍頭地鼠 and 冰雪巨龍.
 
+The count of species carrying a Mega form stays at 73 while the Mega form total rises, because a species already carrying a Mega form gains nothing from carrying a second one. A Mega form total that moves without moving the species count is the expected shape of a change that adds a Mega form to a species that already had one.
+
+##### Example: a species gaining a second Mega form
+
+- **GIVEN** Absol, which already carries Mega Absol
+- **WHEN** a second Mega form is added to Absol
+- **THEN** the Mega form total rises by one
+- **AND** the hits for the search string `mega` stay at 73
+
 
 <!-- @trace
-source: optimize-query-bar
-updated: 2026-08-08
+source: add-mega-z-forms
+updated: 2026-09-01
 code:
+  - .workflow-comment.patch
+  - src/data/dex.json
+  - design/pipeline/aggregate.py
+  - design/pipeline/overlay.json
+  - design/pipeline/resolve_forms.py
+  - design/pipeline/zh_forms.py
+  - design/pipeline/build_data3.py
   - ROADMAP.md
-  - src/data/i18n.ts
-  - src/state/query.ts
-  - src/App.css
-  - src/components/QueryBar.vue
+  - design/champions-dex.json
+  - design/pipeline/parse.py
+  - src/data/dex.ts
+  - design/champions-dex.html
+tests:
+  - tests/dex-data.test.ts
 -->
 
 ---

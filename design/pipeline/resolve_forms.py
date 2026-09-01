@@ -43,7 +43,7 @@ for f in forms:
 
 # ---- what we need to resolve ----
 champs = json.load(open('champions.json', encoding='utf-8'))
-body = [r for r in champs['body'] if r['dex'] != 923]
+body = champs['body']
 
 need = []   # (dex, speciesName, kind, label, types)
 for r in body:

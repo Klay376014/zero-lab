@@ -43,10 +43,10 @@ def form_id(r):
     return row['id'] if row else None
 
 # ---------- Mega rule, validated against every Mega PokeAPI does localise ----------
-FW = str.maketrans('XY', 'ＸＹ')          # Bulbapedia/官方 use full-width X / Y
+FW = str.maketrans('XYZ', 'ＸＹＺ')       # Bulbapedia/官方 use full-width X / Y / Z
 def mega_zh(dex, label):
     base = SPECIES_ZH[dex]
-    m = re.search(r'\b([XY])$', label)
+    m = re.search(r'\b([XYZ])$', label)
     return '超級' + base + (m.group(1).translate(FW) if m else '')
 
 checked = wrong = 0
@@ -61,6 +61,21 @@ for r in verified:
             print(f'  RULE MISMATCH {r["label"]}: derived={mega_zh(r["dex"], r["label"])!r} api={got!r}')
 print(f'Mega naming rule checked against {checked} PokeAPI-localised Megas, mismatches: {wrong}')
 assert wrong == 0, 'the 超級+species rule does not reproduce PokeAPI; do not trust it'
+
+# The check above cannot reach Z. It compares the rule against Megas PokeAPI has localised, and
+# PokeAPI carries no Chinese name for any Mega Z — so a Z that the suffix pattern failed to catch
+# would derive 超級+species, colliding with that species' plain Mega, and pass here in silence.
+# Two same-named buttons in the form switcher is what that looks like on screen, so the collision
+# is asserted directly instead.
+derived = {}
+for r in verified:
+    if r['kind'] != 'mega':
+        continue
+    name = mega_zh(r['dex'], r['label'])
+    clash = derived.get((r['dex'], name))
+    assert clash is None, f'two Mega forms of {r["dex"]} both derive {name!r}: {clash!r} and {r["label"]!r}'
+    derived[(r['dex'], name)] = r['label']
+print(f'Mega Chinese names derived: {len(derived)}, all distinct within their species')
 
 # ---------- scrape species pages for the remaining real forms ----------
 need_pages = sorted({r['dex'] for r in verified

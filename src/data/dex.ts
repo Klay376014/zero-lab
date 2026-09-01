@@ -107,11 +107,11 @@ export interface Dex {
 
 const EXPECTED = {
   'species count': 208,
-  'form entries': 360,
-  'mega forms': 75,
+  'form entries': 363,
+  'mega forms': 78,
   'regional forms': 16,
   'move table entries': 496,
-  'ability entries': 200,
+  'ability entries': 201,
 } as const
 
 function assertCount(invariant: keyof typeof EXPECTED, actual: number): void {
