@@ -5,6 +5,7 @@
 *.csv
 *.wiki
 cat.json
+learnset_revisions.json
 moves_zh.html
 learnsets/
 species_pages/

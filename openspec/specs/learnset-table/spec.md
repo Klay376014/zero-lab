@@ -350,26 +350,35 @@ The row is the device width less the chrome the panel sits inside — the root p
 | 393px        | 333  | 205px       | 189px            | 160.5px             |
 | 430px        | 370  | 242px       | 226px            | 160.5px             |
 
-All 496 names fit in every row of this table, the narrowest case leaving 10.5px. The widest are Stomping Tantrum and Burning Jealousy at 160.5px each; the second is a Fire move, so on a Fire-typed form it carries the star and takes the 171px case.
+All 511 names fit in every row of this table, the narrowest case leaving 10.5px. The widest are Stomping Tantrum and Burning Jealousy at 160.5px each; the second is a Fire move, so on a Fire-typed form it carries the star and takes the 171px case. The roster rotation that brought the table to 511 added no wider name: the widest it added is Revival Blessing at 153.0px.
 
 
 <!-- @trace
-source: port-champions-dex-learnset
-updated: 2026-07-30
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - scripts/check-contrast.mjs
-  - src/App.css
-  - README.md
-  - src/components/SpeciesDetail.vue
-  - src/data/i18n.ts
-  - src/state/learnset.ts
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
-  - package.json
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/query.ts
-  - src/theme/modes.ts
   - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
+tests:
+  - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -460,30 +469,40 @@ When Chinese leads and a move has no Chinese name, the name column SHALL render 
 
 | Property                       | Value |
 | ------------------------------ | ----- |
-| moves in the shared move table | 496   |
+| moves in the shared move table | 511   |
 | moves with no Chinese name     | 0     |
 
 Syrup Bomb and Matcha Gotcha were the two, for as long as the PokeAPI name column was the source. The `dex-data` capability now requires Traditional Chinese move names to come from the 52poke move list, which carries one for every numbered move and is asserted at fetch, so this requirement has no case left to answer.
 
 It is kept rather than removed because it is the guard for that source regressing: a name column that went empty again would otherwise render a blank cell that no check reports. The `move-index` and `move-detail` capabilities deliberately do **not** carry a fallback of their own — they were written after the guarantee was in place, and duplicating an unreachable branch in three places would have made the guarantee harder to find than the branches.
 
+
 <!-- @trace
-source: port-champions-dex-learnset
-updated: 2026-07-30
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - scripts/check-contrast.mjs
-  - src/App.css
-  - README.md
-  - src/components/SpeciesDetail.vue
-  - src/data/i18n.ts
-  - src/state/learnset.ts
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
-  - package.json
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/query.ts
-  - src/theme/modes.ts
   - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
+tests:
+  - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---

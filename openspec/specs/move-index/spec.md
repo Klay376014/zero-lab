@@ -4,9 +4,9 @@
 
 The moves tab's list of the moves in the shared move table, and the filter row that narrows it.
 
-Before this capability the move table was a terminus: a reader could only reach a move through the learnset of a species that happens to learn it, and never browse the 496 moves themselves. This capability makes the table its own surface — one row per entry, in the dataset's own order, each row a control that opens that move's detail.
+Before this capability the move table was a terminus: a reader could only reach a move through the learnset of a species that happens to learn it, and never browse the 511 moves themselves. This capability makes the table its own surface — one row per entry, in the dataset's own order, each row a control that opens that move's detail.
 
-It is the longest sequence in the application, 496 rows unfiltered against the grid's 208 cards, on a tab one tap away. So it materialises only the visible range plus a buffer, through `visible-range-window`, holds the remaining extent with spacers sized to the sequence currently rendered, and declares its row pitch where the row-height check can assert it against the stylesheet. Its declared viewport height is deliberately not reduced for the filter row: the row makes the container shorter, so the existing figure becomes a larger overstatement, and overstating costs elements while understating blanks an edge silently.
+It is the longest sequence in the application, 511 rows unfiltered against the grid's 231 cards, on a tab one tap away. So it materialises only the visible range plus a buffer, through `visible-range-window`, holds the remaining extent with spacers sized to the sequence currently rendered, and declares its row pitch where the row-height check can assert it against the stylesheet. Its declared viewport height is deliberately not reduced for the filter row: the row makes the container shorter, so the existing figure becomes a larger overstatement, and overstating costs elements while understating blanks an edge silently.
 
 It carries three filter conditions — a name search, the eighteen type marks and the three damage classes — set through a filter row of its own and held by `move-query`. Reaching a named move was what the first delivery was for, and it carried no query controls on the ground that each condition brings its own state, result-count statement and interaction with the window; those three costs are now paid, the count by `dataset-statements` and the window interaction by `visible-range-window`'s clamping. **Sort order remains absent**, and deliberately: a third order needs the sort control reworked from a single cycling chip into one that shows how many members the set has, which is a decision of its own recorded in the project roadmap. The dex tab's query bar is still not rendered here.
 
@@ -116,7 +116,7 @@ The move index SHALL materialise only the rows within its scrolling container's 
 
 When the conditions change the sequence's length, the range SHALL be clamped to the new length as the `visible-range-window` capability requires, and no scrolling API SHALL be called and no scroll position stored or restored.
 
-This is the longest sequence in the application: 496 rows unfiltered, against the grid's 208 cards. The platform's measured cost is per element, so a fully materialised index would pay that cost 496 times on a tab the reader reaches with one tap.
+This is the longest sequence in the application: 511 rows unfiltered, against the grid's 231 cards. The platform's measured cost is per element, so a fully materialised index would pay that cost 511 times on a tab the reader reaches with one tap.
 
 The row height SHALL be declared once and asserted against the stylesheet by the existing row-height check, so that a stylesheet change that moves the row height without updating the declared value fails the check rather than producing silent misalignment.
 
@@ -124,7 +124,7 @@ The row height SHALL be declared once and asserted against the stylesheet by the
 
 - **WHEN** the moves tab is shown with no condition set
 - **THEN** the row elements that exist are those of the visible range plus the buffer
-- **AND** the scrollable extent is the one 496 rows would occupy
+- **AND** the scrollable extent is the one 511 rows would occupy
 
 #### Scenario: The extent follows the filtered length
 
@@ -150,20 +150,31 @@ The row height SHALL be declared once and asserted against the stylesheet by the
 
 
 <!-- @trace
-source: filter-move-index
-updated: 2026-08-12
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - src/state/moveQuery.ts
-  - src/state/rowMetrics.ts
-  - src/components/MoveIndex.vue
-  - src/App.vue
   - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
-  - src/components/MoveFilterBar.vue
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
 tests:
+  - tests/dex-data.test.ts
   - tests/i18n.test.ts
   - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---

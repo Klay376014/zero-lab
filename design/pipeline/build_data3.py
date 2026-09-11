@@ -1,5 +1,5 @@
-"""Final dataset: 208 species, each form carrying base stats, abilities and its
-Champions learnset.
+"""Final dataset: every species in the current roster, each form carrying base stats,
+abilities and its Champions learnset.
 
 Provenance, deliberately split by what each source is actually authoritative for:
   * roster / forms / move mechanics -> Bulbapedia Champions pages (the game's own numbers)
@@ -66,7 +66,7 @@ for r in csv.DictReader(open('pokemon_abilities.csv', encoding='utf-8')):
         (int(r['slot']), r['ability_id'], r['is_hidden'] == '1'))
 
 # The overlay's ability rows stand in for rows pokemon_abilities.csv does not have — PokeAPI has
-# the Mega Z varieties and their stats but no ability rows at all — so they join the same table
+# the Z Mega and 1.2.0 Mega varieties and their stats but no ability rows at all — so they join the same table
 # in the same shape, and everything downstream is unaware they were hand-authored. An ability
 # PokeAPI does not have either is added to the name and description lookups the same way.
 overlay = json.load(open('overlay.json', encoding='utf-8'))
@@ -182,9 +182,9 @@ for dx in sorted({r['dex'] for r in body}):
     })
 
 # ---------- checks ----------
-assert len(species) == 208
-assert sum(1 for s in species for f in s['f'] if f['k'] == 'mega') == 78
-assert sum(1 for s in species for f in s['f'] if f['k'] == 'regional') == 16
+assert len(species) == 231
+assert sum(1 for s in species for f in s['f'] if f['k'] == 'mega') == 81
+assert sum(1 for s in species for f in s['f'] if f['k'] == 'regional') == 17
 for s in species:
     for f in s['f']:
         assert len(f['st']) == 6 and all(isinstance(v, int) for v in f['st'])
@@ -204,7 +204,11 @@ assert not bad, bad
 meta = {
     'species': len(species),
     'formEntries': sum(len(s['f']) for s in species),
-    'megas': 78, 'regional': 16,
+    # Computed like every other count here. These two were literals until the M-C rotation
+    # moved them to 81 and 17 — a literal gives one quantity two sources that agree only while
+    # they happen to match, and the interface renders these two.
+    'megas': sum(1 for s in species for f in s['f'] if f['k'] == 'mega'),
+    'regional': sum(1 for s in species for f in s['f'] if f['k'] == 'regional'),
     'moves': len(learn['moves']),
     'moveRefs': sum(len(m) for s in species for m in s['sec']),
     'abilities': len(ability_table),
@@ -212,7 +216,7 @@ meta = {
     'zhAbilities': sum(1 for a in ability_table if a['z']),
     'abilDescZh': sum(1 for a in ability_table if a['d']),
     'abilDescEn': sum(1 for a in ability_table if a['de']),
-    'roster': 'Regular Roster M-B (current until 2026-09-02)',
+    'roster': 'Regular Roster M-C (current until 2026-12-02)',
     'source': 'Bulbapedia Champions wikitext (roster, forms, move mechanics) + '
               'PokeAPI CSVs (base stats, abilities, zh-Hant naming); sprites HTTP-verified',
 }

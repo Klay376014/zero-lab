@@ -8,9 +8,9 @@ The dataset carried a move's name and six mechanical figures but never its descr
 
 It is the only path to the learner list. `learnset-table`'s move row reached that list directly until this capability existed; routing both entry points through here costs one extra tap, which `layer-stack`'s unwinding rule keeps from accumulating layers.
 
-It states a move's flags as a row of short labels, the last row of that same attribute list. 17 of the 21 flag identifiers the dataset names get a label; the other four get none, and that absence is the whole of how their exclusion is expressed. A label names a property of the move itself and never the mechanism the flag governs in the mainline games, because 401 of the 496 moves carry figures this game retuned.
+It states a move's flags as a row of short labels, the last row of that same attribute list. 17 of the 21 flag identifiers the dataset names get a label; the other four get none, and that absence is the whole of how their exclusion is expressed. A label names a property of the move itself and never the mechanism the flag governs in the mainline games, because 415 of the 511 moves carry figures this game retuned.
 
-Absence is never stated. The row is missing rather than empty when nothing can be said — for the 71 moves whose flags the upstream source never recorded, and for the 42 whose every flag is excluded, which are therefore indistinguishable on screen. That is deliberate: 71 moves carrying no flag is not the same statement as those moves lacking the properties, and stating only what is present asserts nothing about what is not. This capability displayed no flags at all until the question of which to show was settled, and the guarantee that prohibition existed for is now carried by never saying "none".
+Absence is never stated. The row is missing rather than empty when nothing can be said — for the 74 moves whose flags the upstream source never recorded, and for the 44 whose every flag is excluded, which are therefore indistinguishable on screen. That is deliberate: 74 moves carrying no flag is not the same statement as those moves lacking the properties, and stating only what is present asserts nothing about what is not. This capability displayed no flags at all until the question of which to show was settled, and the guarantee that prohibition existed for is now carried by never saying "none".
 
 ## Requirements
 
@@ -90,49 +90,44 @@ This is a stronger guarantee than the dataset makes for names, where two moves c
 
 #### Scenario: No move renders an empty description
 
-- **WHEN** move detail is opened for any of the 496 moves
+- **WHEN** move detail is opened for any of the 511 moves
 - **THEN** a description is stated in the leading language
 
 ##### Example: description coverage
 
 | Property                                        | Value |
 | ----------------------------------------------- | ----- |
-| moves in the shared move table                   | 496   |
-| moves with a non-empty Chinese description       | 496   |
-| moves with a non-empty English description       | 496   |
+| moves in the shared move table                   | 511   |
+| moves with a non-empty Chinese description       | 511   |
+| moves with a non-empty English description       | 511   |
 
 
 <!-- @trace
-source: add-moves-tab
-updated: 2026-08-11
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/pipeline/aggregate.py
-  - design/champions-dex.html
-  - scripts/check-row-heights.mjs
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
   - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
   - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/components/MoveDetail.vue
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
-  - src/state/tabs.ts
-  - src/components/MoveLearners.vue
-  - src/components/TabDeck.vue
-  - src/App.vue
-  - src/state/layerStack.ts
-  - design/pipeline/fetch_moves_zh.py
-  - ROADMAP.md
-  - src/App.css
-  - design/champions-dex.json
-  - src/data/dex.ts
-  - src/components/MoveIndex.vue
-  - src/state/selection.ts
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/moveLearners.ts
 tests:
-  - tests/i18n.test.ts
-  - tests/layer-stack.test.ts
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -260,9 +255,9 @@ The row's label and its marks SHALL be centred on each other vertically. This ro
 
 A flag SHALL be stated only when the string table carries a short label for its identifier. A flag whose identifier carries no short label SHALL be omitted, and the omission SHALL be silent: no marker, no count, and no text in its place.
 
-Seventeen of the twenty-one flag identifiers the `dex-data` capability requires the dataset to name SHALL carry a short label. Four SHALL carry none in either language: `mirror`, `snatch`, `non-sky-battle` and `distance`. An identifier SHALL carry a short label when that label names a property of the move itself, and SHALL NOT when the label could only name a relation to a mechanism this dataset does not contain — the moves Mirror Move and Snatch are not among the 496, and neither the sky battle nor the triple battle format exists in this game. Coverage SHALL NOT be a criterion: `protect` carries a label despite applying to 340 of the 496 moves.
+Seventeen of the twenty-one flag identifiers the `dex-data` capability requires the dataset to name SHALL carry a short label. Four SHALL carry none in either language: `mirror`, `snatch`, `non-sky-battle` and `distance`. An identifier SHALL carry a short label when that label names a property of the move itself, and SHALL NOT when the label could only name a relation to a mechanism this dataset does not contain — the moves Mirror Move and Snatch are not among the 511, and neither the sky battle nor the triple battle format exists in this game. Coverage SHALL NOT be a criterion: `protect` carries a label despite applying to 349 of the 511 moves.
 
-A short label SHALL name the property only. It SHALL NOT describe the mechanism the flag governs in the mainline games, because 401 of the 496 moves carry retuned figures in this dataset and a mechanism description would assert mainline rules about a game that retunes them.
+A short label SHALL name the property only. It SHALL NOT describe the mechanism the flag governs in the mainline games, because 415 of the 511 moves carry retuned figures in this dataset and a mechanism description would assert mainline rules about a game that retunes them.
 
 The labels SHALL appear in the ascending identifier order the `dex-data` capability requires of the flag field. That order is stable rather than meaningful; ordering by label text, by coverage, or by language is not required and SHALL NOT be introduced.
 
@@ -304,12 +299,12 @@ At most four labels SHALL be stated for any move. This is a consequence of the e
 
 Identifiers are written as their upstream names for readability; the dataset carries the numeric identifiers the `dex-data` capability defines.
 
-| Move        | Flag identifiers carried                    | Labels stated (English)            | Labels stated (Chinese) |
-| ----------- | ------------------------------------------- | ---------------------------------- | ----------------------- |
-| Attract     | protect, reflectable, authentic, mental     | Protect, Rebound, Pierce, Mental   | 守住、反彈、穿透、心靈     |
-| Stone Edge  | protect, mirror                             | Protect                            | 守住                     |
-| Aurora Veil | snatch                                      | none, and no flag row              | 無，且無此列              |
-| Ice Spinner | none                                        | none, and no flag row              | 無，且無此列              |
+| Move        | Flag identifiers carried                            | Labels stated (English)            | Labels stated (Chinese) |
+| ----------- | --------------------------------------------------- | ---------------------------------- | ----------------------- |
+| Attract     | protect, reflectable, mirror, authentic, mental     | Protect, Rebound, Pierce, Mental   | 守住、反彈、穿透、心靈     |
+| Stone Edge  | protect, mirror                                     | Protect                            | 守住                     |
+| Aurora Veil | snatch                                              | none, and no flag row              | 無，且無此列              |
+| Ice Spinner | none                                                | none, and no flag row              | 無，且無此列              |
 
 ##### Example: label coverage across the flag vocabulary
 
@@ -319,29 +314,37 @@ Identifiers are written as their upstream names for readability; the dataset car
 | identifiers carrying a short label in both languages      | 17    |
 | identifiers carrying a short label in neither language    | 4     |
 | greatest number of labels stated for one move             | 4     |
-| moves for which no label is stated                        | 113   |
-| of those, moves carrying no flag identifiers at all       | 71    |
-| of those, moves whose every identifier has no label       | 42    |
+| moves for which no label is stated                        | 118   |
+| of those, moves carrying no flag identifiers at all       | 74    |
+| of those, moves whose every identifier has no label       | 44    |
 
 
 <!-- @trace
-source: surface-move-flags
-updated: 2026-08-11
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/pipeline/build_data3.py
-  - src/App.css
-  - src/data/dex.json
-  - src/data/i18n.ts
-  - src/data/dex.ts
-  - design/champions-dex.html
-  - src/components/MoveDetail.vue
-  - design/champions-dex.json
   - ROADMAP.md
-  - design/pipeline/aggregate.py
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
   - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
 tests:
   - tests/dex-data.test.ts
   - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -351,7 +354,7 @@ When no flag of the move can be stated — because the move carries no flag iden
 
 Move detail SHALL NOT state that a move has no flags, and SHALL NOT state a count of flags for any move.
 
-The 71 moves whose flag identifiers the upstream source never recorded and the 42 whose every identifier is excluded are therefore indistinguishable on screen. This is deliberate and replaces the guarantee the removed requirement provided: stating absence would assert that those 71 moves lack the properties, while the dataset supports only the statement that nobody recorded them. Stating only the flags that are present asserts nothing about the flags that are not.
+The 74 moves whose flag identifiers the upstream source never recorded and the 44 whose every identifier is excluded are therefore indistinguishable on screen. This is deliberate and replaces the guarantee the removed requirement provided: stating absence would assert that those 74 moves lack the properties, while the dataset supports only the statement that nobody recorded them. Stating only the flags that are present asserts nothing about the flags that are not.
 
 #### Scenario: A move with no flag identifiers renders no flag row
 
@@ -366,26 +369,34 @@ The 71 moves whose flag identifiers the upstream source never recorded and the 4
 
 #### Scenario: No move states an absence or a count of flags
 
-- **WHEN** move detail is opened for any of the 496 moves
+- **WHEN** move detail is opened for any of the 511 moves
 - **THEN** no text states that the move has no flags
 - **AND** no number states how many flags the move has
 
 <!-- @trace
-source: surface-move-flags
-updated: 2026-08-11
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/pipeline/build_data3.py
-  - src/App.css
-  - src/data/dex.json
-  - src/data/i18n.ts
-  - src/data/dex.ts
-  - design/champions-dex.html
-  - src/components/MoveDetail.vue
-  - design/champions-dex.json
   - ROADMAP.md
-  - design/pipeline/aggregate.py
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
   - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
 tests:
   - tests/dex-data.test.ts
   - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->

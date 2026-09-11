@@ -29,7 +29,7 @@ import {
 import { activateTab, activeTab } from '../src/state/tabs.js'
 
 /** The whole move table, as the spec's tables count it. */
-const ALL = 496
+const ALL = 511
 
 /** Move query state is module-level and shared, so every test has to hand it back. */
 afterEach(() => {
@@ -106,13 +106,13 @@ describe('the conditions are independently settable and reset together', () => {
 })
 
 describe('search matches move names in both languages and nothing else', () => {
-  // Example: search strings against the 496-entry move table
+  // Example: search strings against the 511-entry move table
   const table: readonly (readonly [string, number])[] = [
     ['', ALL],
     ['  ', ALL],
     ['牙', 7],
     ['fang', 6],
-    ['火焰', 7],
+    ['火焰', 8],
     ['ice', 9],
     ['fire fang', 1],
     ['FIRE FANG', 1],
@@ -145,15 +145,15 @@ describe('search matches move names in both languages and nothing else', () => {
 })
 
 describe('selections within a condition widen and the conditions narrow each other', () => {
-  // Example: combined conditions against the 496-entry move table
+  // Example: combined conditions against the 511-entry move table
   const table: readonly (readonly [string, readonly TypeName[], readonly MoveClass[], number])[] = [
-    ['', [], [], 496],
-    ['', ['Water'], [], 27],
-    ['', ['Water', 'Dark'], [], 59],
-    ['', [], ['Physical'], 204],
-    ['', [], ['Status'], 172],
+    ['', [], [], 511],
+    ['', ['Water'], [], 28],
+    ['', ['Water', 'Dark'], [], 61],
+    ['', [], ['Physical'], 212],
+    ['', [], ['Status'], 177],
     ['', ['Water'], ['Physical'], 12],
-    ['', ['Water', 'Dark'], ['Physical'], 31],
+    ['', ['Water', 'Dark'], ['Physical'], 32],
     ['', ['Water'], ['Physical', 'Status'], 16],
     ['', ['Ice'], ['Status'], 4],
     ['牙', [], [], 7],

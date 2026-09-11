@@ -24,12 +24,12 @@ import {
 
 /** Example: asserted invariants — spec.md, "Dataset integrity is asserted at load time". */
 const EXPECTED = {
-  'species count': 208,
-  'form entries': 363,
-  'mega forms': 78,
-  'regional forms': 16,
-  'move table entries': 496,
-  'ability entries': 201,
+  'species count': 231,
+  'form entries': 396,
+  'mega forms': 81,
+  'regional forms': 17,
+  'move table entries': 511,
+  'ability entries': 215,
 } as const
 
 describe('the six asserted invariants', () => {
@@ -140,17 +140,17 @@ describe('Example: the shape of the added move fields', () => {
   const flagged = dex.moves.filter((move) => move.fl !== undefined)
 
   it('every move carries a Chinese and an English description', () => {
-    expect(dex.moves.filter((move) => move.d).length).toBe(496)
-    expect(dex.moves.filter((move) => move.de).length).toBe(496)
+    expect(dex.moves.filter((move) => move.d).length).toBe(511)
+    expect(dex.moves.filter((move) => move.de).length).toBe(511)
   })
 
   it('every move carries a Chinese name', () => {
-    expect(dex.moves.filter((move) => move.z).length).toBe(496)
+    expect(dex.moves.filter((move) => move.z).length).toBe(511)
   })
 
-  it('425 moves carry at least one flag and 71 omit the field', () => {
-    expect(flagged.length).toBe(425)
-    expect(dex.moves.length - flagged.length).toBe(71)
+  it('437 moves carry at least one flag and 74 omit the field', () => {
+    expect(flagged.length).toBe(437)
+    expect(dex.moves.length - flagged.length).toBe(74)
   })
 
   it('21 distinct flag identifiers are in use', () => {
@@ -266,7 +266,8 @@ describe('the search corpus', () => {
 
   it('does not carry a bare Roman generation numeral', () => {
     // Recorded in HANDOFF §12.18 and forbidden by the search requirement: a bare V would match
-    // 125 of the 208 species, which cannot be told apart from a broken search.
+    // 125 of the 208 species as the roster then stood, which cannot be told apart from a
+    // broken search.
     const bareRoman = dex.species.filter((species) => {
       const corpus = searchHaystack(species)
       return / v /.test(corpus) || corpus.endsWith(' v')

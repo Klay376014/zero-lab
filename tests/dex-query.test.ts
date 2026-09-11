@@ -26,7 +26,7 @@ import {
 } from '../src/state/query.js'
 
 /** The whole dataset, as the spec's tables count it. */
-const ALL = 208
+const ALL = 231
 
 /** Query state is module-level and shared, so every test has to hand it back. */
 afterEach(() => {
@@ -71,13 +71,13 @@ describe('search hit counts', () => {
   const table: readonly (readonly [string, number])[] = [
     ['475', 1],
     ['0475', 1],
-    ['dragon', 19],
-    ['龍', 25],
-    ['mega', 73],
-    ['超級', 73],
+    ['dragon', 21],
+    ['龍', 27],
+    ['mega', 76],
+    ['超級', 76],
     ['gen5', 29],
-    ['alola', 2],
-    ['阿羅拉', 2],
+    ['alola', 3],
+    ['阿羅拉', 3],
   ]
 
   it.each(table)('%s yields %i', (query, count) => {
@@ -110,19 +110,19 @@ describe('the type filter is judged across all of a species forms', () => {
 
 describe('several selected types combine disjunctively', () => {
   // Example: two types widen rather than narrow.
-  it('Fire alone selects 26', () => {
+  it('Fire alone selects 27', () => {
     selectTypes('Fire')
-    expect(results.value.length).toBe(26)
+    expect(results.value.length).toBe(27)
   })
 
-  it('Water alone selects 29', () => {
+  it('Water alone selects 31', () => {
     selectTypes('Water')
-    expect(results.value.length).toBe(29)
+    expect(results.value.length).toBe(31)
   })
 
-  it('Fire and Water together select 52, the union rather than the intersection', () => {
+  it('Fire and Water together select 55, the union rather than the intersection', () => {
     selectTypes('Fire', 'Water')
-    expect(results.value.length).toBe(52)
+    expect(results.value.length).toBe(55)
   })
 
   it('an empty selection matches every species', () => {
@@ -140,7 +140,7 @@ describe('several selected types combine disjunctively', () => {
   it('selecting a selected type removes it', () => {
     selectTypes('Fire', 'Water')
     toggleType('Water')
-    expect(results.value.length).toBe(26)
+    expect(results.value.length).toBe(27)
     toggleType('Fire')
     expect(results.value.length).toBe(ALL)
   })
@@ -151,9 +151,9 @@ describe('the Mega-only and multi-form-only filters', () => {
   // test for — it looks like a fault and is not.
   const table: readonly (readonly [boolean, boolean, number])[] = [
     [false, false, ALL],
-    [true, false, 73],
-    [false, true, 99],
-    [true, true, 73],
+    [true, false, 76],
+    [false, true, 105],
+    [true, true, 76],
   ]
 
   it.each(table)('mega=%s multi=%s yields %i', (mega, multi, count) => {

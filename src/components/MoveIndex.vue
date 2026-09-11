@@ -61,9 +61,9 @@ const heads = computed(() => moveHeads(lang.value))
 /**
  * Only the rows within reach are made.
  *
- * 496 rows unfiltered against the grid's 208 cards, on a tab one tap away. The platform charges
+ * 511 rows unfiltered against the grid's 231 cards, on a tab one tap away. The platform charges
  * roughly 1.3ms per element created regardless of what it is (design/HANDOFF.md §12.24), and a
- * fully materialised index would pay that 496 times before anything appeared. The container
+ * fully materialised index would pay that 511 times before anything appeared. The container
  * reports an absolute `scrollTop` (§12.25), so nothing here accumulates deltas.
  */
 let offset = 0

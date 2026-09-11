@@ -350,10 +350,10 @@ const DAMAGE_CLASS_NAME: Record<Lang, Record<MoveClass, string>> = {
  * here when its label names a property of the move itself, and absent when the label could only
  * name a relation to a mechanism this dataset does not contain: `mirror` and `snatch` would have
  * to say "can be copied by Mirror Move" and "can be taken by Snatch", and neither move is among
- * the 496; `non-sky-battle` and `distance` name battle formats this game does not have. Coverage
- * is not the criterion — `protect` applies to 340 of the 496 and is here.
+ * the 511; `non-sky-battle` and `distance` name battle formats this game does not have. Coverage
+ * is not the criterion — `protect` applies to 349 of the 511 and is here.
  *
- * Nouns, never mechanism descriptions. 401 of the 496 moves carry figures Champions retuned, so a
+ * Nouns, never mechanism descriptions. 415 of the 511 moves carry figures Champions retuned, so a
  * sentence about what a flag does in the mainline games would assert rules this game has changed.
  * The consequence is that direction is not carried: `重力` means the move cannot be used under
  * Gravity, where its neighbours read as things the move can do. That was weighed and accepted.
@@ -361,7 +361,7 @@ const DAMAGE_CLASS_NAME: Record<Lang, Record<MoveClass, string>> = {
  * Two pairs are not literal renderings of each other. `authentic` is `穿透` / `Pierce` because
  * "Authentic" carries no meaning as an English interface label, and `reflectable` is `反彈` /
  * `Rebound` — "Reflectable" is an adjective where every other label is a noun, and `Reflect` is
- * the name of a move in these 496 that has nothing to do with this flag (the mechanism is Magic
+ * the name of a move in these 511 that has nothing to do with this flag (the mechanism is Magic
  * Coat and Magic Bounce), so an English reader would have taken the label for a pointer at it.
  * The Chinese side keeps `反彈`, which collides with nothing.
  */

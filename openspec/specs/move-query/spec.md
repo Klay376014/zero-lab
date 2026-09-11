@@ -90,35 +90,46 @@ The corpus SHALL be derived once per move and retained, rather than rebuilt on e
 - **WHEN** the search string is a type name and no move's name contains that text
 - **THEN** no move matches on account of carrying that type
 
-##### Example: search strings against the 496-entry move table
+##### Example: search strings against the 511-entry move table
 
 | Search string | Matches | Notes |
 | ------------- | ------- | ----- |
-| (empty) | 496 | no condition |
-| two spaces | 496 | whitespace only imposes no condition |
+| (empty) | 511 | no condition |
+| two spaces | 511 | whitespace only imposes no condition |
 | 牙 | 7 | includes 以牙還牙 / Payback, whose type is Dark — a name hit, not a type hit |
 | fang | 6 | one fewer than 牙; the two languages' corpora are not symmetric, which is correct |
-| 火焰 | 7 | includes 噴射火焰 / Flamethrower and 火焰踢 / Blaze Kick |
+| 火焰 | 8 | includes 噴射火焰 / Flamethrower and 火焰踢 / Blaze Kick |
 | ice | 9 | English name hits only; the Ice type has 20 moves |
 | fire fang | 1 | 火焰牙 / Fire Fang — every token must be found |
 | FIRE FANG | 1 | matching is case insensitive |
 
 
 <!-- @trace
-source: filter-move-index
-updated: 2026-08-12
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - src/state/moveQuery.ts
-  - src/state/rowMetrics.ts
-  - src/components/MoveIndex.vue
-  - src/App.vue
   - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
-  - src/components/MoveFilterBar.vue
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
 tests:
+  - tests/dex-data.test.ts
   - tests/i18n.test.ts
   - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -153,17 +164,17 @@ Disjunction within the type condition follows the rule the `dex-query` capabilit
 - **WHEN** no type is selected
 - **THEN** the type condition admits every move
 
-##### Example: combined conditions against the 496-entry move table
+##### Example: combined conditions against the 511-entry move table
 
 | Search | Types | Damage classes | Matches |
 | ------ | ----- | -------------- | ------- |
-| (empty) | (none) | (none) | 496 |
-| (empty) | Water | (none) | 27 |
-| (empty) | Water, Dark | (none) | 59 |
-| (empty) | (none) | Physical | 204 |
-| (empty) | (none) | Status | 172 |
+| (empty) | (none) | (none) | 511 |
+| (empty) | Water | (none) | 28 |
+| (empty) | Water, Dark | (none) | 61 |
+| (empty) | (none) | Physical | 212 |
+| (empty) | (none) | Status | 177 |
 | (empty) | Water | Physical | 12 |
-| (empty) | Water, Dark | Physical | 31 |
+| (empty) | Water, Dark | Physical | 32 |
 | (empty) | Water | Physical, Status | 16 |
 | (empty) | Ice | Status | 4 |
 | 牙 | (none) | (none) | 7 |
@@ -184,20 +195,31 @@ Disjunction within the type condition follows the rule the `dex-query` capabilit
 
 
 <!-- @trace
-source: filter-move-index
-updated: 2026-08-12
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - src/state/moveQuery.ts
-  - src/state/rowMetrics.ts
-  - src/components/MoveIndex.vue
-  - src/App.vue
   - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
-  - src/components/MoveFilterBar.vue
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
 tests:
+  - tests/dex-data.test.ts
   - tests/i18n.test.ts
   - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---

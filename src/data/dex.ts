@@ -51,7 +51,7 @@ export interface Move {
   readonly d: string // Chinese description, from the 52poke move list
   readonly de: string // English description, from PokeAPI's newest version group
   /**
-   * Identifiers of the move flags that apply, ascending. Absent — not empty — for the 71 moves
+   * Identifiers of the move flags that apply, ascending. Absent — not empty — for the 74 moves
    * to which none applies.
    *
    * Names for these ids are in {@link Dex.moveFlags}; the labels drawn on screen are in the
@@ -59,7 +59,7 @@ export interface Move {
    * which names the string table gives a label to — 17 of the 21 — so this field carries all of
    * them and encodes no display decision.
    *
-   * Absence still states nothing. 71 moves carry no flag because the upstream source has not
+   * Absence still states nothing. 74 moves carry no flag because the upstream source has not
    * recorded them, which is not the same statement as those moves lacking the properties, and
    * `move-detail` therefore states only the flags that are present and never their absence.
    */
@@ -106,12 +106,12 @@ export interface Dex {
 }
 
 const EXPECTED = {
-  'species count': 208,
-  'form entries': 363,
-  'mega forms': 78,
-  'regional forms': 16,
-  'move table entries': 496,
-  'ability entries': 201,
+  'species count': 231,
+  'form entries': 396,
+  'mega forms': 81,
+  'regional forms': 17,
+  'move table entries': 511,
+  'ability entries': 215,
 } as const
 
 function assertCount(invariant: keyof typeof EXPECTED, actual: number): void {

@@ -96,53 +96,50 @@ The search string SHALL be split on whitespace, and a species SHALL match only w
 | 噴火          | yes               | partial Traditional Chinese    |
 | ditto         | no                | names a different species      |
 
-##### Example: measured result counts over the 208-species dataset
+##### Example: measured result counts over the 231-species dataset
 
 | Search string | Hits | What it equals                                                        |
 | ------------- | ---- | --------------------------------------------------------------------- |
 | 475           | 1    | Gallade, by national number                                           |
 | 0475          | 1    | the same species, by the zero-padded number                           |
-| dragon        | 19   | exactly the species the Dragon type filter selects                    |
-| 龍            | 25   | those 19, plus 6 whose Chinese name contains 龍 without the type      |
-| mega          | 73   | every species carrying a Mega form (78 Mega forms over 73 species)    |
-| 超級          | 73   | the same 73 species, by the Chinese Mega label                        |
+| dragon        | 21   | exactly the species the Dragon type filter selects                    |
+| 龍            | 27   | those 21, plus 6 whose Chinese name contains 龍 without the type      |
+| mega          | 76   | every species carrying a Mega form (81 Mega forms over 76 species)    |
+| 超級          | 76   | the same 76 species, by the Chinese Mega label                        |
 | gen5          | 29   | every species introduced in the fifth generation                      |
-| alola         | 2    | Raichu and Ninetales, by form label                                   |
-| 阿羅拉        | 2    | the same two, by the Chinese form label                               |
+| alola         | 3    | Raichu, Ninetales and Persian, by form label                          |
+| 阿羅拉        | 3    | the same three, by the Chinese form label                             |
 | 火焰寶可夢    | 2    | Charizard and Infernape, by Chinese category                          |
 | mega charizard | 1   | both tokens must match; Charizard alone satisfies them                |
 | gen5 dragon   | 1    | Hydreigon — the only fifth-generation Dragon                          |
 
-The 25 for 龍 is the specified outcome, not a defect to fix. The Chinese type name and the Chinese species names occupy one haystack, and partial name matching is required above; the six extra species are 暴鯉龍, 化石翼龍, 戰槌龍, 護城龍, 龍頭地鼠 and 冰雪巨龍.
-
-The count of species carrying a Mega form stays at 73 while the Mega form total rises, because a species already carrying a Mega form gains nothing from carrying a second one. A Mega form total that moves without moving the species count is the expected shape of a change that adds a Mega form to a species that already had one.
-
-##### Example: a species gaining a second Mega form
-
-- **GIVEN** Absol, which already carries Mega Absol
-- **WHEN** a second Mega form is added to Absol
-- **THEN** the Mega form total rises by one
-- **AND** the hits for the search string `mega` stay at 73
-
 
 <!-- @trace
-source: add-mega-z-forms
-updated: 2026-09-01
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - .workflow-comment.patch
-  - src/data/dex.json
-  - design/pipeline/aggregate.py
-  - design/pipeline/overlay.json
-  - design/pipeline/resolve_forms.py
-  - design/pipeline/zh_forms.py
-  - design/pipeline/build_data3.py
   - ROADMAP.md
   - design/champions-dex.json
-  - design/pipeline/parse.py
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
   - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
 tests:
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -193,20 +190,38 @@ No generation filter takes part in this conjunction, because the query state car
 
 | Selection    | Count | Note                                          |
 | ------------ | ----- | --------------------------------------------- |
-| Fire         | 26    | single selection                              |
-| Water        | 29    | single selection                              |
-| Fire + Water | 52    | the union, since 3 species carry both         |
-| none         | 208   | an empty selection matches every species      |
+| Fire         | 27    | single selection                              |
+| Water        | 31    | single selection                              |
+| Fire + Water | 55    | the union, since 3 species carry both         |
+| none         | 231   | an empty selection matches every species      |
 
 
 <!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
   - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
+tests:
+  - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -452,19 +467,37 @@ Each SHALL combine conjunctively with the search string and with the type filter
 
 | Mega-only | Multi-form-only | Count | Note                                                        |
 | --------- | --------------- | ----- | ----------------------------------------------------------- |
-| off       | off             | 208   | every species                                               |
-| on        | off             | 73    | species having a Mega form                                  |
-| off       | on              | 99    | species having more than one form                           |
-| on        | on              | 73    | every species with a Mega form already has more than one form |
+| off       | off             | 231   | every species                                               |
+| on        | off             | 76    | species having a Mega form                                  |
+| off       | on              | 105   | species having more than one form                           |
+| on        | on              | 76    | every species with a Mega form already has more than one form |
 
 The last row is worth stating because it looks like a fault: setting the multi-form filter on top of the Mega filter changes nothing. Every Mega species is by construction multi-form, since the Mega form is additional to a base form, so the Mega set is contained in the multi-form set. A count that does not move here is correct.
 
 <!-- @trace
-source: widen-dex-query-filters
-updated: 2026-08-09
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - src/state/query.ts
-  - src/components/QueryBar.vue
   - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
+tests:
+  - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->

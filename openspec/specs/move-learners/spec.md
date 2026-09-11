@@ -12,7 +12,7 @@ The layer beneath the list is move detail, which `move-detail` establishes as th
 
 The data layer SHALL expose a derived accessor that takes a move's index into the shared move table and returns the species that learn that move, in the dataset's own species order.
 
-A species SHALL be included when the move appears in any of that species' learnset sections, not only the section its base form points at. The dataset holds fifteen species whose sections differ between forms, and restricting the answer to base forms would omit one hundred and seventy-four of the twelve thousand nine hundred and thirty-nine move-to-species pairs.
+A species SHALL be included when the move appears in any of that species' learnset sections, not only the section its base form points at. The dataset holds eighteen species whose sections differ between forms, and restricting the answer to base forms would omit one hundred and ninety-six of the fourteen thousand three hundred and nineteen move-to-species pairs.
 
 The returned collection SHALL be shared with every caller and SHALL be typed readonly, so that no caller can mutate an answer another caller holds.
 
@@ -39,29 +39,41 @@ An index outside the shared move table SHALL raise the same diagnostic the exist
 
 | Property                                            | Value                  |
 | --------------------------------------------------- | ---------------------- |
-| moves in the shared move table                       | 496                    |
-| moves with at least one learner                      | 496                    |
-| largest learner count for a single move              | 207 of 208 species     |
-| median learner count                                 | 14                     |
-| total move-to-species pairs                          | 12939                  |
-| species whose sections differ between forms          | 15                     |
-| pairs reachable only through a non-base form         | 174                    |
+| moves in the shared move table                       | 511                    |
+| moves with at least one learner                      | 511                    |
+| largest learner count for a single move              | 230 of 231 species     |
+| median learner count                                 | 16                     |
+| total move-to-species pairs                          | 14319                  |
+| species whose sections differ between forms          | 18                     |
+| pairs reachable only through a non-base form         | 196                    |
 
 
 <!-- @trace
-source: add-move-learners
-updated: 2026-08-05
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/champions-dex.html
-  - src/data/dex.json
-  - src/App.vue
-  - src/state/moveLearners.ts
-  - src/components/MoveLearners.vue
-  - src/App.css
-  - src/components/LearnsetTable.vue
-  - src/data/dex.ts
-  - src/data/i18n.ts
+  - ROADMAP.md
   - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
+tests:
+  - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---

@@ -24,7 +24,8 @@ export interface RowMetric {
   readonly perRow: number
 }
 
-/** 208 cards over 104 rows, measured in a container with no padding of its own. */
+/** 208 cards over 104 rows as the roster then stood, measured in a container with no padding
+ * of its own. The reading is the row height, which the roster's size does not move. */
 export const CARD_ROW: RowMetric = { height: 201, perRow: 2 }
 
 /** 2520 over 105 rows. An exact integer, which is itself evidence the reading was clean. */
@@ -40,7 +41,7 @@ export const MOVE_ROW: RowMetric = { height: 24, perRow: 1 }
 export const LEARNER_ROW: RowMetric = { height: 53.84, perRow: 1 }
 
 /**
- * The move index's row, 496 of them — the longest fixed sequence in the application.
+ * The move index's row, 511 of them — the longest fixed sequence in the application.
  *
  * Unlike the three above, this figure is a *reservation* rather than a device reading: the row
  * is new, so there was nothing to measure. `.MoveIndexRow` declares the same number as its

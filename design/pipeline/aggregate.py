@@ -81,17 +81,39 @@ for name in species_names:
     parsed[name] = parse(f.read_text(encoding='utf-8'))
 print(f'parsed {len(parsed)} / {len(species_names)} species; missing={missing}')
 
-# ---- global move table, with conflict detection ----
-table, index, conflicts = [], {}, collections.defaultdict(set)
-def move_idx(m):
+# ---- global move table, with conflicts resolved by upstream revision time ----
+# A move's mechanics are parsed from every page that lists it, and those pages are edited
+# independently, so two can disagree. The newer page wins: this game retunes moves, and a page
+# not edited since a retune still carries the figure that preceded it. Parse order carries no
+# authority, and a count of pages measures how many have been edited, not which figure is current.
+REVISIONS = json.load(open('learnset_revisions.json', encoding='utf-8'))
+
+table, index, owner = [], {}, {}
+conflicts = collections.defaultdict(list)   # move name -> [(page, sig, timestamp)]
+
+def move_idx(m, page):
     sig = (m['ty'], m['dc'], m['pw'], m['ac'], m['pp'])
+    stamp = REVISIONS[page]
     if m['n'] in index:
-        prev = table[index[m['n']]]
-        if (prev['ty'], prev['dc'], prev['pw'], prev['ac'], prev['pp']) != sig:
-            conflicts[m['n']].add(sig)
-            conflicts[m['n']].add((prev['ty'], prev['dc'], prev['pw'], prev['ac'], prev['pp']))
+        row = table[index[m['n']]]
+        prev = (row['ty'], row['dc'], row['pw'], row['ac'], row['pp'])
+        if prev != sig:
+            held = owner[m['n']]
+            # Equal timestamps leave nothing to choose by, and choosing silently is the state
+            # this rule exists to remove.
+            assert stamp != REVISIONS[held], (
+                f'{m["n"]}: {held} and {page} state different mechanics under the same revision '
+                f'time {stamp} — {prev} vs {sig}. Nothing distinguishes them; check upstream.'
+            )
+            if not conflicts[m['n']]:
+                conflicts[m['n']].append((held, prev, REVISIONS[held]))
+            conflicts[m['n']].append((page, sig, stamp))
+            if stamp > REVISIONS[held]:
+                row['ty'], row['dc'], row['pw'], row['ac'], row['pp'] = sig
+                owner[m['n']] = page
         return index[m['n']]
     index[m['n']] = len(table)
+    owner[m['n']] = page
     # `z`, `d` and `de` are filled by the join below, once the table is complete; declared
     # here so the emitted record keeps its field order.
     table.append({'n': m['n'], 'z': '', 'ty': m['ty'], 'dc': m['dc'],
@@ -100,8 +122,9 @@ def move_idx(m):
 
 sections, lost = {}, {}
 for name, d in parsed.items():
+    page = name.replace(' ', '_')
     sections[name] = [{'types': s['types'],
-                       'mv': sorted({move_idx(m) for m in s['moves']})}
+                       'mv': sorted({move_idx(m, page) for m in s['moves']})}
                       for s in d['sections']]
     lost[name] = sorted({index[n] for n in d['lost'] if n in index})
 
@@ -188,9 +211,14 @@ assert not unnamed, (
 print(f'total move references: {sum(len(s["mv"]) for v in sections.values() for s in v)}')
 print(f'section counts: {dict(sorted(collections.Counter(len(v) for v in sections.values()).items()))}')
 if conflicts:
-    print(f'\nMOVES WITH CONFLICTING MECHANICS ACROSS PAGES: {len(conflicts)}')
-    for n, sigs in list(conflicts.items())[:15]:
-        print(f'  {n}: {sorted(sigs)}')
+    # Reported in full so a resolution is auditable without re-running the pipeline.
+    print(f'\nMECHANIC CONFLICTS RESOLVED BY REVISION TIME: {len(conflicts)}')
+    for n, seen in conflicts.items():
+        won = max(seen, key=lambda o: o[2])
+        print(f'  {n}: kept {won[1]} from {won[0]} ({won[2]})')
+        for page, sig, stamp in seen:
+            if page != won[0]:
+                print(f'      dropped {sig} from {page} ({stamp})')
 else:
     print('\nno mechanic conflicts — every move has one consistent stat line')
 

@@ -11,7 +11,7 @@
  * one; the other four are omitted by carrying no label in the string table, which is the whole of
  * how that exclusion is expressed.
  *
- * The row is absent, rather than empty, when nothing can be stated. 71 of the 496 moves carry no
+ * The row is absent, rather than empty, when nothing can be stated. 74 of the 511 moves carry no
  * flags at all because the upstream source never recorded them, and saying "none" would assert
  * "this move does not have those properties" where the data supports only "nobody wrote it down".
  * Stating only what is present asserts nothing about what is not — which is why there is no count

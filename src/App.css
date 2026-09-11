@@ -57,7 +57,7 @@
  * The height chain. Each link is load-bearing: the grid's scrolling container asks for the
  * space left over, and a scrolling container whose ancestors are unbounded grows to fit its
  * children and scrolls nothing at all. The platform does not scroll a page on its own, so
- * without this chain the 208th card is not merely below the fold — it is unreachable.
+ * without this chain the 231st card is not merely below the fold — it is unreachable.
  *
  * A fixed height rather than a minimum for the same reason: a minimum lets the root grow.
  *

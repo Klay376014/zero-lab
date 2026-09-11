@@ -92,10 +92,10 @@ describe('the count statements', () => {
  */
 describe('Example: the same query in both languages', () => {
   const dexRows: readonly (readonly [Lang, number, string])[] = [
-    ['zh', 208, '208 / 208 種類'],
-    ['zh', 19, '19 / 208 種類'],
-    ['en', 208, '208 / 208 species'],
-    ['en', 19, '19 / 208 species'],
+    ['zh', 231, '231 / 231 種類'],
+    ['zh', 19, '19 / 231 種類'],
+    ['en', 231, '231 / 231 species'],
+    ['en', 19, '19 / 231 species'],
   ]
 
   it.each(dexRows)('dex tab, %s, %i matched', (lang, matched, expected) => {
@@ -103,12 +103,12 @@ describe('Example: the same query in both languages', () => {
   })
 
   const moveRows: readonly (readonly [Lang, number, string])[] = [
-    ['zh', 496, '496 / 496 個招式'],
-    ['zh', 31, '31 / 496 個招式'],
-    ['zh', 0, '0 / 496 個招式'],
-    ['en', 496, '496 / 496 moves'],
-    ['en', 31, '31 / 496 moves'],
-    ['en', 0, '0 / 496 moves'],
+    ['zh', 511, '511 / 511 個招式'],
+    ['zh', 31, '31 / 511 個招式'],
+    ['zh', 0, '0 / 511 個招式'],
+    ['en', 511, '511 / 511 moves'],
+    ['en', 31, '31 / 511 moves'],
+    ['en', 0, '0 / 511 moves'],
   ]
 
   it.each(moveRows)('moves tab, %s, %i matched', (lang, matched, expected) => {
@@ -116,8 +116,8 @@ describe('Example: the same query in both languages', () => {
   })
 
   it('both totals come from the meta block', () => {
-    expect(dex.meta.species).toBe(208)
-    expect(dex.meta.moves).toBe(496)
+    expect(dex.meta.species).toBe(231)
+    expect(dex.meta.moves).toBe(511)
   })
 })
 
@@ -205,11 +205,11 @@ describe('the short label for each displayed move flag', () => {
     }
   })
 
-  it('protect is labelled despite applying to 340 of the 496 moves', () => {
+  it('protect is labelled despite applying to 349 of the 511 moves', () => {
     const id = ids.find((candidate) => dex.moveFlags[String(candidate)] === 'protect')!
     expect(moveFlagLabel(id, 'zh')).toBe('守住')
     expect(moveFlagLabel(id, 'en')).toBe('Protect')
-    expect(dex.moves.filter((move) => move.fl?.includes(id)).length).toBe(340)
+    expect(dex.moves.filter((move) => move.fl?.includes(id)).length).toBe(349)
   })
 
   it('the two labels that are not literal renderings of their identifier', () => {
@@ -298,11 +298,11 @@ describe('Example: label coverage across the flag vocabulary', () => {
     expect(Math.max(...stated)).toBe(4)
   })
 
-  it('113 moves state no label — 71 carrying none, 42 whose every flag is excluded', () => {
-    expect(stated.filter((count) => count === 0).length).toBe(113)
-    expect(dex.moves.filter((move) => move.fl === undefined).length).toBe(71)
+  it('118 moves state no label — 74 carrying none, 44 whose every flag is excluded', () => {
+    expect(stated.filter((count) => count === 0).length).toBe(118)
+    expect(dex.moves.filter((move) => move.fl === undefined).length).toBe(74)
     expect(dex.moves.filter((move) => move.fl !== undefined
-      && move.fl.every((id) => moveFlagLabel(id, 'zh') === '')).length).toBe(42)
+      && move.fl.every((id) => moveFlagLabel(id, 'zh') === '')).length).toBe(44)
   })
 
   it('the per-move distribution of stated labels', () => {
@@ -310,6 +310,6 @@ describe('Example: label coverage across the flag vocabulary', () => {
       counts[count] = (counts[count] ?? 0) + 1
       return counts
     }, {})
-    expect(distribution).toEqual({ 0: 113, 1: 137, 2: 180, 3: 52, 4: 14 })
+    expect(distribution).toEqual({ 0: 118, 1: 141, 2: 183, 3: 55, 4: 14 })
   })
 })

@@ -17,7 +17,12 @@ def section(start_pat, end_pat):
 
 body = section(r'==List of Pokémon in Champions==', r'\n===Forms===')
 megas = section(r'====Mega Evolutions====', r'\n====Other forms====')
-others = section(r'====Other forms====', r'\n==Untransferable')
+# Ends at the next second-level heading rather than at a named one. The named one used to be
+# `==Untransferable Pokémon==`, which upstream deleted when Pawmot became playable — and a
+# `section()` whose end pattern does not match returns '' without raising, so the 87 form rows
+# below simply vanished. Naming the section that happens to follow today only moves the same
+# fragility onto the next heading upstream inserts.
+others = section(r'====Other forms====', r'\n==[^=]')
 untrans = section(r'==Untransferable Pokémon==', r'\n==Trivia==')
 
 TYPES = {'Normal','Fire','Water','Electric','Grass','Ice','Fighting','Poison','Ground',

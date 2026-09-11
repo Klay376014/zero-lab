@@ -22,7 +22,7 @@ A count derived from a relation rather than stated about the dataset as a whole 
 
 - **WHEN** the masthead's source is inspected
 - **THEN** the species total is read from the dataset's meta block
-- **AND** the value 208 does not appear as a literal in the masthead's source
+- **AND** the value 231 does not appear as a literal in the masthead's source
 
 #### Scenario: A whole-dataset figure is not recomputed
 
@@ -38,36 +38,31 @@ A count derived from a relation rather than stated about the dataset as a whole 
 
 
 <!-- @trace
-source: add-moves-tab
-updated: 2026-08-11
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/pipeline/aggregate.py
-  - design/champions-dex.html
-  - scripts/check-row-heights.mjs
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
   - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
   - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/components/MoveDetail.vue
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
-  - src/state/tabs.ts
-  - src/components/MoveLearners.vue
-  - src/components/TabDeck.vue
-  - src/App.vue
-  - src/state/layerStack.ts
-  - design/pipeline/fetch_moves_zh.py
-  - ROADMAP.md
-  - src/App.css
-  - design/champions-dex.json
-  - src/data/dex.ts
-  - src/components/MoveIndex.vue
-  - src/state/selection.ts
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/moveLearners.ts
 tests:
-  - tests/i18n.test.ts
-  - tests/layer-stack.test.ts
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -110,33 +105,44 @@ The single-figure move count this replaces SHALL be removed rather than left unr
 
 | Tab | Language | Matched | Rendered |
 | --- | -------- | ------- | -------- |
-| Dex | Chinese | 208 | 208 / 208 種類 |
-| Dex | Chinese | 19 | 19 / 208 種類 |
-| Dex | English | 208 | 208 / 208 species |
-| Dex | English | 19 | 19 / 208 species |
-| Moves | Chinese | 496 | 496 / 496 個招式 |
-| Moves | Chinese | 31 | 31 / 496 個招式 |
-| Moves | Chinese | 0 | 0 / 496 個招式 |
-| Moves | English | 496 | 496 / 496 moves |
-| Moves | English | 31 | 31 / 496 moves |
-| Moves | English | 0 | 0 / 496 moves |
+| Dex | Chinese | 231 | 231 / 231 種類 |
+| Dex | Chinese | 19 | 19 / 231 種類 |
+| Dex | English | 231 | 231 / 231 species |
+| Dex | English | 19 | 19 / 231 species |
+| Moves | Chinese | 511 | 511 / 511 個招式 |
+| Moves | Chinese | 31 | 31 / 511 個招式 |
+| Moves | Chinese | 0 | 0 / 511 個招式 |
+| Moves | English | 511 | 511 / 511 moves |
+| Moves | English | 31 | 31 / 511 moves |
+| Moves | English | 0 | 0 / 511 moves |
 
 
 <!-- @trace
-source: filter-move-index
-updated: 2026-08-12
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - src/state/moveQuery.ts
-  - src/state/rowMetrics.ts
-  - src/components/MoveIndex.vue
-  - src/App.vue
   - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
-  - src/components/MoveFilterBar.vue
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
 tests:
+  - tests/dex-data.test.ts
   - tests/i18n.test.ts
   - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---

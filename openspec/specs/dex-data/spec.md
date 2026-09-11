@@ -4,9 +4,9 @@
 
 The bundled Champions dataset and the reference tables that read it. Covers how the dataset arrives as a pipeline artifact rather than hand-authored data, the load-time integrity assertions that turn upstream drift into a thrown error, the named types the rest of the app reads it through, the derived accessors for base-stat totals and cross-form type sets, bilingual name resolution, the eighteen-type reference tables, and the user-facing string table.
 
-Provenance is split by what each of the three upstream sources is authoritative for, and the split is enforced rather than described. The Champions tables supply the roster and every move's mechanics, because that game retunes them — 401 of the 496 moves disagree with the mainline figures the text sources publish, so the aggregation step asserts that the power, accuracy and power points it emits are the ones it parsed. The PokeAPI exports supply ability and form naming and the English move descriptions. The 52poke move list supplies Traditional Chinese move names and descriptions, joined by move identifier rather than by name, and its Traditional variant specifically: the PokeAPI name column is Simplified for 33 of these moves, and the shipped dataset showed only 8 because the rest had been corrected by hand-editing the dataset file — the edit this capability forbids, which a pipeline re-run would have silently undone.
+Provenance is split by what each of the three upstream sources is authoritative for, and the split is enforced rather than described. The Champions tables supply the roster and every move's mechanics, because that game retunes them — 415 of the 511 moves disagree with the mainline figures the text sources publish, so the aggregation step asserts that the power, accuracy and power points it emits are the ones it parsed. Those mechanics are parsed from every page that lists a move, and independently edited pages can disagree; the figures of the page revised most recently upstream win, because a page not edited since a retune still carries what preceded it, and a disagreement under identical revision times fails the pipeline rather than resolving to whichever page was read first. The PokeAPI exports supply ability and form naming and the English move descriptions. The 52poke move list supplies Traditional Chinese move names and descriptions, joined by move identifier rather than by name, and its Traditional variant specifically: the PokeAPI name column was Simplified for 33 of the moves in the table as it then stood at 496 entries, and the shipped dataset showed only 8 because the rest had been corrected by hand-editing the dataset file — the edit this capability forbids, which a pipeline re-run would have silently undone.
 
-Two rules bound what reaches that split. Only a roster row outside an HTML comment counts as roster data at all: the roster page stages a future release as commented-out rows, and exclusion turns on the comment rather than on the placeholder version those rows carry, because either can appear without the other. And where no upstream source carries a field, a hand-authored overlay supplies it — the roster entry and the abilities for a form PokeAPI has stats and a sprite for but the roster page has no released row for. The overlay is an input to the pipeline, not an edit of its output: the dataset stays wholly produced by a run and still reproduces byte for byte, the overlay supplies only fields that have no source, and each entry records where its values came from and the condition under which it is deleted.
+Two rules bound what reaches that split. Only a roster row outside an HTML comment counts as roster data at all: the roster page stages a future release as commented-out rows, and exclusion turns on the comment rather than on the placeholder version those rows carry, because either can appear without the other. And where no upstream source carries a field, a hand-authored overlay supplies it, for exactly as long as that remains true: a form's roster entry while the roster page has no released row for it, and a form's abilities while the PokeAPI exports carry none — the state of a Mega the game has released and those exports have not caught up with. Upstream catching up is enforced rather than remembered: the parsing step fails on an overlay roster row the roster page now carries. The overlay is an input to the pipeline, not an edit of its output: the dataset stays wholly produced by a run and still reproduces byte for byte, the overlay supplies only fields that have no source, and each entry records where its values came from and the condition under which it is deleted.
 
 A move record therefore carries a description in both languages and the identifiers of the flags that apply to it. A missing description fails the pipeline rather than reaching the interface as a blank area. A separate table names all 21 flag identifiers, including the four no screen draws, so that the dataset does not encode which flags are displayed — that is decided by which identifiers the string table gives a short label to, and changing it never means re-running the pipeline. The two hops, id to upstream identifier here and identifier to label in the string table, are what make an upstream renumbering harmless and an upstream rename detectable; a load-time assertion throws when a move references an identifier the table cannot name.
 
@@ -49,42 +49,37 @@ Fetching the 52poke move list requires a browser user-agent header; a request wi
 
 | Property                                                        | Value       |
 | ---------------------------------------------------------------- | ----------- |
-| moves in the shared move table                                    | 496         |
-| moves whose power, accuracy or power points differ from the mainline figures | 401 |
-| moves whose emitted figures come from the Champions tables        | 496         |
+| moves in the shared move table                                    | 511         |
+| moves whose power, accuracy or power points differ from the mainline figures | 415 |
+| moves whose emitted figures come from the Champions tables        | 511         |
 
 
 <!-- @trace
-source: add-moves-tab
-updated: 2026-08-11
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/pipeline/aggregate.py
-  - design/champions-dex.html
-  - scripts/check-row-heights.mjs
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
   - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
   - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/components/MoveDetail.vue
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
-  - src/state/tabs.ts
-  - src/components/MoveLearners.vue
-  - src/components/TabDeck.vue
-  - src/App.vue
-  - src/state/layerStack.ts
-  - design/pipeline/fetch_moves_zh.py
-  - ROADMAP.md
-  - src/App.css
-  - design/champions-dex.json
-  - src/data/dex.ts
-  - src/components/MoveIndex.vue
-  - src/state/selection.ts
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/moveLearners.ts
 tests:
-  - tests/i18n.test.ts
-  - tests/layer-stack.test.ts
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -106,32 +101,40 @@ The data layer SHALL assert six dataset invariants when its module initialises. 
 
 | Invariant                  | Expected | A failure means                              |
 | -------------------------- | -------- | -------------------------------------------- |
-| species count              | 208      | the game roster changed                      |
-| form entries across species| 363      | forms were added or removed                  |
-| forms of kind mega         | 78       | a Mega evolution was added or removed        |
-| forms of kind regional     | 16       | a regional form was added or removed         |
-| shared move table entries  | 496      | the move table changed upstream              |
-| ability entries            | 201      | the ability table changed upstream           |
+| species count              | 231      | the game roster changed                      |
+| form entries across species| 396      | forms were added or removed                  |
+| forms of kind mega         | 81       | a Mega evolution was added or removed        |
+| forms of kind regional     | 17       | a regional form was added or removed         |
+| shared move table entries  | 511      | the move table changed upstream              |
+| ability entries            | 215      | the ability table changed upstream           |
 
 
 <!-- @trace
-source: add-mega-z-forms
-updated: 2026-09-01
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - .workflow-comment.patch
-  - src/data/dex.json
-  - design/pipeline/aggregate.py
-  - design/pipeline/overlay.json
-  - design/pipeline/resolve_forms.py
-  - design/pipeline/zh_forms.py
-  - design/pipeline/build_data3.py
   - ROADMAP.md
   - design/champions-dex.json
-  - design/pipeline/parse.py
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
   - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
 tests:
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -562,7 +565,11 @@ The data layer SHALL expose the dataset's meta block as typed, readable data alo
 
 The scale counts SHALL cover, at minimum, the species total, the form entry total, the Mega form total and the move table entry total, because these are the figures the interface states about the dataset as a whole. Each of these four SHALL be one of the counts the load-time invariant assertions already verify, so that a figure rendered on screen is a figure an assertion protects.
 
+Every scale count in the meta block SHALL be computed by the assembly step from the assembled data. No scale count SHALL be written into the block as a literal. A literal gives one quantity two independent sources that agree only while they happen to match, and the counts that were held as literals are the two the roster rotation moved.
+
 The roster designation and the provenance statement SHALL be exposed as strings and SHALL NOT be covered by a count assertion, because neither is a quantity. An empty value for either SHALL be a legitimate state that consumers handle, not a load-time failure.
+
+The roster designation SHALL name the roster the dataset was built from and the date that roster ceases to be current.
 
 #### Scenario: The meta block is readable
 
@@ -579,10 +586,16 @@ The roster designation and the provenance statement SHALL be exposed as strings 
 
 | Meta count         | Value | Asserted invariant   |
 | ------------------ | ----- | -------------------- |
-| species total      | 208   | species count        |
-| form entry total   | 363   | form entries         |
-| Mega form total    | 78    | mega forms           |
-| move table entries | 496   | move table entries   |
+| species total      | 231   | species count        |
+| form entry total   | 396   | form entries         |
+| Mega form total    | 81    | mega forms           |
+| move table entries | 511   | move table entries   |
+
+#### Scenario: Every scale count is computed rather than written
+
+- **WHEN** the assembly step emits the meta block against a dataset whose Mega form total has changed
+- **THEN** the emitted Mega form total equals the number of Mega forms in that dataset
+- **AND** the emitted regional form total equals the number of regional forms in that dataset
 
 #### Scenario: An empty roster designation is not a load failure
 
@@ -592,23 +605,31 @@ The roster designation and the provenance statement SHALL be exposed as strings 
 
 
 <!-- @trace
-source: add-mega-z-forms
-updated: 2026-09-01
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - .workflow-comment.patch
-  - src/data/dex.json
-  - design/pipeline/aggregate.py
-  - design/pipeline/overlay.json
-  - design/pipeline/resolve_forms.py
-  - design/pipeline/zh_forms.py
-  - design/pipeline/build_data3.py
   - ROADMAP.md
   - design/champions-dex.json
-  - design/pipeline/parse.py
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
   - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
 tests:
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -651,11 +672,11 @@ Each move record SHALL carry a Chinese description, an English description, and 
 
 Every move in the table SHALL also carry a non-empty Chinese name in Traditional characters. The 52poke move list's `/zh-hant/` variant supplies one for every numbered row it holds, which the fetch step asserts, so the two moves that carried no Chinese name while PokeAPI was the naming source now carry one. This is why neither the `move-index` nor the `move-detail` capability requires a fallback to the English name.
 
-The variant matters and the naming source SHALL NOT revert to the PokeAPI name column: that column is Simplified for 33 of these 496 moves, and the shipped dataset showed only 8 because the other 25 had been corrected by editing the dataset file directly — the hand edit this capability forbids, which a pipeline re-run would have silently undone.
+The variant matters and the naming source SHALL NOT revert to the PokeAPI name column: that column was Simplified for 33 of the moves in the table as it then stood at 496 entries, and the shipped dataset showed only 8 because the other 25 had been corrected by editing the dataset file directly — the hand edit this capability forbids, which a pipeline re-run would have silently undone. The figures in this paragraph record that episode and are not re-measured against a later table.
 
 Both descriptions SHALL be non-empty for every move in the table. The Chinese description SHALL come from the 52poke move list and the English description from the PokeAPI move flavour text, taking the entry from the highest version group present and normalising the in-game line breaks it contains to single spaces.
 
-The flag identifiers SHALL be a readonly array of numbers in ascending order. A move to which no flag applies SHALL omit the field rather than carry an empty array, because the dataset is serialised compactly and 71 of the 496 moves carry no flags.
+The flag identifiers SHALL be a readonly array of numbers in ascending order. A move to which no flag applies SHALL omit the field rather than carry an empty array, because the dataset is serialised compactly and 74 of the 511 moves carry no flags.
 
 The record SHALL NOT carry the flags' labels. Flag labels are user-facing strings and belong to the string table, which this capability already requires; placing them in the dataset would make them hand-authored content in a file this capability forbids hand-authoring.
 
@@ -686,52 +707,41 @@ The record SHALL NOT carry the flags' labels. Flag labels are user-facing string
 
 | Property                                          | Value        |
 | --------------------------------------------------- | ------------ |
-| moves with a Chinese name                           | 496          |
-| move names the change rewrites in the shipped dataset | 10         |
-| of those, Simplified names corrected                | 8            |
-| of those, names filled in that were empty           | 2            |
-| Simplified names a re-run would have reintroduced from PokeAPI | 33 |
-| moves with a Chinese description                    | 496          |
-| moves with an English description                   | 496          |
+| moves with a Chinese name                           | 511          |
+| moves with a Chinese description                    | 511          |
+| moves with an English description                   | 511          |
 | distinct flag identifiers in use                    | 21           |
-| moves carrying at least one flag                    | 425          |
-| moves carrying no flag field                        | 71           |
+| moves carrying at least one flag                    | 437          |
+| moves carrying no flag field                        | 74           |
 | greatest number of flags on a single move           | 6            |
-| dataset size before this change                     | 195 KB       |
-| dataset size after this change                      | 297 KB       |
 
 
 <!-- @trace
-source: add-moves-tab
-updated: 2026-08-11
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - design/pipeline/aggregate.py
-  - design/champions-dex.html
-  - scripts/check-row-heights.mjs
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
   - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
   - src/state/rowMetrics.ts
   - src/data/dex.json
-  - src/components/MoveDetail.vue
+  - design/pipeline/fetch_learnsets.py
   - src/data/i18n.ts
-  - src/state/tabs.ts
-  - src/components/MoveLearners.vue
-  - src/components/TabDeck.vue
-  - src/App.vue
-  - src/state/layerStack.ts
-  - design/pipeline/fetch_moves_zh.py
-  - ROADMAP.md
-  - src/App.css
-  - design/champions-dex.json
-  - src/data/dex.ts
-  - src/components/MoveIndex.vue
-  - src/state/selection.ts
-  - scripts/check-styles.mjs
-  - src/components/LearnsetTable.vue
-  - src/state/moveLearners.ts
 tests:
-  - tests/i18n.test.ts
-  - tests/layer-stack.test.ts
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->
 
 ---
@@ -1014,41 +1024,123 @@ tests:
 ---
 ### Requirement: A pipeline overlay supplies form data upstream does not carry
 
-The pipeline SHALL accept an overlay of hand-authored input covering exactly the fields no upstream source carries for a form: its roster entry and its abilities. Every overlay entry SHALL record the source of its values and the condition under which it is to be deleted.
+The pipeline SHALL accept an overlay of hand-authored input covering exactly the fields no upstream source carries for a form. Every overlay entry SHALL record the source of its values and the condition under which it is to be deleted.
 
 The overlay is an input to the pipeline, not an edit of its output. The requirement that the application dataset SHALL NOT be hand-authored or hand-edited continues to apply in full: the dataset SHALL remain produced entirely by a pipeline run, and re-running the pipeline against unchanged inputs SHALL continue to reproduce it byte for byte.
 
-The overlay SHALL NOT supply a field an upstream source carries. A form's roster entry carries its English form label, its types and its roster status, and the overlay supplies all three for a form upstream has no released row for. Base stats and sprite paths SHALL continue to come from the PokeAPI exports for every form, including a form the overlay introduces.
+The overlay SHALL NOT supply a field an upstream source carries. Base stats and sprite paths SHALL continue to come from the PokeAPI exports for every form, including a form the overlay supplies a field for.
 
-When an upstream source begins carrying a field the overlay supplies, the corresponding overlay entry SHALL be deleted and the pipeline re-run, and the resulting dataset SHALL be unchanged.
+Two kinds of field qualify, and the overlay SHALL supply a kind only while no upstream source carries it. A form's roster entry — its English form label, its types and its roster status — qualifies while the roster page has no released row for that form. A form's abilities qualify while the PokeAPI exports carry none for it, which is the state of a Mega form the game has released and those exports have not yet caught up with.
+
+When an upstream source begins carrying a field the overlay supplies, the corresponding overlay entry SHALL be deleted and the pipeline re-run, and the resulting dataset SHALL be unchanged. The parsing step SHALL fail rather than continue where the roster page has begun carrying a row the overlay also supplies, so the deletion is enforced rather than remembered.
 
 #### Scenario: The overlay supplies only the fields upstream lacks
 
-- **WHEN** the pipeline assembles a form introduced by the overlay
-- **THEN** its roster entry and abilities come from the overlay
-- **AND** its base stats and sprite path come from the PokeAPI exports
+- **WHEN** the pipeline assembles a form whose abilities the overlay supplies
+- **THEN** its abilities come from the overlay
+- **AND** its base stats, sprite path, form label and types come from the upstream sources
 
 #### Scenario: A pipeline run with an overlay is still reproducible
 
 - **WHEN** the pipeline assembly step is re-run against unchanged upstream caches and an unchanged overlay
 - **THEN** the application dataset is byte-identical to the committed copy
 
+#### Scenario: An overlay entry upstream has caught up with fails the pipeline
+
+- **WHEN** the roster page carries a released row for a form whose roster entry the overlay also supplies
+- **THEN** the parsing step fails naming that form
+- **AND** it states that the overlay entry is to be deleted
+
+
 <!-- @trace
-source: add-mega-z-forms
-updated: 2026-09-01
+source: update-roster-m-c
+updated: 2026-09-11
 code:
-  - .workflow-comment.patch
-  - src/data/dex.json
-  - design/pipeline/aggregate.py
-  - design/pipeline/overlay.json
-  - design/pipeline/resolve_forms.py
-  - design/pipeline/zh_forms.py
-  - design/pipeline/build_data3.py
   - ROADMAP.md
   - design/champions-dex.json
-  - design/pipeline/parse.py
+  - src/components/MoveDetail.vue
   - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
   - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
 tests:
   - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
+-->
+
+---
+### Requirement: Conflicting move mechanics across source pages are resolved by upstream revision time
+
+A move's mechanics are parsed from every learnset page that lists it, and those pages are edited independently, so two pages can state different figures for the same move. The aggregation step SHALL detect that disagreement and SHALL resolve it by taking the figures from the page with the most recent upstream revision timestamp, because this game retunes moves and a page not edited since a retune states the figure that preceded it.
+
+The aggregation step SHALL NOT resolve a disagreement by parse order, and SHALL NOT resolve it by which figure appears on more pages. Parse order carries no authority over the data. A count of pages measures how many have been edited since the retune, not which figure is current.
+
+The revision timestamp of each learnset page SHALL be fetched from the upstream wiki and cached alongside the page itself, so the resolution rule reads upstream metadata rather than a judgement made in this repository. The fetch SHALL be idempotent in the manner the existing learnset fetch already is.
+
+Where two pages state different figures under identical revision timestamps, the aggregation step SHALL fail with a non-zero exit status naming the move and the disagreeing pages. Selecting either figure would be arbitrary, and an arbitrary silent selection is the condition this requirement exists to remove.
+
+The step SHALL report every disagreement it resolves, naming the move, the winning page, the losing pages and the timestamps compared, so that a resolution is auditable without re-running the pipeline.
+
+#### Scenario: Two pages disagree and the newer one wins
+
+- **WHEN** the aggregation step reads a move whose figures differ between two learnset pages
+- **THEN** the emitted record carries the figures from the page with the later revision timestamp
+- **AND** the step reports the move, the winning page, the losing page and both timestamps
+
+#### Scenario: Disagreement under identical timestamps fails the pipeline
+
+- **WHEN** two pages state different figures for one move and their revision timestamps are equal
+- **THEN** the aggregation step exits with a non-zero status naming the move and the pages
+- **AND** no dataset is written
+
+#### Scenario: Agreement is not reported as a resolution
+
+- **WHEN** every page listing a move states the same figures
+- **THEN** the step reports no disagreement for that move
+
+##### Example: the disagreements in the Regulation Set M-C roster
+
+| Move         | Figure | Pages stating the older value | Pages stating the newer value | Emitted |
+| ------------ | ------ | ----------------------------- | ----------------------------- | ------- |
+| Wish         | power points | 12 — Clefable, Vaporeon and others revised 2026-09-10T16:03Z–16:06Z | 8 — Pawmot 2026-09-10T17:59Z, Indeedee 2026-09-10T20:42Z | 8 |
+| Strength Sap | power points | 12 — Polteageist, Sinistcha revised 2026-09-10T16:03Z | 8 — Arboliva 2026-09-10T18:00Z | 8 |
+
+<!-- @trace
+source: update-roster-m-c
+updated: 2026-09-11
+code:
+  - ROADMAP.md
+  - design/champions-dex.json
+  - src/components/MoveDetail.vue
+  - src/data/dex.ts
+  - design/HANDOFF.md
+  - design/pipeline/fetch_sources.sh
+  - src/App.css
+  - design/pipeline/overlay.json
+  - design/champions-dex.html
+  - design/pipeline/aggregate.py
+  - design/pipeline/build_data3.py
+  - src/components/MoveIndex.vue
+  - design/pipeline/parse.py
+  - src/state/rowMetrics.ts
+  - src/data/dex.json
+  - design/pipeline/fetch_learnsets.py
+  - src/data/i18n.ts
+tests:
+  - tests/dex-data.test.ts
+  - tests/i18n.test.ts
+  - tests/move-query.test.ts
+  - tests/dex-query.test.ts
 -->

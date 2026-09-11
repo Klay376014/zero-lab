@@ -24,13 +24,13 @@ get () {  # get <url> <dest>
 echo "1/4  Bulbapedia roster table (raw wikitext)"
 get "$BULBA/index.php?title=List_of_Pok%C3%A9mon_in_Pok%C3%A9mon_Champions&action=raw" champions.wiki
 
-echo "2/4  Bulbapedia learnset page titles (expects exactly 208 members)"
+echo "2/4  Bulbapedia learnset page titles (expects exactly 231 members)"
 get "$BULBA/api.php?action=query&list=categorymembers&cmtitle=Category:Pok%C3%A9mon%20learnsets%20(Champions)&cmlimit=500&format=json" cat.json
 python3 - <<'PY'
 import json
 n = len(json.load(open('cat.json', encoding='utf-8'))['query']['categorymembers'])
 print(f'      category members: {n}')
-assert n == 208, f'roster size changed ({n} != 208) — the game was updated; see HANDOFF.md'
+assert n == 231, f'roster size changed ({n} != 231) — the game was updated; see HANDOFF.md'
 PY
 
 echo "3/4  PokeAPI source CSVs"
