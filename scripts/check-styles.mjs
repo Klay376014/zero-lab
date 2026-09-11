@@ -233,6 +233,20 @@ function isUncoveredMark(code) {
  * subtable formats the project's own subsetting step emits are understood — anything else throws
  * rather than returning a partial set, because a partial set would pass the check by accident.
  */
+/**
+ * A DataView over a font file, positioned on the file itself.
+ *
+ * Not `readFileSync(path).buffer.slice(0)`: readFileSync returns a Buffer that, for a file
+ * below Node's pool threshold, is a window into a shared pool at a non-zero byteOffset, and
+ * slicing from 0 parses the bytes of whatever was read before it instead. Literata is over
+ * that threshold and so always sat at offset 0, which is why only the pixel face ever read
+ * garbage, and only once something else had been read first.
+ */
+function fontView(path) {
+  const bytes = readFileSync(path)
+  return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+}
+
 function tableOffsets(font) {
   const tableCount = font.getUint16(4)
   const offsets = {}
@@ -245,7 +259,7 @@ function tableOffsets(font) {
 }
 
 function fontCodePoints(path) {
-  const font = new DataView(readFileSync(path).buffer.slice(0))
+  const font = fontView(path)
   const cmapOffset = tableOffsets(font).cmap ?? null
   if (cmapOffset === null) throw new Error(`${path} has no cmap table`)
 
@@ -337,7 +351,7 @@ const SHEET = join(SRC, 'App.css')
  * a system font — see the top of design/HANDOFF.md §12.
  */
 function textWidth(path, text, sizePx, letterSpacingPx) {
-  const font = new DataView(readFileSync(path).buffer.slice(0))
+  const font = fontView(path)
   const t = tableOffsets(font)
   for (const required of ['head', 'hhea', 'hmtx', 'cmap']) {
     if (t[required] === undefined) throw new Error(`${path} has no ${required} table`)
